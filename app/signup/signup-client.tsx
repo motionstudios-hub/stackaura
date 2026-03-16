@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { initiateOzowSignupPayment } from "../lib/ozow";
 
 const highlights = [
   {
@@ -53,10 +54,21 @@ export default function SignupClient() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [country, setCountry] = useState("South Africa");
+  const [checkoutPath, setCheckoutPath] = useState<"signup" | "ozow">("signup");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const backend = process.env.NEXT_PUBLIC_CHECKOUT_API_BASE_URL || "http://localhost:3001";
+
+  function buildReturnUrls() {
+    const origin = window.location.origin;
+
+    return {
+      success: `${origin}/payments/success`,
+      cancel: `${origin}/payments/cancel`,
+      error: `${origin}/payments/error`,
+    };
+  }
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault();
@@ -64,6 +76,20 @@ export default function SignupClient() {
 
     try {
       setLoading(true);
+
+      if (checkoutPath === "ozow") {
+        await initiateOzowSignupPayment({
+          flow: "merchant_signup",
+          signup: {
+            businessName,
+            email,
+            password,
+            country,
+          },
+          returnUrls: buildReturnUrls(),
+        });
+        return;
+      }
 
       const res = await fetch(`${backend}/v1/merchants/signup`, {
         method: "POST",
@@ -183,8 +209,8 @@ export default function SignupClient() {
               </div>
 
               <p className="mt-4 text-sm leading-6 text-zinc-400">
-                Sign up in under a minute. We&apos;ll take you to login next with your new account
-                email already filled in.
+                Sign up in under a minute. You can create a merchant workspace directly, or hand
+                the customer off to Ozow once the payment path is needed.
               </p>
 
               <form onSubmit={handleSignup} className="mt-8 space-y-4">
@@ -247,6 +273,43 @@ export default function SignupClient() {
                   </select>
                 </label>
 
+                <div>
+                  <div className="text-xs font-medium uppercase tracking-wide text-zinc-400">
+                    Continue with
+                  </div>
+                  <div className="mt-2 grid gap-3 sm:grid-cols-2">
+                    <button
+                      type="button"
+                      onClick={() => setCheckoutPath("signup")}
+                      className={
+                        checkoutPath === "signup"
+                          ? "rounded-2xl border border-[#20BCED]/35 bg-[#A0E9FF]/10 px-4 py-4 text-left shadow-[0_12px_30px_rgba(17,106,248,0.16)] transition"
+                          : "rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-left transition hover:border-white/20 hover:bg-black/30"
+                      }
+                    >
+                      <div className="text-sm font-semibold text-white">Merchant account</div>
+                      <div className="mt-1 text-sm leading-6 text-zinc-400">
+                        Create the workspace now and continue to login with the same email.
+                      </div>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setCheckoutPath("ozow")}
+                      className={
+                        checkoutPath === "ozow"
+                          ? "rounded-2xl border border-[#20BCED]/35 bg-[#A0E9FF]/10 px-4 py-4 text-left shadow-[0_12px_30px_rgba(17,106,248,0.16)] transition"
+                          : "rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-left transition hover:border-white/20 hover:bg-black/30"
+                      }
+                    >
+                      <div className="text-sm font-semibold text-white">Ozow checkout</div>
+                      <div className="mt-1 text-sm leading-6 text-zinc-400">
+                        Send the onboarding details to the API and redirect the browser to Ozow.
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
                 {error ? (
                   <div className="rounded-2xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
                     {error}
@@ -258,13 +321,20 @@ export default function SignupClient() {
                   disabled={loading}
                   className="min-h-[48px] w-full rounded-2xl bg-[#A0E9FF] px-5 py-3 text-sm font-semibold text-[#02142b] transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  {loading ? "Creating account..." : "Create merchant account"}
+                  {loading
+                    ? checkoutPath === "ozow"
+                      ? "Redirecting to Ozow..."
+                      : "Creating account..."
+                    : checkoutPath === "ozow"
+                      ? "Continue to Ozow"
+                      : "Create merchant account"}
                 </button>
               </form>
 
               <div className="mt-6 rounded-2xl border border-white/10 bg-black/20 p-4 text-sm leading-6 text-zinc-300">
-                You&apos;ll continue straight to sign in after account creation, with your new
-                merchant email already prefilled.
+                {checkoutPath === "ozow"
+                  ? "Ozow initiation is handled by the API only. The frontend expects the backend to return a redirect URL or redirect form payload."
+                  : "You&apos;ll continue straight to sign in after account creation, with your new merchant email already prefilled."}
               </div>
 
               <div className="mt-6 flex flex-col gap-3 text-sm text-zinc-400 sm:flex-row sm:items-center sm:justify-between">
