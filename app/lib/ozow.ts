@@ -19,6 +19,16 @@ type OzowRedirectResponse =
       action: string;
       method?: RedirectMethod;
       fields?: Record<string, string>;
+    }
+  | {
+      redirectForm: RedirectInstruction;
+    }
+  | {
+      redirectForm: {
+        action: string;
+        method?: RedirectMethod;
+        fields?: Record<string, string>;
+      };
     };
 
 export type OzowInitiateRequest = {
@@ -112,6 +122,42 @@ function normalizeRedirectPayload(payload: unknown): RedirectInstruction | null 
           )
         : undefined,
     };
+  }
+
+  if (isRecord(payload.redirectForm)) {
+    if (typeof payload.redirectForm.url === "string" && payload.redirectForm.url) {
+      return {
+        url: payload.redirectForm.url,
+        method:
+          payload.redirectForm.method === "POST" || payload.redirectForm.method === "GET"
+            ? payload.redirectForm.method
+            : "GET",
+        fields: isRecord(payload.redirectForm.fields)
+          ? Object.fromEntries(
+              Object.entries(payload.redirectForm.fields).filter(
+                (entry): entry is [string, string] => typeof entry[1] === "string"
+              )
+            )
+          : undefined,
+      };
+    }
+
+    if (typeof payload.redirectForm.action === "string" && payload.redirectForm.action) {
+      return {
+        url: payload.redirectForm.action,
+        method:
+          payload.redirectForm.method === "POST" || payload.redirectForm.method === "GET"
+            ? payload.redirectForm.method
+            : "POST",
+        fields: isRecord(payload.redirectForm.fields)
+          ? Object.fromEntries(
+              Object.entries(payload.redirectForm.fields).filter(
+                (entry): entry is [string, string] => typeof entry[1] === "string"
+              )
+            )
+          : undefined,
+      };
+    }
   }
 
   return null;
