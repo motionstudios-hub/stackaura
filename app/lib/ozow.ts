@@ -86,13 +86,6 @@ function extractErrorMessage(payload: unknown) {
 function normalizeRedirectPayload(payload: unknown): RedirectInstruction | null {
   if (!isRecord(payload)) return null;
 
-  if (typeof payload.redirectUrl === "string" && payload.redirectUrl) {
-    return {
-      url: payload.redirectUrl,
-      method: "GET",
-    };
-  }
-
   if (isRecord(payload.redirect) && typeof payload.redirect.url === "string") {
     return {
       url: payload.redirect.url,
@@ -158,6 +151,13 @@ function normalizeRedirectPayload(payload: unknown): RedirectInstruction | null 
           : undefined,
       };
     }
+  }
+
+  if (typeof payload.redirectUrl === "string" && payload.redirectUrl) {
+    return {
+      url: payload.redirectUrl,
+      method: "GET",
+    };
   }
 
   return null;
