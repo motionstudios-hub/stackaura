@@ -27,6 +27,9 @@ export const publicSectionLabelClass =
 export const publicCodePanelClass =
   "rounded-[28px] border border-white/25 bg-[linear-gradient(180deg,rgba(10,37,64,0.84),rgba(28,53,94,0.80))] p-6 text-white shadow-[0_16px_36px_rgba(10,37,64,0.16)] backdrop-blur-2xl";
 
+export const brandGlassContainerClass =
+  "border border-white/48 bg-[linear-gradient(180deg,rgba(255,255,255,0.34)_0%,rgba(238,246,250,0.24)_100%),radial-gradient(circle_at_30%_25%,rgba(125,211,252,0.18),transparent_52%),radial-gradient(circle_at_72%_74%,rgba(167,139,250,0.16),transparent_48%)] shadow-[0_14px_32px_rgba(122,146,168,0.14),inset_0_1px_0_rgba(255,255,255,0.58),inset_0_0_24px_rgba(122,115,255,0.08)] backdrop-blur-2xl";
+
 export const lightProductHeroClass =
   "rounded-[32px] border border-white/48 bg-[linear-gradient(180deg,rgba(255,255,255,0.34)_0%,rgba(242,248,251,0.24)_100%)] shadow-[0_20px_42px_rgba(122,146,168,0.12),inset_0_1px_0_rgba(255,255,255,0.62)] backdrop-blur-2xl";
 
@@ -164,12 +167,19 @@ const footerItems = [
   { href: "/terms", label: "Terms" },
 ];
 
-export function BrandLockup({ compact = false }: { compact?: boolean }) {
+export function BrandLockup({
+  compact = false,
+  showTagline = true,
+}: {
+  compact?: boolean;
+  showTagline?: boolean;
+}) {
   return (
-    <Link href="/" className="flex items-center gap-3">
+    <Link href="/" className="flex min-w-0 items-center gap-3">
       <div
         className={cn(
-          "flex items-center justify-center rounded-2xl bg-[#0a2540] shadow-sm",
+          "flex items-center justify-center rounded-2xl",
+          brandGlassContainerClass,
           compact ? "h-10 w-10" : "h-11 w-11"
         )}
       >
@@ -183,13 +193,15 @@ export function BrandLockup({ compact = false }: { compact?: boolean }) {
         />
       </div>
 
-      <div>
-        <div className={cn("font-semibold tracking-tight text-[#0a2540]", compact ? "text-lg" : "text-xl")}>
+      <div className="min-w-0">
+        <div className={cn("truncate font-semibold tracking-tight text-[#0a2540]", compact ? "text-lg" : "text-xl")}>
           Stackaura
         </div>
-        <div className="text-xs font-medium uppercase tracking-[0.2em] text-[#635bff]">
-          Financial infrastructure
-        </div>
+        {showTagline ? (
+          <div className="text-xs font-medium uppercase tracking-[0.2em] text-[#635bff]">
+            Financial infrastructure
+          </div>
+        ) : null}
       </div>
     </Link>
   );
@@ -203,7 +215,7 @@ export function PublicBackground({
   className?: string;
 }) {
   return (
-    <main className={cn("min-h-screen bg-[#dbe8ee] text-[#0a2540]", className)}>
+    <main className={cn("min-h-screen overflow-x-clip bg-[#dbe8ee] text-[#0a2540]", className)}>
       <div className="relative overflow-hidden">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-[6px] bg-[linear-gradient(90deg,#7a73ff_0%,#4f46e5_22%,#7dd3fc_46%,#fb7185_72%,#f59e0b_100%)]" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_16%,rgba(255,255,255,0.30),transparent_24%),radial-gradient(circle_at_34%_40%,rgba(186,214,227,0.26),transparent_26%),radial-gradient(circle_at_78%_28%,rgba(241,248,251,0.28),transparent_30%)]" />
@@ -227,27 +239,28 @@ export function SoftProductBackground({
 export function PublicHeader() {
   return (
     <header className="relative z-20 border-b border-white/35 bg-white/18 backdrop-blur-2xl shadow-[0_10px_30px_rgba(122,146,168,0.10)] supports-[backdrop-filter]:bg-white/14">
-      <div className="mx-auto max-w-[1440px] px-6 py-5 lg:px-10">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex items-center justify-between gap-4">
-            <BrandLockup />
+      <div className="mx-auto max-w-[1440px] px-4 py-4 sm:px-6 sm:py-5 lg:px-10">
+        <div className="flex items-center justify-between gap-4 lg:gap-6">
+          <div className="flex min-w-0 items-center gap-10">
+            <div className="min-w-0 lg:hidden">
+              <BrandLockup compact showTagline={false} />
+            </div>
+            <div className="hidden lg:block">
+              <BrandLockup />
+            </div>
 
-            <Link href="/login" className={cn(publicSecondaryButtonClass, "px-4 py-2 text-sm lg:hidden")}>
-              Sign in
-            </Link>
+            <nav className="hidden items-center gap-3 lg:flex">
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="rounded-full border border-white/40 bg-white/20 px-4 py-2 text-sm font-medium text-[#425466] shadow-[0_8px_24px_rgba(133,156,180,0.10)] backdrop-blur-2xl transition hover:bg-white/30 hover:text-[#0a2540]"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
           </div>
-
-          <nav className="flex flex-wrap items-center gap-2 lg:flex-1 lg:justify-center">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="rounded-full border border-white/40 bg-white/20 px-4 py-2 text-sm font-medium text-[#425466] shadow-[0_8px_24px_rgba(133,156,180,0.10)] backdrop-blur-2xl transition hover:bg-white/30 hover:text-[#0a2540]"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
 
           <div className="hidden items-center gap-3 lg:flex">
             <Link href="/login" className={cn(publicSecondaryButtonClass, "px-5 py-2.5")}>
@@ -257,6 +270,40 @@ export function PublicHeader() {
               Contact sales
             </Link>
           </div>
+
+          <details className="relative lg:hidden">
+            <summary className="flex min-h-[44px] list-none items-center justify-center gap-2 rounded-2xl border border-white/45 bg-white/24 px-4 py-2 text-sm font-semibold text-[#425466] shadow-[0_8px_24px_rgba(133,156,180,0.10)] backdrop-blur-2xl transition hover:bg-white/30 [&::-webkit-details-marker]:hidden">
+              <span>Menu</span>
+              <span className="flex flex-col gap-1">
+                <span className="block h-[2px] w-4 rounded-full bg-[#4f46e5]" />
+                <span className="block h-[2px] w-4 rounded-full bg-[#4f46e5]" />
+                <span className="block h-[2px] w-4 rounded-full bg-[#4f46e5]" />
+              </span>
+            </summary>
+
+            <div className="absolute right-0 top-[calc(100%+12px)] z-30 w-[min(320px,calc(100vw-2rem))] rounded-[28px] border border-white/45 bg-white/24 p-4 shadow-[0_18px_38px_rgba(122,146,168,0.16)] backdrop-blur-2xl">
+              <nav className="grid gap-2">
+                {navItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="rounded-2xl border border-white/42 bg-white/20 px-4 py-3 text-sm font-medium text-[#425466] shadow-[0_8px_20px_rgba(133,156,180,0.08)] backdrop-blur-2xl transition hover:bg-white/28 hover:text-[#0a2540]"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </nav>
+
+              <div className="mt-3 grid gap-2">
+                <Link href="/login" className={cn(publicSecondaryButtonClass, "w-full px-4 py-3")}>
+                  Sign in
+                </Link>
+                <Link href="/contact" className={cn(publicPrimaryButtonClass, "w-full px-4 py-3")}>
+                  Contact sales
+                </Link>
+              </div>
+            </div>
+          </details>
         </div>
       </div>
     </header>
