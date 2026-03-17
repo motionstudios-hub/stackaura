@@ -23,10 +23,10 @@ export default async function PaymentsSuccessPage({
   return (
     <PaymentStatePage
       eyebrow="Payment successful"
-      title="Ozow payment completed"
-      description="Your payment completed successfully. Stackaura will finish the next step in the onboarding or checkout flow from the backend."
+      title="Merchant account activated"
+      description="Your Ozow payment completed successfully, and your Stackaura merchant workspace is now active."
       tone="success"
-      detail="If the payment was linked to a signup or checkout session, the API should now mark it as paid and continue fulfillment."
+      detail="You can continue to login and access your dashboard, API keys, and payment tools."
       primaryHref="/login"
       primaryLabel="Continue to login"
       secondaryHref="/"

@@ -3,6 +3,18 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import {
+  DarkBackground,
+  cn,
+  darkCompactGhostButtonClass,
+  darkGhostButtonClass,
+  darkInputClass,
+  darkPanelClass,
+  darkPillClass,
+  darkPrimaryButtonClass,
+  darkSubtleSurfaceClass,
+  darkSurfaceClass,
+} from "../components/stackaura-ui";
 
 type CreatePaymentResponse = {
   id: string;
@@ -108,58 +120,52 @@ export default function PaymentLinksPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#020D33] text-white">
-      <div className="relative mx-auto max-w-7xl px-8 py-10">
-        <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-          <div className="absolute -left-24 -top-8 h-80 w-80 rounded-full bg-[#A0E9FF]/20 blur-3xl" />
-          <div className="absolute right-[-80px] top-0 h-[28rem] w-[28rem] rounded-full bg-[#116AF8]/30 blur-3xl" />
-          <div className="absolute bottom-[-120px] left-1/3 h-[24rem] w-[24rem] rounded-full bg-[#20BCED]/20 blur-3xl" />
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),transparent_18%)]" />
-        </div>
-
-        <div className="mb-8 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-[0_10px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+    <DarkBackground>
+      <div className="relative mx-auto max-w-7xl px-6 py-8 sm:px-8 sm:py-10">
+        <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex items-start gap-4">
+            <div className={cn(darkSurfaceClass, "flex h-16 w-16 items-center justify-center overflow-hidden rounded-[24px]")}>
               <Image
                 src="/stackaura-logo.png"
                 alt="Stackaura"
                 width={40}
                 height={40}
-                className="object-contain"
+                className="object-contain mix-blend-screen"
                 priority
               />
             </div>
 
             <div>
-              <div className="text-2xl font-semibold tracking-tight">
-                Payment Links
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.24em] text-[#A0E9FF] backdrop-blur-xl">
+                Payment links
               </div>
-              <div className="text-sm text-zinc-300/80">
-                Create and share checkout links for WhatsApp, Instagram DM, and email.
+              <div className="mt-4 text-3xl font-semibold tracking-tight text-white">
+                Create shareable checkout links in the Stackaura console.
+              </div>
+              <div className="mt-3 max-w-2xl text-sm leading-7 text-zinc-300">
+                Generate a hosted checkout link with a merchant API key, then share it across
+                WhatsApp, Instagram DM, or email without leaving the Stackaura payments stack.
               </div>
             </div>
           </div>
 
-          <Link
-            href="/"
-            className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-zinc-100 shadow-[0_8px_24px_rgba(0,0,0,0.18)] backdrop-blur-xl transition hover:border-[#20BCED]/35 hover:bg-white/10"
-          >
-            Back to Dashboard
+          <Link href="/dashboard" className={darkGhostButtonClass}>
+            Back to dashboard
           </Link>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[1fr_0.95fr]">
-          <section className="rounded-3xl border border-white/10 bg-[#08152f]/55 p-6 shadow-[0_12px_40px_rgba(0,0,0,0.22)] backdrop-blur-xl">
-            <div className="text-sm font-semibold">Create payment link</div>
+          <section className={cn(darkSurfaceClass, "p-6")}>
+            <div className="text-sm font-semibold text-white">Create payment link</div>
             <div className="mt-2 text-sm text-zinc-400">
               Generate a hosted Stackaura checkout link using a merchant API key.
             </div>
 
             <form onSubmit={createLink} className="mt-6 grid gap-4">
               <label className="grid gap-1">
-                <span className="text-xs text-zinc-400">Merchant API key</span>
+                <span className="text-xs uppercase tracking-wide text-zinc-400">Merchant API key</span>
                 <input
-                  className="rounded-xl border border-white/10 bg-[#07142f]/80 px-3 py-3 font-mono text-xs text-zinc-100 backdrop-blur-xl"
+                  className={cn(darkInputClass, "font-mono text-xs")}
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
                   placeholder="ck_test_..."
@@ -169,9 +175,9 @@ export default function PaymentLinksPage() {
 
               <div className="grid gap-4 md:grid-cols-2">
                 <label className="grid gap-1">
-                  <span className="text-xs text-zinc-400">Amount</span>
+                  <span className="text-xs uppercase tracking-wide text-zinc-400">Amount</span>
                   <input
-                    className="rounded-xl border border-white/10 bg-[#07142f]/80 px-3 py-3 text-sm text-zinc-100 backdrop-blur-xl"
+                    className={darkInputClass}
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     placeholder="25.00"
@@ -180,9 +186,9 @@ export default function PaymentLinksPage() {
                 </label>
 
                 <label className="grid gap-1">
-                  <span className="text-xs text-zinc-400">Currency</span>
+                  <span className="text-xs uppercase tracking-wide text-zinc-400">Currency</span>
                   <select
-                    className="rounded-xl border border-white/10 bg-[#07142f]/80 px-3 py-3 text-sm text-zinc-100 backdrop-blur-xl"
+                    className={darkInputClass}
                     value={currency}
                     onChange={(e) => setCurrency(e.target.value)}
                   >
@@ -195,9 +201,9 @@ export default function PaymentLinksPage() {
 
               <div className="grid gap-4 md:grid-cols-2">
                 <label className="grid gap-1">
-                  <span className="text-xs text-zinc-400">Customer email</span>
+                  <span className="text-xs uppercase tracking-wide text-zinc-400">Customer email</span>
                   <input
-                    className="rounded-xl border border-white/10 bg-[#07142f]/80 px-3 py-3 text-sm text-zinc-100 backdrop-blur-xl"
+                    className={darkInputClass}
                     value={customerEmail}
                     onChange={(e) => setCustomerEmail(e.target.value)}
                     placeholder="customer@example.com"
@@ -205,9 +211,11 @@ export default function PaymentLinksPage() {
                 </label>
 
                 <label className="grid gap-1">
-                  <span className="text-xs text-zinc-400">Preferred gateway</span>
+                  <span className="text-xs uppercase tracking-wide text-zinc-400">
+                    Preferred gateway
+                  </span>
                   <select
-                    className="rounded-xl border border-white/10 bg-[#07142f]/80 px-3 py-3 text-sm text-zinc-100 backdrop-blur-xl"
+                    className={darkInputClass}
                     value={gateway}
                     onChange={(e) => setGateway(e.target.value)}
                   >
@@ -219,9 +227,9 @@ export default function PaymentLinksPage() {
               </div>
 
               <label className="grid gap-1">
-                <span className="text-xs text-zinc-400">Description</span>
+                <span className="text-xs uppercase tracking-wide text-zinc-400">Description</span>
                 <input
-                  className="rounded-xl border border-white/10 bg-[#07142f]/80 px-3 py-3 text-sm text-zinc-100 backdrop-blur-xl"
+                  className={darkInputClass}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Product / invoice description"
@@ -231,42 +239,40 @@ export default function PaymentLinksPage() {
               <button
                 type="submit"
                 disabled={loading || !apiKey || amountCents <= 0}
-                className="rounded-xl bg-gradient-to-r from-[#20BCED] to-[#116AF8] px-4 py-3 text-sm font-medium text-white shadow-[0_10px_30px_rgba(17,106,248,0.30)] transition hover:opacity-95 disabled:opacity-50"
+                className={cn(darkPrimaryButtonClass, "w-full")}
               >
-                {loading ? "Creating link..." : "Create Payment Link"}
+                {loading ? "Creating link..." : "Create payment link"}
               </button>
             </form>
 
             {error ? (
-              <div className="mt-4 rounded-xl border border-rose-900/40 bg-rose-950/30 p-4 text-sm text-rose-200">
+              <div className="mt-4 rounded-2xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm text-rose-200">
                 {error}
               </div>
             ) : null}
           </section>
 
-          <section className="rounded-3xl border border-white/10 bg-[#08152f]/55 p-6 shadow-[0_12px_40px_rgba(0,0,0,0.22)] backdrop-blur-xl">
-            <div className="text-sm font-semibold">Share payment link</div>
+          <section className={cn(darkSurfaceClass, "p-6")}>
+            <div className="text-sm font-semibold text-white">Share payment link</div>
             <div className="mt-2 text-sm text-zinc-400">
-              Generate a checkout link once, then share it anywhere merchants sell.
+              Create one checkout link, then distribute it everywhere the merchant sells.
             </div>
 
             {!result ? (
-              <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-5 text-sm text-zinc-400 backdrop-blur-xl">
+              <div className={cn(darkSubtleSurfaceClass, "mt-6 p-5 text-sm text-zinc-400")}>
                 Create a payment link to unlock WhatsApp, Instagram DM, and email sharing actions.
               </div>
             ) : (
               <div className="mt-6 space-y-4">
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl">
-                  <div className="text-xs uppercase tracking-wide text-zinc-500">
-                    Checkout URL
-                  </div>
+                <div className={cn(darkSubtleSurfaceClass, "p-5")}>
+                  <div className="text-xs uppercase tracking-wide text-zinc-500">Checkout URL</div>
                   <div className="mt-2 break-all font-mono text-sm text-zinc-100">
                     {result.checkoutUrl}
                   </div>
                   <div className="mt-4 flex flex-wrap gap-3">
                     <button
                       onClick={() => copyValue(result.checkoutUrl, "checkout")}
-                      className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-zinc-100 backdrop-blur-xl transition hover:border-[#20BCED]/35 hover:bg-white/10"
+                      className={darkCompactGhostButtonClass}
                     >
                       {copied === "checkout" ? "Copied" : "Copy link"}
                     </button>
@@ -275,7 +281,7 @@ export default function PaymentLinksPage() {
                       href={result.checkoutUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-zinc-100 backdrop-blur-xl transition hover:border-[#20BCED]/35 hover:bg-white/10"
+                      className={darkCompactGhostButtonClass}
                     >
                       Open checkout
                     </a>
@@ -287,20 +293,20 @@ export default function PaymentLinksPage() {
                     href={whatsappHref}
                     target="_blank"
                     rel="noreferrer"
-                    className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-zinc-100 backdrop-blur-xl transition hover:border-[#20BCED]/35 hover:bg-white/10"
+                    className={cn(darkPanelClass, "p-4")}
                   >
-                    <div className="font-semibold">WhatsApp</div>
-                    <div className="mt-2 text-xs text-zinc-400">
+                    <div className="font-semibold text-white">WhatsApp</div>
+                    <div className="mt-2 text-xs leading-6 text-zinc-400">
                       Open WhatsApp with a ready-to-send payment message.
                     </div>
                   </a>
 
                   <button
                     onClick={() => copyValue(shareMessage, "instagram")}
-                    className="rounded-2xl border border-white/10 bg-white/5 p-4 text-left text-sm text-zinc-100 backdrop-blur-xl transition hover:border-[#20BCED]/35 hover:bg-white/10"
+                    className={cn(darkPanelClass, "p-4 text-left")}
                   >
-                    <div className="font-semibold">Instagram DM</div>
-                    <div className="mt-2 text-xs text-zinc-400">
+                    <div className="font-semibold text-white">Instagram DM</div>
+                    <div className="mt-2 text-xs leading-6 text-zinc-400">
                       Copy the share message, then paste it into Instagram DM.
                     </div>
                     <div className="mt-3 text-xs text-[#A0E9FF]">
@@ -308,28 +314,21 @@ export default function PaymentLinksPage() {
                     </div>
                   </button>
 
-                  <a
-                    href={emailHref}
-                    className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-zinc-100 backdrop-blur-xl transition hover:border-[#20BCED]/35 hover:bg-white/10"
-                  >
-                    <div className="font-semibold">Email</div>
-                    <div className="mt-2 text-xs text-zinc-400">
+                  <a href={emailHref} className={cn(darkPanelClass, "p-4")}>
+                    <div className="font-semibold text-white">Email</div>
+                    <div className="mt-2 text-xs leading-6 text-zinc-400">
                       Open your email client with a prefilled checkout message.
                     </div>
                   </a>
                 </div>
 
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl">
-                  <div className="text-xs uppercase tracking-wide text-zinc-500">
-                    Payment details
-                  </div>
+                <div className={cn(darkSubtleSurfaceClass, "p-5")}>
+                  <div className="text-xs uppercase tracking-wide text-zinc-500">Payment details</div>
 
                   <div className="mt-4 grid gap-3 text-sm md:grid-cols-2">
                     <div>
                       <div className="text-zinc-500">Reference</div>
-                      <div className="mt-1 font-mono text-zinc-100">
-                        {result.reference}
-                      </div>
+                      <div className="mt-1 font-mono text-zinc-100">{result.reference}</div>
                     </div>
 
                     <div>
@@ -356,7 +355,17 @@ export default function PaymentLinksPage() {
             )}
           </section>
         </div>
+
+        <div className="mt-6 flex flex-wrap gap-3">
+          {["Hosted checkout", "Shareable links", "Merchant API auth", "Ozow + PayFast ready"].map(
+            (item) => (
+              <span key={item} className={darkPillClass}>
+                {item}
+              </span>
+            )
+          )}
+        </div>
       </div>
-    </main>
+    </DarkBackground>
   );
 }

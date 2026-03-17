@@ -1,73 +1,103 @@
 import Link from "next/link";
+import {
+  PublicPageShell,
+  cn,
+  publicCodePanelClass,
+  publicPrimaryButtonClass,
+  publicSectionLabelClass,
+  publicSecondaryButtonClass,
+  publicSubtleSurfaceClass,
+  publicSurfaceClass,
+} from "../components/stackaura-ui";
 
 export default function DocsPage() {
   const baseUrl =
     process.env.NEXT_PUBLIC_CHECKOUT_API_BASE_URL || "http://localhost:3001";
 
   return (
-    <main className="min-h-screen bg-[#020D33] px-6 py-16 text-white">
-      <div className="mx-auto max-w-5xl">
-        <div className="max-w-3xl">
-          <h1 className="text-4xl font-semibold tracking-tight">
-            Stackaura Developer Docs
-          </h1>
-          <p className="mt-6 text-zinc-300">
-            Stackaura provides payment orchestration infrastructure for merchants,
-            platforms, and developers. Use our APIs to create payment intents,
-            manage subscriptions, route payments, and receive webhook events.
-          </p>
-        </div>
-
-        <div className="mt-8 flex flex-wrap gap-3">
+    <PublicPageShell
+      eyebrow="Developer infrastructure"
+      title="Build on Stackaura with one payments control plane."
+      description="Use Stackaura APIs to create payment intents, orchestrate gateway routing, activate merchants, issue API keys, and track webhook deliveries from one platform."
+      actions={
+        <>
           <a
             href={`${baseUrl}/docs`}
             target="_blank"
             rel="noreferrer"
-            className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white"
+            className={publicPrimaryButtonClass}
           >
             Open Swagger
           </a>
-
-          <Link
-            href="/contact"
-            className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white"
-          >
+          <Link href="/contact" className={publicSecondaryButtonClass}>
             Contact sales
           </Link>
+        </>
+      }
+      aside={
+        <div className={publicCodePanelClass}>
+          <div className="text-xs font-semibold uppercase tracking-[0.2em] text-[#7dd3fc]">
+            Quick start
+          </div>
+          <pre className="mt-4 overflow-x-auto text-sm leading-7 text-[#d6e3f0]">
+{`curl -X POST https://api.stackaura.co.za/v1/payments \\
+  -H "Authorization: Bearer sk_live_..." \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "amountCents": 9900,
+    "currency": "ZAR",
+    "reference": "ORDER-123"
+  }'`}
+          </pre>
         </div>
-
-        <div className="mt-10 grid gap-4 md:grid-cols-2">
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-            <div className="text-sm text-zinc-400">Payments</div>
-            <pre className="mt-4 overflow-auto text-sm text-zinc-200">
+      }
+    >
+      <section className="grid gap-6 xl:grid-cols-3">
+        <div className={cn(publicSurfaceClass, "p-7")}>
+          <div className={publicSectionLabelClass}>Payments</div>
+          <pre className="mt-4 overflow-auto text-sm leading-7 text-[#425466]">
 {`POST /v1/payments/intents
 POST /v1/payments
 GET  /v1/payments/:reference
 POST /v1/payments/:reference/failover`}
-            </pre>
-          </div>
+          </pre>
+        </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-            <div className="text-sm text-zinc-400">Webhooks & Billing</div>
-            <pre className="mt-4 overflow-auto text-sm text-zinc-200">
+        <div className={cn(publicSurfaceClass, "p-7")}>
+          <div className={publicSectionLabelClass}>Webhooks & Billing</div>
+          <pre className="mt-4 overflow-auto text-sm leading-7 text-[#425466]">
 {`GET  /v1/webhooks/endpoints/:id/deliveries
 POST /v1/webhooks/deliveries/:id/retry
 GET  /v1/payments/subscriptions`}
-            </pre>
-          </div>
+          </pre>
         </div>
 
-        <div className="mt-10 rounded-2xl border border-white/10 bg-white/5 p-6">
-          <div className="text-lg font-medium">What Stackaura offers</div>
-          <ul className="mt-4 space-y-2 text-zinc-300">
-            <li>Payment intents and gateway orchestration</li>
-            <li>Gateway failover and routing visibility</li>
-            <li>Webhook delivery infrastructure</li>
-            <li>Merchant operations and dashboard tooling</li>
-            <li>Recurring billing foundations</li>
+        <div className={cn(publicSurfaceClass, "p-7")}>
+          <div className={publicSectionLabelClass}>Developer operations</div>
+          <ul className="mt-4 space-y-3 text-sm leading-7 text-[#425466]">
+            <li>Issue merchant API keys for test and live environments.</li>
+            <li>Launch hosted checkout and payment link flows from one backend.</li>
+            <li>Track delivery retries, failover state, and orchestration visibility.</li>
           </ul>
         </div>
-      </div>
-    </main>
+      </section>
+
+      <section className={cn(publicSurfaceClass, "p-8 lg:p-10")}>
+        <div className={publicSectionLabelClass}>What Stackaura offers</div>
+        <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+          {[
+            "Payment intents and gateway orchestration",
+            "Gateway failover and routing visibility",
+            "Webhook delivery infrastructure",
+            "Merchant operations and dashboard tooling",
+            "Recurring billing foundations",
+          ].map((item) => (
+            <div key={item} className={cn(publicSubtleSurfaceClass, "p-5 text-sm leading-6 text-[#425466]")}>
+              {item}
+            </div>
+          ))}
+        </div>
+      </section>
+    </PublicPageShell>
   );
 }

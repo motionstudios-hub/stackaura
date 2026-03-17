@@ -1,26 +1,25 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-
-type ApiEnv = "test" | "live";
-
-type ApiKeyRow = {
-  id: string;
-  label: string;
-  environment?: ApiEnv;
-  prefix: string | null;
-  last4: string | null;
-  revokedAt: string | null;
-  createdAt: string;
-};
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
-}
-
-function classNames(...xs: Array<string | false | null | undefined>) {
-  return xs.filter(Boolean).join(" ");
-}
+import {
+  cn,
+  darkCompactGhostButtonClass,
+  darkCompactPrimaryButtonClass,
+  darkGhostButtonClass,
+  darkInputClass,
+  darkPrimaryButtonClass,
+  darkSubtleSurfaceClass,
+  darkSurfaceClass,
+} from "../../components/stackaura-ui";
+import {
+  type ApiEnv,
+  type ApiKeyRow,
+  extractApiKeySecret,
+  getErrorMessage,
+  isRecord,
+  parseApiKeys,
+  resolveEnv,
+} from "../../lib/api-keys";
 
 function formatDate(iso: string) {
   try {
@@ -29,67 +28,6 @@ function formatDate(iso: string) {
   } catch {
     return iso;
   }
-}
-
-function resolveEnv(row: Pick<ApiKeyRow, "environment" | "prefix">): ApiEnv {
-  if (row.environment === "live" || row.environment === "test") return row.environment;
-  const prefix = (row.prefix || "").toLowerCase();
-  return prefix.startsWith("ck_live") ? "live" : "test";
-}
-
-function getErrorMessage(error: unknown, fallback: string) {
-  return error instanceof Error ? error.message : fallback;
-}
-
-function toNullableString(value: unknown) {
-  return typeof value === "string" ? value : null;
-}
-
-function toApiKeyRow(value: unknown): ApiKeyRow | null {
-  if (!isRecord(value)) return null;
-  if (typeof value.id !== "string" || typeof value.createdAt !== "string") return null;
-
-  const row: ApiKeyRow = {
-    id: value.id,
-    label: typeof value.label === "string" && value.label ? value.label : "default",
-    environment: value.environment === "live" || value.environment === "test"
-      ? value.environment
-      : undefined,
-    prefix: toNullableString(value.prefix),
-    last4: toNullableString(value.last4),
-    revokedAt: toNullableString(value.revokedAt),
-    createdAt: value.createdAt,
-  };
-
-  return {
-    ...row,
-    environment: resolveEnv(row),
-  };
-}
-
-function parseApiKeyRows(payload: unknown): ApiKeyRow[] {
-  const rawList = Array.isArray(payload)
-    ? payload
-    : isRecord(payload) && Array.isArray(payload.items)
-      ? payload.items
-      : [];
-
-  return rawList
-    .map(toApiKeyRow)
-    .filter((row): row is ApiKeyRow => row !== null);
-}
-
-function extractCreatedSecret(payload: unknown): string | null {
-  if (!isRecord(payload)) return null;
-
-  for (const key of ["keyPlain", "apiKey", "key"] as const) {
-    const value = payload[key];
-    if (typeof value === "string" && value.length > 0) {
-      return value;
-    }
-  }
-
-  return null;
 }
 
 function MaskedKey({ prefix, last4 }: { prefix?: string | null; last4?: string | null }) {
@@ -113,7 +51,7 @@ function Badge({ children, tone }: { children: React.ReactNode; tone: "green" | 
   };
   return (
     <span
-      className={classNames(
+      className={cn(
         "inline-flex items-center rounded-full border px-2 py-0.5 text-xs",
         styles[tone]
       )}
@@ -143,13 +81,13 @@ function Modal({
       onMouseDown={onClose}
     >
       <div
-        className="w-full max-w-xl rounded-2xl border border-white/10 bg-[#0b0d10] shadow-2xl"
+        className={cn(darkSurfaceClass, "w-full max-w-xl rounded-[28px]")}
         onMouseDown={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
           <h2 className="text-lg font-semibold">{title}</h2>
           <button
-            className="rounded-lg border border-white/10 px-3 py-1 text-sm text-white/80 hover:bg-white/5"
+            className={cn(darkCompactGhostButtonClass, "text-white/80 shadow-none")}
             onClick={onClose}
           >
             Close
@@ -210,7 +148,7 @@ export default function ApiKeysPage() {
         throw new Error(t || `Failed to load keys (${res.status})`);
       }
       const data: unknown = await res.json();
-      setRows(parseApiKeyRows(data));
+      setRows(parseApiKeys(data).items);
     } catch (e: unknown) {
       setErr(getErrorMessage(e, "Failed to load keys"));
     } finally {
@@ -236,7 +174,7 @@ export default function ApiKeysPage() {
         throw new Error(t || `Failed to create key (${res.status})`);
       }
       const created: unknown = await res.json();
-      const keyPlain = extractCreatedSecret(created);
+      const keyPlain = extractApiKeySecret(created);
       const createdEnv: ApiEnv = env;
       if (keyPlain) {
         setCreatedSecret(keyPlain);
@@ -307,7 +245,7 @@ export default function ApiKeysPage() {
         <div className="flex flex-wrap items-center gap-2">
           <div className="inline-flex w-full rounded-xl border border-white/10 bg-white/5 p-1 sm:w-auto">
             <button
-              className={classNames(
+              className={cn(
                 "min-h-[44px] flex-1 rounded-lg px-3 py-1.5 text-sm sm:flex-none",
                 env === "test" ? "bg-white/10 text-white" : "text-white/70 hover:bg-white/5"
               )}
@@ -316,7 +254,7 @@ export default function ApiKeysPage() {
               Test mode
             </button>
             <button
-              className={classNames(
+              className={cn(
                 "min-h-[44px] flex-1 rounded-lg px-3 py-1.5 text-sm sm:flex-none",
                 env === "live" ? "bg-white/10 text-white" : "text-white/70 hover:bg-white/5"
               )}
@@ -327,7 +265,7 @@ export default function ApiKeysPage() {
           </div>
 
           <button
-            className="min-h-[44px] rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10"
+            className={cn(darkGhostButtonClass, "min-h-[44px] rounded-xl px-4 py-2 text-sm")}
             onClick={() => loadKeys()}
             disabled={loading}
             title="Refresh"
@@ -336,7 +274,7 @@ export default function ApiKeysPage() {
           </button>
 
           <button
-            className="min-h-[44px] rounded-xl bg-white px-4 py-2 text-sm font-medium text-black hover:opacity-90"
+            className={cn(darkPrimaryButtonClass, "min-h-[44px] rounded-xl px-4 py-2 text-sm")}
             onClick={() => setCreateOpen(true)}
             disabled={!merchantId}
           >
@@ -346,7 +284,7 @@ export default function ApiKeysPage() {
       </div>
 
       {/* Top strip */}
-      <div className="mb-6 rounded-2xl border border-white/10 bg-white/5 p-4">
+      <div className={cn(darkSubtleSurfaceClass, "mb-6 p-4")}>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div className="text-sm text-white/70">
             Merchant:{" "}
@@ -369,7 +307,7 @@ export default function ApiKeysPage() {
       ) : null}
 
       {/* Table */}
-      <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#0b0d10]">
+      <div className={cn(darkSurfaceClass, "overflow-hidden rounded-[28px]")}>
         <div className="border-b border-white/10 px-5 py-4">
           <div className="flex items-center justify-between">
             <h2 className="text-base font-semibold">Secret keys</h2>
@@ -432,14 +370,17 @@ export default function ApiKeysPage() {
                       <td className="px-5 py-4">
                         <div className="flex justify-end gap-2">
                           <button
-                            className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-white/80 hover:bg-white/5"
+                            className={cn(darkCompactGhostButtonClass, "px-3 py-1.5 text-xs shadow-none")}
                             onClick={() => copy(`${k.prefix ?? "ck"}_${k.last4 ?? ""}`)}
                             title="Copies a masked identifier (full secret is not retrievable)"
                           >
                             Copy ID
                           </button>
                           <button
-                            className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-white/80 hover:bg-white/5 disabled:opacity-50"
+                            className={cn(
+                              darkCompactGhostButtonClass,
+                              "px-3 py-1.5 text-xs shadow-none disabled:opacity-50"
+                            )}
                             disabled={revoked}
                             onClick={() => revokeKey(k.id)}
                           >
@@ -473,14 +414,14 @@ export default function ApiKeysPage() {
             </span>
             <div className="flex gap-2">
               <button
-                className="rounded-xl border border-white/10 px-4 py-2 text-sm text-white/80 hover:bg-white/5"
+                className={cn(darkCompactGhostButtonClass, "text-white/80 shadow-none")}
                 onClick={() => setCreateOpen(false)}
                 disabled={creating}
               >
                 Cancel
               </button>
               <button
-                className="rounded-xl bg-white px-4 py-2 text-sm font-medium text-black hover:opacity-90 disabled:opacity-60"
+                className={cn(darkCompactPrimaryButtonClass, "disabled:opacity-60")}
                 onClick={createKey}
                 disabled={creating || !newLabel.trim()}
               >
@@ -498,7 +439,7 @@ export default function ApiKeysPage() {
           <label className="block">
             <div className="mb-1 text-xs text-white/60">Label</div>
             <input
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-white/20"
+              className={cn(darkInputClass, "min-h-[44px] rounded-xl px-3 py-2")}
               value={newLabel}
               onChange={(e) => setNewLabel(e.target.value)}
               placeholder="e.g. local-dev, staging, production-backend"
@@ -515,13 +456,13 @@ export default function ApiKeysPage() {
         footer={
           <div className="flex justify-end gap-2">
             <button
-              className="rounded-xl border border-white/10 px-4 py-2 text-sm text-white/80 hover:bg-white/5"
+              className={cn(darkCompactGhostButtonClass, "text-white/80 shadow-none")}
               onClick={() => setRevealOpen(false)}
             >
               Done
             </button>
             <button
-              className="rounded-xl bg-white px-4 py-2 text-sm font-medium text-black hover:opacity-90 disabled:opacity-60"
+              className={cn(darkCompactPrimaryButtonClass, "disabled:opacity-60")}
               onClick={() => createdSecret && copy(createdSecret)}
               disabled={!createdSecret}
             >
@@ -535,7 +476,7 @@ export default function ApiKeysPage() {
             This is the only time you’ll be able to see this secret key.
           </div>
 
-          <div className="rounded-xl border border-white/10 bg-white/5 p-3">
+          <div className={cn(darkSubtleSurfaceClass, "p-3")}>
             <code className="break-all text-sm" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
               {createdSecret ?? "Your backend did not return a secret. Update the create response to include keyPlain."}
             </code>

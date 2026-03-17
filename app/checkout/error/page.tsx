@@ -1,59 +1,17 @@
-
-
-"use client";
-
-import Image from "next/image";
-import Link from "next/link";
+import PaymentStatePage from "../../components/PaymentStatePage";
 
 export default function CheckoutErrorPage() {
   return (
-    <main className="min-h-screen bg-black text-white flex items-center justify-center px-6">
-      <div className="w-full max-w-lg rounded-3xl border border-white/10 bg-white/5 p-10 shadow-[0_16px_48px_rgba(0,0,0,0.24)] backdrop-blur-xl text-center">
-        <div className="flex justify-center mb-6">
-          <div className="h-16 w-16 flex items-center justify-center rounded-2xl border border-white/10 bg-transparent">
-            <Image
-              src="/stackaura-logo.png"
-              alt="Stackaura"
-              width={40}
-              height={40}
-              className="object-contain mix-blend-screen"
-              priority
-            />
-          </div>
-        </div>
-
-        <h1 className="text-2xl font-semibold tracking-tight">
-          Payment Error
-        </h1>
-
-        <p className="mt-3 text-zinc-400 text-sm">
-          Something went wrong while processing the payment.
-        </p>
-
-        <div className="mt-6 rounded-2xl border border-rose-900/40 bg-rose-950/30 p-4 text-rose-300 text-sm">
-          The payment could not be completed.
-        </div>
-
-        <div className="mt-8 flex flex-col gap-3">
-          <Link
-            href="/"
-            className="inline-flex items-center justify-center rounded-2xl bg-white text-black px-5 py-3 text-sm font-medium hover:bg-zinc-200 transition"
-          >
-            Return to Merchant
-          </Link>
-
-          <Link
-            href="/"
-            className="inline-flex items-center justify-center rounded-2xl border border-zinc-800 px-5 py-3 text-sm text-zinc-300 hover:bg-zinc-900 transition"
-          >
-            Try Payment Again
-          </Link>
-        </div>
-
-        <div className="mt-8 text-xs text-zinc-500">
-          Powered by Stackaura Payments Infrastructure
-        </div>
-      </div>
-    </main>
+    <PaymentStatePage
+      eyebrow="Payment error"
+      title="Checkout could not be completed"
+      description="Something interrupted the hosted checkout flow before the payment could be processed."
+      tone="error"
+      detail="You can retry the payment from the merchant flow or contact Stackaura support if the problem continues."
+      primaryHref="/"
+      primaryLabel="Return to merchant"
+      secondaryHref="/contact"
+      secondaryLabel="Contact support"
+    />
   );
 }

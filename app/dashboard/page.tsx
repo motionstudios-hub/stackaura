@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import ApiKeyWelcome from "./api-key-welcome";
 import MerchantSwitcher from "./merchant-switcher";
 import { getServerMe } from "../lib/auth";
 
@@ -58,6 +59,12 @@ export default async function DashboardPage() {
             </div>
           </div>
         </header>
+
+        <ApiKeyWelcome
+          merchantId={selectedMerchantId}
+          merchantName={selectedMembership?.merchant.name || null}
+          merchantIsActive={selectedMembership?.merchant.isActive ?? false}
+        />
 
         <section className="mt-8 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="grid gap-6">
