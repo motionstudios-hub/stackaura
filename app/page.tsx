@@ -6,7 +6,7 @@ export default function Home() {
   const organizationJsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "Stackaura Technologies (Pty) Ltd",
+    name: "Stackaura Payments (Pty) Ltd",
     alternateName: "Stackaura",
     url: "https://stackaura.co.za",
     logo: "https://stackaura.co.za/stackaura-logo.png",
@@ -55,7 +55,7 @@ export default function Home() {
 
           <PublicHeader />
 
-          <section className="relative mx-auto grid max-w-[1440px] gap-12 px-6 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:px-10 lg:py-24">
+          <section className="relative mx-auto grid max-w-[1440px] gap-8 px-6 py-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12 lg:px-10 lg:py-24">
             <div className="relative z-10 max-w-3xl">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/45 bg-white/24 px-4 py-2 text-sm font-medium text-[#0a2540] shadow-[0_8px_24px_rgba(133,156,180,0.10)] backdrop-blur-2xl supports-[backdrop-filter]:bg-white/18">
                 <span className="font-semibold text-[#0a2540]">African payments infrastructure</span>
@@ -86,23 +86,23 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="relative hidden min-h-[560px] lg:block">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_62%_35%,rgba(176,206,233,0.30),transparent_28%),radial-gradient(circle_at_82%_52%,rgba(204,227,242,0.38),transparent_26%),linear-gradient(180deg,rgba(215,232,240,0.18),rgba(255,255,255,0))]" />
+            <div className="relative mt-4 min-h-[220px] overflow-hidden rounded-[28px] lg:mt-0 lg:min-h-[560px] lg:overflow-visible lg:rounded-none">
+  <div className="absolute inset-0 rounded-[28px] bg-[radial-gradient(circle_at_62%_35%,rgba(176,206,233,0.30),transparent_28%),radial-gradient(circle_at_82%_52%,rgba(204,227,242,0.38),transparent_26%),linear-gradient(180deg,rgba(215,232,240,0.18),rgba(255,255,255,0))] lg:rounded-none" />
 
-              <div className="absolute right-[-8%] top-[-2%] h-[620px] w-[620px] rotate-[28deg]">
-                <div className="absolute left-[-38px] top-[286px] h-[184px] w-[300px] rounded-[18px] border border-[#a977ff]/38 bg-[linear-gradient(180deg,rgba(209,186,255,0.42)_0%,rgba(88,118,255,0.84)_58%,rgba(82,233,240,0.54)_100%)] shadow-[0_22px_44px_rgba(98,132,196,0.10),inset_0_1px_0_rgba(255,255,255,0.45)] backdrop-blur-md" />
-                <div className="absolute left-[54px] top-[198px] h-[212px] w-[334px] rounded-[20px] border border-[#9d7cff]/42 bg-[linear-gradient(180deg,rgba(214,194,255,0.44)_0%,rgba(104,130,255,0.76)_56%,rgba(95,229,237,0.44)_100%)] shadow-[0_24px_52px_rgba(98,132,196,0.12),inset_0_1px_0_rgba(255,255,255,0.46)] backdrop-blur-md" />
-                <div className="absolute left-[154px] top-[104px] h-[244px] w-[370px] rounded-[24px] border border-[#916fff]/46 bg-[linear-gradient(180deg,rgba(218,200,255,0.50)_0%,rgba(126,151,255,0.60)_52%,rgba(130,231,236,0.34)_100%)] shadow-[0_26px_60px_rgba(98,132,196,0.14),inset_0_1px_0_rgba(255,255,255,0.50)] backdrop-blur-md" />
-                <div className="absolute left-[276px] top-[16px] h-[282px] w-[408px] rounded-[28px] border border-[#8666ff]/50 bg-[linear-gradient(180deg,rgba(223,208,255,0.54)_0%,rgba(163,189,255,0.42)_48%,rgba(161,235,240,0.20)_100%)] shadow-[0_30px_70px_rgba(98,132,196,0.16),inset_0_1px_0_rgba(255,255,255,0.56)] backdrop-blur-md" />
+  <div className="absolute left-1/2 top-1/2 h-[260px] w-[260px] -translate-x-[18%] -translate-y-1/2 scale-[0.58] rotate-[28deg] sm:h-[320px] sm:w-[320px] sm:scale-[0.72] lg:left-auto lg:right-[-8%] lg:top-[-2%] lg:h-[620px] lg:w-[620px] lg:translate-x-0 lg:translate-y-0 lg:scale-100">
+    <div className="absolute left-[-38px] top-[286px] h-[184px] w-[300px] rounded-[18px] border border-[#a977ff]/38 bg-[linear-gradient(180deg,rgba(209,186,255,0.42)_0%,rgba(88,118,255,0.84)_58%,rgba(82,233,240,0.54)_100%)] shadow-[0_22px_44px_rgba(98,132,196,0.10),inset_0_1px_0_rgba(255,255,255,0.45)] backdrop-blur-md" />
+    <div className="absolute left-[54px] top-[198px] h-[212px] w-[334px] rounded-[20px] border border-[#9d7cff]/42 bg-[linear-gradient(180deg,rgba(214,194,255,0.44)_0%,rgba(104,130,255,0.76)_56%,rgba(95,229,237,0.44)_100%)] shadow-[0_24px_52px_rgba(98,132,196,0.12),inset_0_1px_0_rgba(255,255,255,0.46)] backdrop-blur-md" />
+    <div className="absolute left-[154px] top-[104px] h-[244px] w-[370px] rounded-[24px] border border-[#916fff]/46 bg-[linear-gradient(180deg,rgba(218,200,255,0.50)_0%,rgba(126,151,255,0.60)_52%,rgba(130,231,236,0.34)_100%)] shadow-[0_26px_60px_rgba(98,132,196,0.14),inset_0_1px_0_rgba(255,255,255,0.50)] backdrop-blur-md" />
+    <div className="absolute left-[276px] top-[16px] h-[282px] w-[408px] rounded-[28px] border border-[#8666ff]/50 bg-[linear-gradient(180deg,rgba(223,208,255,0.54)_0%,rgba(163,189,255,0.42)_48%,rgba(161,235,240,0.20)_100%)] shadow-[0_30px_70px_rgba(98,132,196,0.16),inset_0_1px_0_rgba(255,255,255,0.56)] backdrop-blur-md" />
 
-                <div className="absolute left-[392px] top-[-48px] h-[388px] w-[16px] rounded-full bg-[linear-gradient(180deg,rgba(102,82,255,0.94)_0%,rgba(89,140,255,0.82)_58%,rgba(48,225,236,0.78)_100%)] shadow-[0_10px_20px_rgba(112,139,210,0.16)]" />
-                <div className="absolute left-[458px] top-[-86px] h-[430px] w-[16px] rounded-full bg-[linear-gradient(180deg,rgba(108,88,255,0.94)_0%,rgba(95,147,255,0.82)_58%,rgba(53,226,236,0.78)_100%)] shadow-[0_10px_20px_rgba(112,139,210,0.16)]" />
-                <div className="absolute left-[522px] top-[-122px] h-[470px] w-[16px] rounded-full bg-[linear-gradient(180deg,rgba(113,92,255,0.94)_0%,rgba(101,153,255,0.82)_58%,rgba(58,227,236,0.78)_100%)] shadow-[0_10px_20px_rgba(112,139,210,0.16)]" />
-                <div className="absolute left-[586px] top-[-154px] h-[500px] w-[16px] rounded-full bg-[linear-gradient(180deg,rgba(118,96,255,0.94)_0%,rgba(106,158,255,0.82)_58%,rgba(61,228,236,0.78)_100%)] shadow-[0_10px_20px_rgba(112,139,210,0.16)]" />
-                <div className="absolute left-[652px] top-[-182px] h-[522px] w-[16px] rounded-full bg-[linear-gradient(180deg,rgba(122,100,255,0.94)_0%,rgba(112,164,255,0.82)_58%,rgba(66,229,236,0.78)_100%)] shadow-[0_10px_20px_rgba(112,139,210,0.16)]" />
-                <div className="absolute left-[720px] top-[-198px] h-[518px] w-[12px] rounded-full bg-[linear-gradient(180deg,rgba(114,168,255,0.72)_0%,rgba(61,228,236,0.72)_100%)] opacity-92 shadow-[0_8px_18px_rgba(112,139,210,0.12)]" />
-              </div>
-            </div>
+    <div className="absolute left-[392px] top-[-48px] h-[388px] w-[16px] rounded-full bg-[linear-gradient(180deg,rgba(102,82,255,0.94)_0%,rgba(89,140,255,0.82)_58%,rgba(48,225,236,0.78)_100%)] shadow-[0_10px_20px_rgba(112,139,210,0.16)]" />
+    <div className="absolute left-[458px] top-[-86px] h-[430px] w-[16px] rounded-full bg-[linear-gradient(180deg,rgba(108,88,255,0.94)_0%,rgba(95,147,255,0.82)_58%,rgba(53,226,236,0.78)_100%)] shadow-[0_10px_20px_rgba(112,139,210,0.16)]" />
+    <div className="absolute left-[522px] top-[-122px] h-[470px] w-[16px] rounded-full bg-[linear-gradient(180deg,rgba(113,92,255,0.94)_0%,rgba(101,153,255,0.82)_58%,rgba(58,227,236,0.78)_100%)] shadow-[0_10px_20px_rgba(112,139,210,0.16)]" />
+    <div className="absolute left-[586px] top-[-154px] h-[500px] w-[16px] rounded-full bg-[linear-gradient(180deg,rgba(118,96,255,0.94)_0%,rgba(106,158,255,0.82)_58%,rgba(61,228,236,0.78)_100%)] shadow-[0_10px_20px_rgba(112,139,210,0.16)]" />
+    <div className="absolute left-[652px] top-[-182px] h-[522px] w-[16px] rounded-full bg-[linear-gradient(180deg,rgba(122,100,255,0.94)_0%,rgba(112,164,255,0.82)_58%,rgba(66,229,236,0.78)_100%)] shadow-[0_10px_20px_rgba(112,139,210,0.16)]" />
+    <div className="absolute left-[720px] top-[-198px] h-[518px] w-[12px] rounded-full bg-[linear-gradient(180deg,rgba(114,168,255,0.72)_0%,rgba(61,228,236,0.72)_100%)] opacity-92 shadow-[0_8px_18px_rgba(112,139,210,0.12)]" />
+  </div>
+</div>
           </section>
 
           <section className="relative border-t border-[#e3e8ee] bg-white/90">
@@ -112,19 +112,27 @@ export default function Home() {
                   Integrates with payment providers and commerce platforms.
                 </div>
 
-                <div className="flex flex-wrap items-center gap-x-10 gap-y-6">
-                  <Image src="https://cdn.simpleicons.org/ozow/0A2540" alt="Ozow" width={96} height={32} className="h-8 w-auto opacity-85" unoptimized />
-                  <Image src="https://cdn.simpleicons.org/paystack/0A2540" alt="Paystack" width={96} height={32} className="h-8 w-auto opacity-85" unoptimized />
-                  <Image src="https://cdn.simpleicons.org/stripe/0A2540" alt="Stripe" width={96} height={32} className="h-8 w-auto opacity-85" unoptimized />
-                  <Image src="https://cdn.simpleicons.org/shopify/0A2540" alt="Shopify" width={96} height={32} className="h-8 w-auto opacity-85" unoptimized />
-                </div>
+                <div className="flex flex-wrap items-center gap-x-5 gap-y-4">
+  {['OZOW', 'PAYSTACK', 'STRIPE', 'SHOPIFY'].map((item) => (
+    <div
+      key={item}
+      className="rounded-full border border-white/45 bg-white/24 px-4 py-2 text-sm font-semibold tracking-[0.18em] text-[#0a2540] shadow-[0_8px_24px_rgba(133,156,180,0.10)] backdrop-blur-2xl supports-[backdrop-filter]:bg-white/18"
+    >
+      {item}
+    </div>
+  ))}
+</div>
 
-                <div className="flex flex-wrap items-center gap-x-10 gap-y-6">
-                  <Image src="https://cdn.simpleicons.org/woocommerce/0A2540" alt="WooCommerce" width={96} height={32} className="h-8 w-auto opacity-85" unoptimized />
-                  <Image src="https://cdn.simpleicons.org/yoco/0A2540" alt="Yoco" width={96} height={32} className="h-8 w-auto opacity-85" unoptimized />
-                  <div className="text-lg font-semibold tracking-tight text-[#0a2540] opacity-80">Custom API</div>
-                  <div className="text-lg font-semibold tracking-tight text-[#0a2540] opacity-80">SaaS Platforms</div>
-                </div>
+                <div className="flex flex-wrap items-center gap-x-5 gap-y-4">
+  {['WOOCOMMERCE', 'YOCO', 'CUSTOM API', 'SAAS PLATFORMS'].map((item) => (
+    <div
+      key={item}
+      className="rounded-full border border-white/45 bg-white/24 px-4 py-2 text-sm font-semibold tracking-[0.18em] text-[#0a2540] shadow-[0_8px_24px_rgba(133,156,180,0.10)] backdrop-blur-2xl supports-[backdrop-filter]:bg-white/18"
+    >
+      {item}
+    </div>
+  ))}
+</div>
               </div>
             </div>
           </section>
