@@ -9,7 +9,7 @@ import {
 const sections = [
   {
     title: "Service scope",
-    body: "These Terms govern access to and use of software, APIs, dashboards, and related services made available by Stackaura Technologies (Pty) Ltd.",
+    body: "These Terms govern access to and use of software, APIs, dashboards, and related services made available by Stackaura Payments (Pty) Ltd.",
   },
   {
     title: "Platform dependencies",

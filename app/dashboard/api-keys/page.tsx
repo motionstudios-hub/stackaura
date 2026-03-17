@@ -1,15 +1,20 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
 import {
   cn,
   darkCompactGhostButtonClass,
   darkCompactPrimaryButtonClass,
   darkGhostButtonClass,
+  darkHeroSurfaceClass,
+  darkInsetPanelClass,
   darkInputClass,
+  darkMutedTextClass,
   darkPrimaryButtonClass,
-  darkSubtleSurfaceClass,
-  darkSurfaceClass,
+  darkRichPanelClass,
+  darkSectionEyebrowClass,
+  darkStatusPillClass,
 } from "../../components/stackaura-ui";
 import {
   type ApiEnv,
@@ -42,20 +47,22 @@ function MaskedKey({ prefix, last4 }: { prefix?: string | null; last4?: string |
   );
 }
 
-function Badge({ children, tone }: { children: React.ReactNode; tone: "green" | "blue" | "gray" | "red" }) {
+function Badge({
+  children,
+  tone,
+}: {
+  children: ReactNode;
+  tone: "green" | "blue" | "gray" | "red";
+}) {
   const styles: Record<typeof tone, string> = {
-    green: "bg-emerald-500/15 text-emerald-200 border-emerald-500/30",
-    blue: "bg-sky-500/15 text-sky-200 border-sky-500/30",
-    gray: "bg-white/5 text-white/70 border-white/10",
-    red: "bg-rose-500/15 text-rose-200 border-rose-500/30",
+    green: "border-emerald-500/25 bg-emerald-500/12 text-emerald-200",
+    blue: "border-sky-500/25 bg-sky-500/12 text-sky-200",
+    gray: "border-white/10 bg-white/5 text-white/70",
+    red: "border-rose-500/25 bg-rose-500/12 text-rose-200",
   };
+
   return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded-full border px-2 py-0.5 text-xs",
-        styles[tone]
-      )}
-    >
+    <span className={cn("inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.16em]", styles[tone])}>
       {children}
     </span>
   );
@@ -70,26 +77,18 @@ function Modal({
 }: {
   open: boolean;
   title: string;
-  children: React.ReactNode;
+  children: ReactNode;
   onClose: () => void;
-  footer?: React.ReactNode;
+  footer?: ReactNode;
 }) {
   if (!open) return null;
+
   return (
-    <div
-      className="fixed inset-0 z-[999] flex items-center justify-center bg-black/60 p-4"
-      onMouseDown={onClose}
-    >
-      <div
-        className={cn(darkSurfaceClass, "w-full max-w-xl rounded-[28px]")}
-        onMouseDown={(e) => e.stopPropagation()}
-      >
+    <div className="fixed inset-0 z-[999] flex items-center justify-center bg-[#020817]/80 p-4 backdrop-blur-md" onMouseDown={onClose}>
+      <div className={cn(darkHeroSurfaceClass, "w-full max-w-xl")} onMouseDown={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
-          <h2 className="text-lg font-semibold">{title}</h2>
-          <button
-            className={cn(darkCompactGhostButtonClass, "text-white/80 shadow-none")}
-            onClick={onClose}
-          >
+          <h2 className="text-lg font-semibold text-white">{title}</h2>
+          <button className={cn(darkCompactGhostButtonClass, "text-white/80 shadow-none")} onClick={onClose}>
             Close
           </button>
         </div>
@@ -102,26 +101,21 @@ function Modal({
 
 export default function ApiKeysPage() {
   const [merchantId, setMerchantId] = useState<string | null>(null);
-
   const [env, setEnv] = useState<ApiEnv>("test");
   const [rows, setRows] = useState<ApiKeyRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
-  // Create modal
   const [createOpen, setCreateOpen] = useState(false);
   const [newLabel, setNewLabel] = useState("local-dev");
   const [creating, setCreating] = useState(false);
 
-  // Reveal secret (only shown once after create)
   const [revealOpen, setRevealOpen] = useState(false);
   const [createdSecret, setCreatedSecret] = useState<string | null>(null);
 
   const filteredRows = useMemo(() => rows.filter((r) => resolveEnv(r) === env), [rows, env]);
 
   async function loadActiveMerchant() {
-    // If you already have a helper endpoint, use it.
-    // Common pattern: GET /api/active-merchant => { merchantId }
     const res = await fetch("/api/active-merchant", { credentials: "include" });
     if (!res.ok) throw new Error("Failed to load active merchant");
     const data: unknown = await res.json();
@@ -137,9 +131,9 @@ export default function ApiKeysPage() {
   async function loadKeys(mid?: string) {
     setErr(null);
     setLoading(true);
+
     try {
       const m = mid ?? merchantId ?? (await loadActiveMerchant());
-      // Assumed endpoint: GET /v1/merchants/:merchantId/api-keys
       const res = await fetch(`/api/proxy/v1/merchants/${m}/api-keys`, {
         credentials: "include",
       });
@@ -147,6 +141,7 @@ export default function ApiKeysPage() {
         const t = await res.text();
         throw new Error(t || `Failed to load keys (${res.status})`);
       }
+
       const data: unknown = await res.json();
       setRows(parseApiKeys(data).items);
     } catch (e: unknown) {
@@ -160,9 +155,8 @@ export default function ApiKeysPage() {
     if (!merchantId) return;
     setCreating(true);
     setErr(null);
+
     try {
-      // Assumed endpoint: POST /v1/merchants/:merchantId/api-keys
-      // Returns: { id, label, environment, prefix, last4, createdAt, keyPlain }
       const res = await fetch(`/api/proxy/v1/merchants/${merchantId}/api-keys`, {
         method: "POST",
         credentials: "include",
@@ -173,14 +167,15 @@ export default function ApiKeysPage() {
         const t = await res.text();
         throw new Error(t || `Failed to create key (${res.status})`);
       }
+
       const created: unknown = await res.json();
       const keyPlain = extractApiKeySecret(created);
       const createdEnv: ApiEnv = env;
+
       if (keyPlain) {
         setCreatedSecret(keyPlain);
         setRevealOpen(true);
       } else {
-        // If your backend doesn't return the secret, you can still show a toast
         setCreatedSecret(null);
       }
 
@@ -200,7 +195,6 @@ export default function ApiKeysPage() {
 
     setErr(null);
     try {
-      // Assumed endpoint: POST /v1/merchants/:merchantId/api-keys/:apiKeyId/revoke
       const res = await fetch(`/api/proxy/v1/merchants/${merchantId}/api-keys/${id}/revoke`, {
         method: "POST",
         credentials: "include",
@@ -232,91 +226,100 @@ export default function ApiKeysPage() {
   }, []);
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:py-8">
-      {/* Header */}
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold">API keys</h1>
-          <p className="mt-1 text-sm text-white/60">
-            Create and manage secret keys for your merchants. Secrets are only shown once.
-          </p>
-        </div>
+    <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
+      <section className={cn(darkHeroSurfaceClass, "relative overflow-hidden p-6 lg:p-7")}>
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_10%_18%,rgba(160,233,255,0.10),transparent_20%),radial-gradient(circle_at_88%_18%,rgba(122,115,255,0.12),transparent_24%)]" />
 
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="inline-flex w-full rounded-xl border border-white/10 bg-white/5 p-1 sm:w-auto">
-            <button
-              className={cn(
-                "min-h-[44px] flex-1 rounded-lg px-3 py-1.5 text-sm sm:flex-none",
-                env === "test" ? "bg-white/10 text-white" : "text-white/70 hover:bg-white/5"
-              )}
-              onClick={() => setEnv("test")}
-            >
-              Test mode
-            </button>
-            <button
-              className={cn(
-                "min-h-[44px] flex-1 rounded-lg px-3 py-1.5 text-sm sm:flex-none",
-                env === "live" ? "bg-white/10 text-white" : "text-white/70 hover:bg-white/5"
-              )}
-              onClick={() => setEnv("live")}
-            >
-              Live mode
-            </button>
+        <div className="relative">
+          <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
+            <div className="max-w-3xl">
+              <div className={darkSectionEyebrowClass}>Developer keys</div>
+              <h1 className="mt-3 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+                Manage merchant credentials with infrastructure-grade controls.
+              </h1>
+              <p className={cn(darkMutedTextClass, "mt-4 max-w-3xl text-zinc-300")}>
+                Create, reveal once, copy, and revoke merchant secret keys across test and live
+                environments without leaving the Stackaura console.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <span className={darkStatusPillClass(env === "test" ? "violet" : "success")}>
+                {env === "test" ? "Test mode" : "Live mode"}
+              </span>
+              <span className={darkStatusPillClass("muted")}>
+                {filteredRows.length} key{filteredRows.length === 1 ? "" : "s"}
+              </span>
+            </div>
           </div>
 
-          <button
-            className={cn(darkGhostButtonClass, "min-h-[44px] rounded-xl px-4 py-2 text-sm")}
-            onClick={() => loadKeys()}
-            disabled={loading}
-            title="Refresh"
-          >
-            {loading ? "Refreshing…" : "Refresh"}
-          </button>
+          <div className="mt-6 grid gap-4 xl:grid-cols-[1fr_auto]">
+            <div className={cn(darkInsetPanelClass, "p-4")}>
+              <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">Selected merchant</div>
+              <div className="mt-3 font-mono text-sm text-white break-all">{merchantId ?? "—"}</div>
+              <div className="mt-2 text-sm text-zinc-400">
+                Keys below are filtered by the active environment and can only be fully revealed at
+                creation time if the backend returns the secret.
+              </div>
+            </div>
 
-          <button
-            className={cn(darkPrimaryButtonClass, "min-h-[44px] rounded-xl px-4 py-2 text-sm")}
-            onClick={() => setCreateOpen(true)}
-            disabled={!merchantId}
-          >
-            + Create secret key
-          </button>
-        </div>
-      </div>
+            <div className={cn(darkInsetPanelClass, "flex flex-col gap-3 p-3 sm:flex-row sm:items-center")}>
+              <div className="inline-flex rounded-2xl border border-white/10 bg-black/20 p-1.5">
+                <button
+                  className={cn(
+                    "min-h-[44px] rounded-xl px-4 py-2 text-sm font-medium transition",
+                    env === "test"
+                      ? "bg-[linear-gradient(180deg,rgba(130,226,255,0.16)_0%,rgba(76,109,255,0.18)_100%)] text-white shadow-[0_10px_28px_rgba(34,89,170,0.22)]"
+                      : "text-zinc-300 hover:bg-white/5"
+                  )}
+                  onClick={() => setEnv("test")}
+                >
+                  Test mode
+                </button>
+                <button
+                  className={cn(
+                    "min-h-[44px] rounded-xl px-4 py-2 text-sm font-medium transition",
+                    env === "live"
+                      ? "bg-[linear-gradient(180deg,rgba(90,255,193,0.14)_0%,rgba(46,163,118,0.18)_100%)] text-white shadow-[0_10px_28px_rgba(16,92,64,0.22)]"
+                      : "text-zinc-300 hover:bg-white/5"
+                  )}
+                  onClick={() => setEnv("live")}
+                >
+                  Live mode
+                </button>
+              </div>
 
-      {/* Top strip */}
-      <div className={cn(darkSubtleSurfaceClass, "mb-6 p-4")}>
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div className="text-sm text-white/70">
-            Merchant:{" "}
-            <span className="font-mono text-white/90">{merchantId ?? "—"}</span>
+              <button className={darkGhostButtonClass} onClick={() => loadKeys()} disabled={loading} title="Refresh">
+                {loading ? "Refreshing..." : "Refresh"}
+              </button>
+
+              <button className={darkPrimaryButtonClass} onClick={() => setCreateOpen(true)} disabled={!merchantId}>
+                Create secret key
+              </button>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Badge tone={env === "test" ? "blue" : "green"}>
-              {env === "test" ? "TEST" : "LIVE"}
-            </Badge>
-            <span className="text-xs text-white/50">Keys below are filtered by environment.</span>
-          </div>
         </div>
-      </div>
+      </section>
 
-      {/* Error */}
       {err ? (
-        <div className="mb-6 rounded-2xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm text-rose-200">
+        <div className="mt-6 rounded-2xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm text-rose-200">
           {err}
         </div>
       ) : null}
 
-      {/* Table */}
-      <div className={cn(darkSurfaceClass, "overflow-hidden rounded-[28px]")}>
-        <div className="border-b border-white/10 px-5 py-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-base font-semibold">Secret keys</h2>
-            <span className="text-xs text-white/50">{filteredRows.length} keys</span>
+      <section className={cn(darkRichPanelClass, "mt-6 overflow-hidden")}>
+        <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
+          <div>
+            <div className="text-base font-semibold text-white">Secret keys</div>
+            <div className="mt-1 text-xs uppercase tracking-[0.16em] text-zinc-500">
+              {env.toUpperCase()} environment
+            </div>
           </div>
+          <Badge tone={env === "test" ? "blue" : "green"}>{env === "test" ? "TEST" : "LIVE"}</Badge>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
+          <table className="w-full min-w-[780px] text-left text-sm">
             <thead className="bg-white/[0.03] text-white/60">
               <tr>
                 <th className="px-5 py-3">Label</th>
@@ -331,27 +334,29 @@ export default function ApiKeysPage() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td className="px-5 py-4 text-white/60" colSpan={6}>
-                    Loading…
+                  <td className="px-5 py-8 text-white/60" colSpan={6}>
+                    Loading...
                   </td>
                 </tr>
               ) : filteredRows.length === 0 ? (
                 <tr>
-                  <td className="px-5 py-10 text-center text-white/60" colSpan={6}>
-                    No keys yet for <span className="font-medium">{env}</span>. Create one to start.
+                  <td className="px-5 py-12 text-center text-white/60" colSpan={6}>
+                    No keys yet for <span className="font-medium text-white">{env}</span>. Create one to
+                    start your integration.
                   </td>
                 </tr>
               ) : (
                 filteredRows.map((k) => {
                   const revoked = !!k.revokedAt;
+
                   return (
-                    <tr key={k.id} className="border-t border-white/10">
+                    <tr key={k.id} className="border-t border-white/10 transition hover:bg-white/[0.03]">
                       <td className="px-5 py-4">
-                        <div className="font-medium">{k.label}</div>
-                        <div className="text-xs text-white/50">{k.id}</div>
+                        <div className="font-medium text-white">{k.label}</div>
+                        <div className="mt-1 text-xs text-white/45">{k.id}</div>
                       </td>
 
-                      <td className="px-5 py-4">
+                      <td className="px-5 py-4 text-zinc-200">
                         <MaskedKey prefix={k.prefix} last4={k.last4} />
                       </td>
 
@@ -377,10 +382,7 @@ export default function ApiKeysPage() {
                             Copy ID
                           </button>
                           <button
-                            className={cn(
-                              darkCompactGhostButtonClass,
-                              "px-3 py-1.5 text-xs shadow-none disabled:opacity-50"
-                            )}
+                            className={cn(darkCompactGhostButtonClass, "px-3 py-1.5 text-xs shadow-none disabled:opacity-50")}
                             disabled={revoked}
                             onClick={() => revokeKey(k.id)}
                           >
@@ -399,9 +401,8 @@ export default function ApiKeysPage() {
         <div className="border-t border-white/10 px-5 py-4 text-xs text-white/50">
           Tip: Store secrets in a password manager. You won’t be able to reveal them again later.
         </div>
-      </div>
+      </section>
 
-      {/* Create modal */}
       <Modal
         open={createOpen}
         title="Create secret key"
@@ -409,8 +410,7 @@ export default function ApiKeysPage() {
         footer={
           <div className="flex items-center justify-between">
             <span className="text-xs text-white/60">
-              Mode:{" "}
-              <span className="font-medium text-white/80">{env.toUpperCase()}</span>
+              Mode: <span className="font-medium text-white/80">{env.toUpperCase()}</span>
             </span>
             <div className="flex gap-2">
               <button
@@ -425,19 +425,19 @@ export default function ApiKeysPage() {
                 onClick={createKey}
                 disabled={creating || !newLabel.trim()}
               >
-                {creating ? "Creating…" : "Create"}
+                {creating ? "Creating..." : "Create"}
               </button>
             </div>
           </div>
         }
       >
         <div className="space-y-3">
-          <div className="text-sm text-white/70">
-            This will generate a new secret key for your current merchant.
+          <div className={darkMutedTextClass}>
+            This will generate a new secret key for your current merchant and selected environment.
           </div>
 
           <label className="block">
-            <div className="mb-1 text-xs text-white/60">Label</div>
+            <div className="mb-1 text-xs uppercase tracking-[0.16em] text-white/60">Label</div>
             <input
               className={cn(darkInputClass, "min-h-[44px] rounded-xl px-3 py-2")}
               value={newLabel}
@@ -448,17 +448,13 @@ export default function ApiKeysPage() {
         </div>
       </Modal>
 
-      {/* Reveal secret modal */}
       <Modal
         open={revealOpen}
         title="Copy your secret key"
         onClose={() => setRevealOpen(false)}
         footer={
           <div className="flex justify-end gap-2">
-            <button
-              className={cn(darkCompactGhostButtonClass, "text-white/80 shadow-none")}
-              onClick={() => setRevealOpen(false)}
-            >
+            <button className={cn(darkCompactGhostButtonClass, "text-white/80 shadow-none")} onClick={() => setRevealOpen(false)}>
               Done
             </button>
             <button
@@ -476,8 +472,8 @@ export default function ApiKeysPage() {
             This is the only time you’ll be able to see this secret key.
           </div>
 
-          <div className={cn(darkSubtleSurfaceClass, "p-3")}>
-            <code className="break-all text-sm" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
+          <div className={cn(darkInsetPanelClass, "p-3")}>
+            <code className="break-all text-sm text-zinc-100" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
               {createdSecret ?? "Your backend did not return a secret. Update the create response to include keyPlain."}
             </code>
           </div>

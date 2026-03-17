@@ -1,9 +1,21 @@
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import {
+  cn,
+  darkGhostButtonClass,
+  darkHeroSurfaceClass,
+  darkInsetPanelClass,
+  darkMutedTextClass,
+  darkPrimaryButtonClass,
+  darkRichPanelClass,
+  darkSectionEyebrowClass,
+  darkSecondaryButtonClass,
+  darkStatusPillClass,
+} from "../components/stackaura-ui";
+import { getServerMe } from "../lib/auth";
 import ApiKeyWelcome from "./api-key-welcome";
 import MerchantSwitcher from "./merchant-switcher";
-import { getServerMe } from "../lib/auth";
 
 export default async function DashboardPage() {
   const me = await getServerMe();
@@ -18,200 +30,215 @@ export default async function DashboardPage() {
     (membership) => membership.merchant.id === selectedMerchantId
   );
 
-  return (
-    <main className="relative min-h-screen overflow-hidden bg-[#020817] text-white">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(32,188,237,0.22),transparent_26%),radial-gradient(circle_at_top_right,rgba(17,106,248,0.22),transparent_30%),linear-gradient(135deg,#061229_0%,#020817_45%,#04174a_100%)]" />
-      <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.04),transparent_18%)]" />
+  const quickActions = [
+    { href: "/dashboard/api-keys", label: "Open Developer Keys", tone: "primary" as const },
+    { href: "/payment-links", label: "Launch Payment Links", tone: "secondary" as const },
+    { href: "/docs", label: "Read API docs", tone: "ghost" as const },
+    { href: "/", label: "View public website", tone: "ghost" as const },
+  ];
 
-      <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
-        <header className="flex flex-col gap-6 rounded-[28px] border border-white/10 bg-[#08152f]/60 p-6 shadow-[0_20px_80px_rgba(0,0,0,0.28)] backdrop-blur-2xl lg:flex-row lg:items-center lg:justify-between">
+  return (
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
+      <section className={cn(darkHeroSurfaceClass, "relative overflow-hidden p-6 lg:p-8")}>
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_8%_16%,rgba(160,233,255,0.12),transparent_22%),radial-gradient(circle_at_86%_18%,rgba(122,115,255,0.14),transparent_24%),linear-gradient(180deg,rgba(255,255,255,0.04),transparent_18%)]" />
+
+        <div className="relative grid gap-8 lg:grid-cols-[1.12fr_0.88fr] lg:items-start">
           <div>
-            <div className="text-xs uppercase tracking-[0.24em] text-[#A0E9FF]">
-              Merchant dashboard
-            </div>
-            <h1 className="mt-3 text-3xl font-semibold tracking-tight text-white">
-              Stackaura Internal Console
+            <div className={darkSectionEyebrowClass}>Merchant dashboard</div>
+            <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+              Operate payments, onboarding, and developer access from one refined console.
             </h1>
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-300">
-              Signed in as <span className="font-medium text-white">{me.user.email}</span>. Manage
-              your merchant workspace, API access, payment operations, and gateway setup from one place.
+            <p className={cn(darkMutedTextClass, "mt-5 max-w-3xl text-zinc-300")}>
+              Signed in as <span className="font-medium text-white">{me.user.email}</span>. Use the
+              Stackaura product side to manage merchant workspaces, issue API keys, ship payment
+              links, and prepare live gateway operations with infrastructure-grade control.
             </p>
+
+            <div className="mt-5 flex flex-wrap gap-2">
+              <span className={darkStatusPillClass(selectedMembership?.merchant.isActive ? "success" : "muted")}>
+                {selectedMembership?.merchant.isActive ? "Merchant active" : "Merchant inactive"}
+              </span>
+              <span className={darkStatusPillClass("violet")}>
+                {selectedMembership?.role || "Member"}
+              </span>
+              <span className={darkStatusPillClass("muted")}>Ozow + PayFast ready</span>
+            </div>
+
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <Link href="/dashboard/api-keys" className={darkPrimaryButtonClass}>
+                Open developer keys
+              </Link>
+              <Link href="/payment-links" className={darkSecondaryButtonClass}>
+                Launch payment links
+              </Link>
+            </div>
           </div>
 
-          <div className="flex w-full flex-col gap-3 lg:min-w-[320px] lg:items-end">
+          <div className="grid gap-4">
             <MerchantSwitcher
               memberships={memberships}
               selectedMerchantId={selectedMerchantId}
             />
-            <div className="grid w-full gap-3 sm:flex sm:flex-wrap lg:justify-end">
-              <Link
-                href="/dashboard/api-keys"
-                className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white shadow-[0_8px_24px_rgba(0,0,0,0.18)] backdrop-blur-xl transition hover:border-[#20BCED]/35 hover:bg-white/10"
-              >
-                Developer Keys
-              </Link>
-              <Link
-                href="/"
-                className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-[#A0E9FF] px-4 py-2 text-sm font-medium text-[#02142b] transition hover:brightness-105"
-              >
-                Public Homepage
-              </Link>
-            </div>
-          </div>
-        </header>
 
-        <ApiKeyWelcome
-          merchantId={selectedMerchantId}
-          merchantName={selectedMembership?.merchant.name || null}
-          merchantIsActive={selectedMembership?.merchant.isActive ?? false}
-        />
-
-        <section className="mt-8 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="grid gap-6">
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-              <div className="rounded-3xl border border-white/10 bg-[#08152f]/55 p-5 shadow-[0_12px_40px_rgba(0,0,0,0.22)] backdrop-blur-xl">
-                <div className="text-xs uppercase tracking-wide text-zinc-500">Active merchant</div>
-                <div className="mt-3 text-xl font-semibold tracking-tight text-white">
-                  {selectedMembership?.merchant.name || "No merchant"}
-                </div>
-                <div className="mt-2 text-xs text-zinc-400 font-mono break-all">
-                  {selectedMerchantId || "No merchant selected"}
-                </div>
-              </div>
-
-              <div className="rounded-3xl border border-white/10 bg-[#08152f]/55 p-5 shadow-[0_12px_40px_rgba(0,0,0,0.22)] backdrop-blur-xl">
-                <div className="text-xs uppercase tracking-wide text-zinc-500">Role</div>
-                <div className="mt-3 text-xl font-semibold tracking-tight text-white">
-                  {selectedMembership?.role || "Member"}
-                </div>
-                <div className="mt-2 text-xs text-zinc-400">
-                  Merchant-scoped dashboard permissions
-                </div>
-              </div>
-
-              <div className="rounded-3xl border border-white/10 bg-[#08152f]/55 p-5 shadow-[0_12px_40px_rgba(0,0,0,0.22)] backdrop-blur-xl">
-                <div className="text-xs uppercase tracking-wide text-zinc-500">Gateway rails</div>
-                <div className="mt-3 text-xl font-semibold tracking-tight text-white">
-                  PayFast + Ozow
-                </div>
-                <div className="mt-2 text-xs text-zinc-400">
-                  Live South African payment infrastructure
-                </div>
-              </div>
-
-              <div className="rounded-3xl border border-white/10 bg-[#08152f]/55 p-5 shadow-[0_12px_40px_rgba(0,0,0,0.22)] backdrop-blur-xl">
-                <div className="text-xs uppercase tracking-wide text-zinc-500">Platform status</div>
-                <div className="mt-3 text-xl font-semibold tracking-tight text-white">
-                  Ready
-                </div>
-                <div className="mt-2 text-xs text-zinc-400">
-                  Self-serve onboarding, payments, and developer tooling live
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-[28px] border border-white/10 bg-[#08152f]/55 p-6 shadow-[0_12px_40px_rgba(0,0,0,0.22)] backdrop-blur-xl">
-              <div className="text-sm font-semibold text-white">Workspace Overview</div>
-              <div className="mt-3 text-sm leading-6 text-zinc-300">
-                This is your authenticated merchant console. From here, Stackaura can branch into
-                payment operations, API key management, hosted checkout, subscriptions, payment links,
-                gateway orchestration, and merchant settings.
-              </div>
-
-              <div className="mt-6 grid gap-4 md:grid-cols-2">
-                <div className="rounded-2xl border border-white/10 bg-black/20 p-5 backdrop-blur-xl">
-                  <div className="text-xs uppercase tracking-wide text-zinc-500">Merchant profile</div>
-                  <div className="mt-3 space-y-2 text-sm text-zinc-300">
-                    <div>
-                      <span className="text-zinc-500">Name:</span>{" "}
-                      <span className="text-white">{selectedMembership?.merchant.name || "—"}</span>
-                    </div>
-                    <div>
-                      <span className="text-zinc-500">Email:</span>{" "}
-                      <span className="text-white">{selectedMembership?.merchant.email || "—"}</span>
-                    </div>
-                    <div>
-                      <span className="text-zinc-500">Status:</span>{" "}
-                      <span className="text-white">
-                        {selectedMembership?.merchant.isActive ? "Active" : "Inactive"}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="rounded-2xl border border-white/10 bg-black/20 p-5 backdrop-blur-xl">
-                  <div className="text-xs uppercase tracking-wide text-zinc-500">What’s live now</div>
-                  <div className="mt-3 grid gap-2 text-sm text-zinc-300">
-                    <div className="flex items-start gap-3">
-                      <span className="mt-0.5 text-[#A0E9FF]">•</span>
-                      <span>Merchant onboarding and login</span>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <span className="mt-0.5 text-[#A0E9FF]">•</span>
-                      <span>API keys and dashboard access</span>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <span className="mt-0.5 text-[#A0E9FF]">•</span>
-                      <span>Payment intents, subscriptions, and ledger foundation</span>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <span className="mt-0.5 text-[#A0E9FF]">•</span>
-                      <span>Ozow + PayFast orchestration readiness</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid gap-6">
-            <div className="rounded-[28px] border border-white/10 bg-[#08152f]/55 p-6 shadow-[0_12px_40px_rgba(0,0,0,0.22)] backdrop-blur-xl">
-              <div className="text-sm font-semibold text-white">Quick Actions</div>
-              <div className="mt-5 grid gap-3">
-                <Link
-                  href="/dashboard/api-keys"
-                  className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white backdrop-blur-xl transition hover:bg-white/10"
-                >
-                  Open Developer Keys
-                </Link>
-                <Link
-                  href="/signup"
-                  className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white backdrop-blur-xl transition hover:bg-white/10"
-                >
-                  View signup flow
-                </Link>
-                <Link
-                  href="/login"
-                  className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white backdrop-blur-xl transition hover:bg-white/10"
-                >
-                  View login flow
-                </Link>
-                <Link
-                  href="/"
-                  className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white backdrop-blur-xl transition hover:bg-white/10"
-                >
-                  Open public website
-                </Link>
-              </div>
-            </div>
-
-            <div className="rounded-[28px] border border-white/10 bg-[#08152f]/55 p-6 shadow-[0_12px_40px_rgba(0,0,0,0.22)] backdrop-blur-xl">
-              <div className="text-sm font-semibold text-white">Next build targets</div>
+            <div className={cn(darkInsetPanelClass, "p-5")}>
+              <div className="text-xs uppercase tracking-[0.2em] text-zinc-400">Console focus</div>
               <div className="mt-4 grid gap-3 text-sm text-zinc-300">
-                <div className="rounded-2xl border border-white/10 bg-black/20 p-4 backdrop-blur-xl">
-                  Payment links inside dashboard
+                <div className="rounded-[20px] border border-white/10 bg-black/18 px-4 py-3">
+                  Issue and manage merchant API credentials across test and live environments.
                 </div>
-                <div className="rounded-2xl border border-white/10 bg-black/20 p-4 backdrop-blur-xl">
-                  Live gateway connection UX for Ozow + PayFast
+                <div className="rounded-[20px] border border-white/10 bg-black/18 px-4 py-3">
+                  Guide merchants from paid onboarding into active infrastructure and integrations.
                 </div>
-                <div className="rounded-2xl border border-white/10 bg-black/20 p-4 backdrop-blur-xl">
-                  Merchant-facing payments, subscriptions, and ledger views
+                <div className="rounded-[20px] border border-white/10 bg-black/18 px-4 py-3">
+                  Launch hosted checkout and payment links from the same Stackaura control plane.
                 </div>
               </div>
             </div>
           </div>
-        </section>
-      </div>
-    </main>
+        </div>
+      </section>
+
+      <ApiKeyWelcome
+        merchantId={selectedMerchantId}
+        merchantName={selectedMembership?.merchant.name || null}
+        merchantIsActive={selectedMembership?.merchant.isActive ?? false}
+      />
+
+      <section className="mt-8 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="grid gap-6">
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {[
+              {
+                label: "Active merchant",
+                value: selectedMembership?.merchant.name || "No merchant",
+                detail: selectedMerchantId || "No merchant selected",
+              },
+              {
+                label: "Role",
+                value: selectedMembership?.role || "Member",
+                detail: "Merchant-scoped dashboard permissions",
+              },
+              {
+                label: "Gateway rails",
+                value: "PayFast + Ozow",
+                detail: "Live South African infrastructure",
+              },
+              {
+                label: "Platform status",
+                value: "Ready",
+                detail: "Onboarding, payments, and developer tooling live",
+              },
+            ].map((item) => (
+              <div key={item.label} className={cn(darkRichPanelClass, "p-5")}>
+                <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">{item.label}</div>
+                <div className="mt-4 text-xl font-semibold tracking-tight text-white">{item.value}</div>
+                <div className="mt-3 text-xs text-zinc-400 break-all">{item.detail}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className={cn(darkRichPanelClass, "p-6 lg:p-7")}>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <div className={darkSectionEyebrowClass}>Workspace overview</div>
+                <div className="mt-2 text-2xl font-semibold tracking-tight text-white">
+                  Your authenticated Stackaura workspace
+                </div>
+              </div>
+              <span className={darkStatusPillClass("muted")}>Merchant operations</span>
+            </div>
+
+            <p className={cn(darkMutedTextClass, "mt-4 max-w-3xl text-zinc-300")}>
+              This console is the product-side counterpart to the public Stackaura experience. It
+              is where merchant state, developer credentials, checkout tooling, and gateway
+              operations come together in one environment.
+            </p>
+
+            <div className="mt-6 grid gap-4 md:grid-cols-2">
+              <div className={cn(darkInsetPanelClass, "p-5")}>
+                <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">Merchant profile</div>
+                <div className="mt-4 space-y-3 text-sm text-zinc-300">
+                  <div className="flex items-start justify-between gap-4">
+                    <span className="text-zinc-500">Name</span>
+                    <span className="text-right text-white">{selectedMembership?.merchant.name || "—"}</span>
+                  </div>
+                  <div className="flex items-start justify-between gap-4">
+                    <span className="text-zinc-500">Email</span>
+                    <span className="text-right text-white">{selectedMembership?.merchant.email || "—"}</span>
+                  </div>
+                  <div className="flex items-start justify-between gap-4">
+                    <span className="text-zinc-500">Status</span>
+                    <span className="text-right text-white">
+                      {selectedMembership?.merchant.isActive ? "Active" : "Inactive"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className={cn(darkInsetPanelClass, "p-5")}>
+                <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">What’s live now</div>
+                <div className="mt-4 grid gap-3 text-sm text-zinc-300">
+                  {[
+                    "Merchant onboarding and login",
+                    "API keys and dashboard access",
+                    "Payment intents, subscriptions, and ledger foundation",
+                    "Ozow + PayFast orchestration readiness",
+                  ].map((item) => (
+                    <div key={item} className="flex items-start gap-3 rounded-[18px] border border-white/8 bg-black/14 px-4 py-3">
+                      <span className="mt-0.5 text-[#A0E9FF]">•</span>
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid gap-6">
+          <div className={cn(darkRichPanelClass, "p-6")}>
+            <div className={darkSectionEyebrowClass}>Quick actions</div>
+            <div className="mt-2 text-2xl font-semibold tracking-tight text-white">
+              Move into the next product task fast
+            </div>
+            <div className="mt-5 grid gap-3">
+              {quickActions.map((action) => (
+                <Link
+                  key={action.href}
+                  href={action.href}
+                  className={
+                    action.tone === "primary"
+                      ? darkPrimaryButtonClass
+                      : action.tone === "secondary"
+                        ? darkSecondaryButtonClass
+                        : darkGhostButtonClass
+                  }
+                >
+                  {action.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <div className={cn(darkRichPanelClass, "p-6")}>
+            <div className={darkSectionEyebrowClass}>Next build targets</div>
+            <div className="mt-2 text-2xl font-semibold tracking-tight text-white">
+              Product areas to extend from here
+            </div>
+            <div className="mt-5 grid gap-3 text-sm text-zinc-300">
+              {[
+                "Payment links directly inside the dashboard workspace",
+                "Live gateway connection UX for Ozow and PayFast",
+                "Merchant-facing payments, subscriptions, and ledger views",
+              ].map((item) => (
+                <div key={item} className={cn(darkInsetPanelClass, "p-4")}>
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }

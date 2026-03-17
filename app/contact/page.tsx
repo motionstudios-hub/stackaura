@@ -41,7 +41,7 @@ export default function ContactPage() {
         <div className={cn(publicSurfaceClass, "p-7")}>
           <div className={publicSectionLabelClass}>Business name</div>
           <div className="mt-3 text-xl font-semibold tracking-tight text-[#0a2540]">
-            Stackaura Technologies (Pty) Ltd
+            Stackaura Payments (Pty) Ltd
           </div>
         </div>
 

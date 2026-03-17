@@ -3,6 +3,17 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
+  cn,
+  darkGhostButtonClass,
+  darkInsetPanelClass,
+  darkMutedTextClass,
+  darkPrimaryButtonClass,
+  darkRichPanelClass,
+  darkSectionEyebrowClass,
+  darkStatusPillClass,
+  darkSubtleSurfaceClass,
+} from "../components/stackaura-ui";
+import {
   type ApiKeyRow,
   getErrorMessage,
   parseApiKeys,
@@ -146,50 +157,40 @@ export default function ApiKeyWelcome({
   }
 
   return (
-    <section className="mt-8 rounded-[28px] border border-white/10 bg-[#08152f]/60 p-6 shadow-[0_20px_80px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
-      <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-        <div className="max-w-2xl">
-          <div className="text-xs uppercase tracking-[0.24em] text-[#A0E9FF]">
-            Welcome to Stackaura
-          </div>
+    <section className={cn(darkRichPanelClass, "relative mt-8 overflow-hidden p-6 lg:p-7")}>
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_22%,rgba(160,233,255,0.10),transparent_20%),radial-gradient(circle_at_88%_20%,rgba(122,115,255,0.10),transparent_24%)]" />
+
+      <div className="relative flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+        <div className="max-w-3xl">
+          <div className={darkSectionEyebrowClass}>Welcome to Stackaura</div>
           <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white">
-            Your merchant workspace is active
+            Your merchant workspace is active and ready for developer setup
           </h2>
-          <p className="mt-3 text-sm leading-6 text-zinc-300">
+          <p className={cn(darkMutedTextClass, "mt-4 max-w-2xl text-zinc-300")}>
             {merchantName
-              ? `${merchantName} is ready for developer setup.`
-              : "Your merchant account is ready for developer setup."}{" "}
+              ? `${merchantName} is now in the live Stackaura product flow.`
+              : "Your merchant account is now in the live Stackaura product flow."}{" "}
             We fetched the initial API-key state so you can move straight into integration.
           </p>
         </div>
 
-        <div className="rounded-full border border-emerald-900/40 bg-emerald-950/30 px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-emerald-300">
-          Merchant active
-        </div>
+        <span className={darkStatusPillClass("success")}>Merchant active</span>
       </div>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="rounded-2xl border border-white/10 bg-black/20 p-5 backdrop-blur-xl">
+      <div className="relative mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className={cn(darkInsetPanelClass, "p-5")}>
           {loading ? (
-            <div className="text-sm text-zinc-300">
-              Loading your developer access…
-            </div>
+            <div className="text-sm text-zinc-300">Loading your developer access...</div>
           ) : error ? (
             <div className="space-y-4">
               <div className="rounded-2xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
                 {error}
               </div>
               <div className="flex flex-col gap-3 sm:flex-row">
-                <Link
-                  href="/dashboard/api-keys"
-                  className="inline-flex min-h-[44px] items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white transition hover:bg-white/10"
-                >
+                <Link href="/dashboard/api-keys" className={darkGhostButtonClass}>
                   Open Developer Keys
                 </Link>
-                <button
-                  onClick={dismiss}
-                  className="inline-flex min-h-[44px] items-center justify-center rounded-2xl bg-[#A0E9FF] px-4 py-3 text-sm font-medium text-[#02142b] transition hover:brightness-105"
-                >
+                <button onClick={dismiss} className={darkPrimaryButtonClass}>
                   Continue to dashboard
                 </button>
               </div>
@@ -199,21 +200,15 @@ export default function ApiKeyWelcome({
               <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
                 Your merchant is active, but no API key was returned yet.
               </div>
-              <p className="text-sm leading-6 text-zinc-300">
+              <p className={darkMutedTextClass}>
                 Open developer keys to confirm whether the initial key has been provisioned or to
                 create a new one for your first integration.
               </p>
               <div className="flex flex-col gap-3 sm:flex-row">
-                <Link
-                  href="/dashboard/api-keys"
-                  className="inline-flex min-h-[44px] items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white transition hover:bg-white/10"
-                >
+                <Link href="/dashboard/api-keys" className={darkGhostButtonClass}>
                   Open Developer Keys
                 </Link>
-                <button
-                  onClick={dismiss}
-                  className="inline-flex min-h-[44px] items-center justify-center rounded-2xl bg-[#A0E9FF] px-4 py-3 text-sm font-medium text-[#02142b] transition hover:brightness-105"
-                >
+                <button onClick={dismiss} className={darkPrimaryButtonClass}>
                   Continue to dashboard
                 </button>
               </div>
@@ -221,17 +216,15 @@ export default function ApiKeyWelcome({
           ) : (
             <div className="space-y-4">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-zinc-200">
+                <span className={darkStatusPillClass("violet")}>
                   {resolveEnv(initialKey).toUpperCase()}
                 </span>
-                <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-zinc-400">
-                  {initialKey.label}
-                </span>
+                <span className={darkStatusPillClass("muted")}>{initialKey.label}</span>
               </div>
 
               <div>
-                <div className="text-xs uppercase tracking-wide text-zinc-500">Initial API key</div>
-                <div className="mt-2 rounded-2xl border border-white/10 bg-[#07142f]/80 p-4">
+                <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">Initial API key</div>
+                <div className={cn(darkSubtleSurfaceClass, "mt-3 p-4")}>
                   <code className="break-all text-sm text-zinc-100">{keyDisplay}</code>
                 </div>
               </div>
@@ -241,7 +234,7 @@ export default function ApiKeyWelcome({
                   This secret may only be shown once. Copy it now and store it in a password manager.
                 </div>
               ) : (
-                <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-zinc-300">
+                <div className={cn(darkSubtleSurfaceClass, "px-4 py-3 text-sm text-zinc-300")}>
                   The backend returned a masked key only. If the full secret was shown once during
                   activation, use your saved copy or create a new key in Developer Keys.
                 </div>
@@ -250,32 +243,23 @@ export default function ApiKeyWelcome({
               <div className="flex flex-col gap-3 sm:flex-row">
                 {hasRevealableSecret ? (
                   <>
-                    <button
-                      onClick={copyKey}
-                      className="inline-flex min-h-[44px] items-center justify-center rounded-2xl bg-[#A0E9FF] px-4 py-3 text-sm font-medium text-[#02142b] transition hover:brightness-105"
-                    >
+                    <button onClick={copyKey} className={darkPrimaryButtonClass}>
                       {copied ? "Copied API key" : "Copy API key"}
                     </button>
                     <button
                       onClick={() => setShowSecret((value) => !value)}
-                      className="inline-flex min-h-[44px] items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white transition hover:bg-white/10"
+                      className={darkGhostButtonClass}
                     >
                       {showSecret ? "Hide key" : "Reveal key"}
                     </button>
                   </>
                 ) : (
-                  <Link
-                    href="/dashboard/api-keys"
-                    className="inline-flex min-h-[44px] items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white transition hover:bg-white/10"
-                  >
+                  <Link href="/dashboard/api-keys" className={darkGhostButtonClass}>
                     Open Developer Keys
                   </Link>
                 )}
 
-                <button
-                  onClick={dismiss}
-                  className="inline-flex min-h-[44px] items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white transition hover:bg-white/10"
-                >
+                <button onClick={dismiss} className={darkGhostButtonClass}>
                   Continue to dashboard
                 </button>
               </div>
@@ -283,18 +267,21 @@ export default function ApiKeyWelcome({
           )}
         </div>
 
-        <div className="rounded-2xl border border-white/10 bg-black/20 p-5 backdrop-blur-xl">
-          <div className="text-sm font-semibold text-white">Quick start</div>
-          <p className="mt-3 text-sm leading-6 text-zinc-300">
+        <div className={cn(darkInsetPanelClass, "p-5")}>
+          <div className={darkSectionEyebrowClass}>Quick start</div>
+          <div className="mt-2 text-xl font-semibold tracking-tight text-white">
+            Start calling Stackaura from your backend
+          </div>
+          <p className={cn(darkMutedTextClass, "mt-3")}>
             Use your merchant API key in the `Authorization` header when calling Stackaura from
-            your backend or local development tools.
+            your server, CLI tools, or local development environment.
           </p>
 
-          <div className="mt-4 rounded-2xl border border-white/10 bg-[#07142f]/80 p-4">
+          <div className={cn(darkSubtleSurfaceClass, "mt-4 p-4")}>
             <code className="break-all text-sm text-zinc-100">{authorizationExample}</code>
           </div>
 
-          <div className="mt-4 text-sm leading-6 text-zinc-400">
+          <div className="mt-4 rounded-[20px] border border-white/10 bg-black/18 px-4 py-3 text-sm leading-6 text-zinc-400">
             For production, keep live keys on your server only and store them outside the browser.
           </div>
         </div>

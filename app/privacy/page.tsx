@@ -30,7 +30,7 @@ export default function PrivacyPage() {
     <PublicPageShell
       eyebrow="Privacy policy"
       title="Privacy practices for Stackaura infrastructure and merchant services."
-      description="Stackaura Technologies (Pty) Ltd provides software and payment infrastructure services for merchants, platforms, and developers. This page summarizes how we think about operational data, account information, and service security."
+      description="Stackaura Payments (Pty) Ltd provides software and payment infrastructure services for merchants, platforms, and developers. This page summarizes how we think about operational data, account information, and service security."
       aside={
         <div className={cn(publicSurfaceClass, "p-7")}>
           <div className={publicSectionLabelClass}>Scope</div>

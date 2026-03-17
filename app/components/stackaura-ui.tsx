@@ -36,11 +36,23 @@ export const darkPanelClass =
 export const darkSubtleSurfaceClass =
   "rounded-2xl border border-white/10 bg-black/20 backdrop-blur-xl";
 
+export const darkHeroSurfaceClass =
+  "rounded-[32px] border border-white/12 bg-[linear-gradient(180deg,rgba(12,27,57,0.92)_0%,rgba(6,15,36,0.78)_100%)] shadow-[0_26px_96px_rgba(0,0,0,0.34),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-2xl";
+
+export const darkRichPanelClass =
+  "rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(11,24,52,0.90)_0%,rgba(6,14,34,0.76)_100%)] shadow-[0_18px_56px_rgba(0,0,0,0.30),inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-2xl";
+
+export const darkInsetPanelClass =
+  "rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(3,9,24,0.24)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-xl";
+
 export const darkGhostButtonClass =
   "inline-flex min-h-[44px] items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white shadow-[0_8px_24px_rgba(0,0,0,0.18)] backdrop-blur-xl transition hover:border-[#20BCED]/35 hover:bg-white/10";
 
 export const darkPrimaryButtonClass =
   "inline-flex min-h-[44px] items-center justify-center rounded-2xl bg-[#A0E9FF] px-4 py-3 text-sm font-semibold text-[#02142b] transition hover:brightness-105";
+
+export const darkSecondaryButtonClass =
+  "inline-flex min-h-[44px] items-center justify-center rounded-2xl border border-white/12 bg-[linear-gradient(180deg,rgba(114,98,255,0.18)_0%,rgba(61,83,207,0.18)_100%)] px-4 py-3 text-sm font-semibold text-[#d7dcff] shadow-[0_10px_30px_rgba(44,56,133,0.22)] backdrop-blur-xl transition hover:border-[#8da0ff]/30 hover:bg-[linear-gradient(180deg,rgba(114,98,255,0.24)_0%,rgba(61,83,207,0.22)_100%)]";
 
 export const darkCompactGhostButtonClass =
   "inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white shadow-[0_8px_24px_rgba(0,0,0,0.18)] backdrop-blur-xl transition hover:border-[#20BCED]/35 hover:bg-white/10";
@@ -53,6 +65,36 @@ export const darkInputClass =
 
 export const darkPillClass =
   "inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-zinc-200";
+
+export const darkSectionEyebrowClass =
+  "text-xs uppercase tracking-[0.24em] text-[#8dd8ff]";
+
+export const darkMutedTextClass = "text-sm leading-6 text-zinc-300";
+
+export function darkNavItemClass(active: boolean) {
+  return cn(
+    "inline-flex min-h-[46px] items-center justify-center rounded-2xl border px-4 py-2 text-center text-sm font-medium shadow-[0_8px_24px_rgba(0,0,0,0.18)] backdrop-blur-xl transition",
+    active
+      ? "border-[#86dfff]/30 bg-[linear-gradient(180deg,rgba(130,226,255,0.16)_0%,rgba(76,109,255,0.18)_100%)] text-white shadow-[0_12px_32px_rgba(34,89,170,0.24)]"
+      : "border-white/10 bg-white/5 text-zinc-200 hover:border-[#20BCED]/35 hover:bg-white/10"
+  );
+}
+
+export function darkStatusPillClass(tone: "default" | "success" | "violet" | "muted") {
+  if (tone === "success") {
+    return "inline-flex items-center rounded-full border border-emerald-400/18 bg-emerald-400/10 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.16em] text-emerald-200";
+  }
+
+  if (tone === "violet") {
+    return "inline-flex items-center rounded-full border border-[#9288ff]/22 bg-[#7b72ff]/12 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.16em] text-[#d8d5ff]";
+  }
+
+  if (tone === "muted") {
+    return "inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.16em] text-zinc-300";
+  }
+
+  return darkPillClass;
+}
 
 const navItems = [
   { href: "/signup", label: "Products" },

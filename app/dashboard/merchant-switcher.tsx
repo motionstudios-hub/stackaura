@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, useTransition } from "react";
+import { cn, darkInsetPanelClass, darkInputClass, darkStatusPillClass } from "../components/stackaura-ui";
 
 type Membership = {
   id: string;
@@ -19,6 +20,7 @@ export default function MerchantSwitcher({
   const [value, setValue] = useState(selectedMerchantId || "");
 
   const options = useMemo(() => memberships.map((m) => m.merchant), [memberships]);
+  const selectedMerchant = options.find((merchant) => merchant.id === value) ?? options[0] ?? null;
 
   async function setActiveMerchant(merchantId: string) {
     await fetch("/api/active-merchant", {
@@ -29,17 +31,26 @@ export default function MerchantSwitcher({
   }
 
   return (
-    <div className="flex w-full flex-col gap-2 sm:w-auto sm:items-end">
-      <div className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-zinc-400">
-        <span>Merchant</span>
-        {isPending ? (
-          <span className="rounded-full border border-[#20BCED]/25 bg-[#20BCED]/10 px-2 py-0.5 text-[10px] text-[#A0E9FF]">
-            Updating
-          </span>
-        ) : null}
+    <div className={cn(darkInsetPanelClass, "flex w-full flex-col gap-3 p-4 sm:w-auto sm:min-w-[340px]")}>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <div className="text-xs uppercase tracking-[0.2em] text-zinc-400">Active merchant</div>
+          <div className="mt-2 text-sm font-semibold text-white">
+            {selectedMerchant?.name || "No merchant selected"}
+          </div>
+          <div className="mt-1 text-xs text-zinc-400">{selectedMerchant?.email || "Select a merchant workspace"}</div>
+        </div>
+
+        <span
+          className={darkStatusPillClass(
+            selectedMerchant?.isActive ? "success" : "muted"
+          )}
+        >
+          {isPending ? "Updating" : selectedMerchant?.isActive ? "Active" : "Inactive"}
+        </span>
       </div>
 
-      <div className="relative w-full sm:w-auto">
+      <div className="relative">
         <select
           value={value}
           disabled={isPending || options.length === 0}
@@ -49,11 +60,13 @@ export default function MerchantSwitcher({
 
             startTransition(async () => {
               await setActiveMerchant(merchantId);
-              // Simple refresh so the Server Component re-reads the cookie
               window.location.reload();
             });
           }}
-          className="min-h-[48px] w-full min-w-0 appearance-none rounded-2xl border border-white/10 bg-white/5 px-4 py-3 pr-12 text-sm text-white shadow-[0_8px_24px_rgba(0,0,0,0.18)] backdrop-blur-xl outline-none transition hover:border-[#20BCED]/35 focus:border-[#20BCED]/45 focus:ring-2 focus:ring-[#20BCED]/20 disabled:cursor-not-allowed disabled:opacity-60 sm:min-w-[280px]"
+          className={cn(
+            darkInputClass,
+            "min-h-[52px] appearance-none rounded-[20px] bg-black/24 pr-14 text-sm shadow-[0_10px_30px_rgba(0,0,0,0.22)]"
+          )}
         >
           {options.map((m) => (
             <option key={m.id} value={m.id} className="bg-[#08152f] text-white">

@@ -16,7 +16,7 @@ export default function AboutPage() {
         <div className={cn(publicSurfaceClass, "p-7")}>
           <div className={publicSectionLabelClass}>Legal entity</div>
           <div className="mt-4 text-3xl font-semibold tracking-tight text-[#0a2540]">
-            Stackaura Technologies (Pty) Ltd
+            Stackaura Payments (Pty) Ltd
           </div>
           <div className="mt-5 text-sm leading-6 text-[#425466]">
             Operating from South Africa with an infrastructure-first product focus on orchestration,
