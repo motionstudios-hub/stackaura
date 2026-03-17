@@ -70,7 +70,7 @@ export default function DashboardShell({ children }: { children: ReactNode }) {
             <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-4">
-                  <div className="flex h-[60px] w-[60px] items-center justify-center overflow-hidden rounded-[24px] border border-white/48 bg-[#0a2540] shadow-[0_14px_32px_rgba(122,146,168,0.16)]">
+                  <div className="flex h-[60px] w-[60px] items-center justify-center overflow-hidden rounded-[24px] border border-white/48 bg-[linear-gradient(180deg,rgba(255,255,255,0.34)_0%,rgba(238,246,250,0.24)_100%),radial-gradient(circle_at_30%_25%,rgba(125,211,252,0.18),transparent_52%),radial-gradient(circle_at_72%_74%,rgba(167,139,250,0.16),transparent_48%)] shadow-[0_14px_32px_rgba(122,146,168,0.14),inset_0_1px_0_rgba(255,255,255,0.58),inset_0_0_24px_rgba(122,115,255,0.08)] backdrop-blur-2xl">
                     <Image
                       src="/stackaura-logo.png"
                       alt="Stackaura"
