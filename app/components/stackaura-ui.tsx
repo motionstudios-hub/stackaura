@@ -27,6 +27,57 @@ export const publicSectionLabelClass =
 export const publicCodePanelClass =
   "rounded-[28px] border border-white/25 bg-[linear-gradient(180deg,rgba(10,37,64,0.84),rgba(28,53,94,0.80))] p-6 text-white shadow-[0_16px_36px_rgba(10,37,64,0.16)] backdrop-blur-2xl";
 
+export const lightProductHeroClass =
+  "rounded-[32px] border border-white/48 bg-[linear-gradient(180deg,rgba(255,255,255,0.34)_0%,rgba(242,248,251,0.24)_100%)] shadow-[0_20px_42px_rgba(122,146,168,0.12),inset_0_1px_0_rgba(255,255,255,0.62)] backdrop-blur-2xl";
+
+export const lightProductPanelClass =
+  "rounded-[28px] border border-white/45 bg-white/24 shadow-[0_16px_34px_rgba(122,146,168,0.10)] backdrop-blur-2xl";
+
+export const lightProductInsetPanelClass =
+  "rounded-[24px] border border-white/42 bg-[linear-gradient(180deg,rgba(255,255,255,0.34)_0%,rgba(238,246,250,0.22)_100%)] shadow-[0_12px_28px_rgba(122,146,168,0.08),inset_0_1px_0_rgba(255,255,255,0.54)] backdrop-blur-2xl";
+
+export const lightProductGhostButtonClass =
+  "inline-flex min-h-[44px] items-center justify-center rounded-2xl border border-white/45 bg-white/22 px-4 py-3 text-sm font-semibold text-[#425466] shadow-[0_10px_24px_rgba(133,156,180,0.12)] backdrop-blur-2xl transition hover:border-white/55 hover:bg-white/30 hover:text-[#0a2540]";
+
+export const lightProductCompactGhostButtonClass =
+  "inline-flex items-center justify-center rounded-xl border border-white/42 bg-white/22 px-4 py-2 text-sm font-semibold text-[#425466] shadow-[0_8px_20px_rgba(133,156,180,0.10)] backdrop-blur-2xl transition hover:border-white/52 hover:bg-white/30 hover:text-[#0a2540]";
+
+export const lightProductCompactPrimaryButtonClass =
+  "inline-flex items-center justify-center rounded-xl border border-white/30 bg-[linear-gradient(180deg,rgba(108,92,255,0.92),rgba(87,76,240,0.92))] px-4 py-2 text-sm font-semibold text-white shadow-[0_12px_24px_rgba(99,91,255,0.22)] backdrop-blur-xl transition hover:brightness-105";
+
+export const lightProductInputClass =
+  "min-h-[48px] w-full rounded-2xl border border-white/45 bg-white/28 px-4 py-3 text-sm text-[#0a2540] shadow-[0_10px_24px_rgba(133,156,180,0.10)] backdrop-blur-2xl outline-none transition placeholder:text-[#6b7c93] focus:border-[#7a73ff]/45 focus:ring-2 focus:ring-[#7a73ff]/16";
+
+export const lightProductSectionEyebrowClass =
+  "text-xs uppercase tracking-[0.24em] text-[#635bff]";
+
+export const lightProductMutedTextClass = "text-sm leading-6 text-[#425466]";
+
+export function lightProductNavItemClass(active: boolean) {
+  return cn(
+    "inline-flex min-h-[46px] items-center justify-center rounded-2xl border px-4 py-2 text-center text-sm font-semibold shadow-[0_8px_20px_rgba(133,156,180,0.10)] backdrop-blur-2xl transition",
+    active
+      ? "border-white/56 bg-[linear-gradient(180deg,rgba(122,115,255,0.22)_0%,rgba(160,233,255,0.20)_100%)] text-[#0a2540]"
+      : "border-white/42 bg-white/20 text-[#425466] hover:border-white/55 hover:bg-white/28 hover:text-[#0a2540]"
+  );
+}
+
+export function lightProductStatusPillClass(tone: "success" | "violet" | "muted" | "warning") {
+  if (tone === "success") {
+    return "inline-flex items-center rounded-full border border-emerald-300/70 bg-emerald-50/80 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.16em] text-emerald-700";
+  }
+
+  if (tone === "violet") {
+    return "inline-flex items-center rounded-full border border-[#b8b2ff]/70 bg-[#eeedff]/82 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.16em] text-[#5146df]";
+  }
+
+  if (tone === "warning") {
+    return "inline-flex items-center rounded-full border border-amber-300/70 bg-amber-50/82 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.16em] text-amber-700";
+  }
+
+  return "inline-flex items-center rounded-full border border-white/45 bg-white/22 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.16em] text-[#425466]";
+}
+
 export const darkSurfaceClass =
   "rounded-[28px] border border-white/10 bg-[#08152f]/60 shadow-[0_20px_80px_rgba(0,0,0,0.28)] backdrop-blur-2xl";
 
@@ -161,6 +212,16 @@ export function PublicBackground({
       </div>
     </main>
   );
+}
+
+export function SoftProductBackground({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return <PublicBackground className={className}>{children}</PublicBackground>;
 }
 
 export function PublicHeader() {

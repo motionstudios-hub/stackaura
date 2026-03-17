@@ -3,15 +3,14 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
   cn,
-  darkGhostButtonClass,
-  darkHeroSurfaceClass,
-  darkInsetPanelClass,
-  darkMutedTextClass,
-  darkPrimaryButtonClass,
-  darkRichPanelClass,
-  darkSectionEyebrowClass,
-  darkSecondaryButtonClass,
-  darkStatusPillClass,
+  lightProductHeroClass,
+  lightProductInsetPanelClass,
+  lightProductMutedTextClass,
+  lightProductPanelClass,
+  lightProductSectionEyebrowClass,
+  lightProductStatusPillClass,
+  publicPrimaryButtonClass,
+  publicSecondaryButtonClass,
 } from "../components/stackaura-ui";
 import { getServerMe } from "../lib/auth";
 import ApiKeyWelcome from "./api-key-welcome";
@@ -33,63 +32,60 @@ export default async function DashboardPage() {
   const quickActions = [
     { href: "/dashboard/api-keys", label: "Open Developer Keys", tone: "primary" as const },
     { href: "/payment-links", label: "Launch Payment Links", tone: "secondary" as const },
-    { href: "/docs", label: "Read API docs", tone: "ghost" as const },
-    { href: "/", label: "View public website", tone: "ghost" as const },
+    { href: "/docs", label: "Read API docs", tone: "secondary" as const },
+    { href: "/", label: "View public website", tone: "secondary" as const },
   ];
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
-      <section className={cn(darkHeroSurfaceClass, "relative overflow-hidden p-6 lg:p-8")}>
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_8%_16%,rgba(160,233,255,0.12),transparent_22%),radial-gradient(circle_at_86%_18%,rgba(122,115,255,0.14),transparent_24%),linear-gradient(180deg,rgba(255,255,255,0.04),transparent_18%)]" />
+      <section className={cn(lightProductHeroClass, "relative overflow-hidden p-6 lg:p-8")}>
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_8%_16%,rgba(255,255,255,0.34),transparent_22%),radial-gradient(circle_at_86%_18%,rgba(122,115,255,0.12),transparent_24%),linear-gradient(180deg,rgba(255,255,255,0.16),transparent_18%)]" />
 
         <div className="relative grid gap-8 lg:grid-cols-[1.12fr_0.88fr] lg:items-start">
           <div>
-            <div className={darkSectionEyebrowClass}>Merchant dashboard</div>
-            <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-white sm:text-5xl">
-              Operate payments, onboarding, and developer access from one refined console.
+            <div className={lightProductSectionEyebrowClass}>Merchant dashboard</div>
+            <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-[#0a2540] sm:text-5xl">
+              Operate payments, onboarding, and developer access inside the same Stackaura system.
             </h1>
-            <p className={cn(darkMutedTextClass, "mt-5 max-w-3xl text-zinc-300")}>
-              Signed in as <span className="font-medium text-white">{me.user.email}</span>. Use the
-              Stackaura product side to manage merchant workspaces, issue API keys, ship payment
-              links, and prepare live gateway operations with infrastructure-grade control.
+            <p className={cn(lightProductMutedTextClass, "mt-5 max-w-3xl")}>
+              Signed in as <span className="font-medium text-[#0a2540]">{me.user.email}</span>. Use
+              the authenticated Stackaura experience to manage merchant workspaces, issue API keys,
+              launch payment links, and prepare live gateway operations from one place.
             </p>
 
             <div className="mt-5 flex flex-wrap gap-2">
-              <span className={darkStatusPillClass(selectedMembership?.merchant.isActive ? "success" : "muted")}>
+              <span className={lightProductStatusPillClass(selectedMembership?.merchant.isActive ? "success" : "muted")}>
                 {selectedMembership?.merchant.isActive ? "Merchant active" : "Merchant inactive"}
               </span>
-              <span className={darkStatusPillClass("violet")}>
+              <span className={lightProductStatusPillClass("violet")}>
                 {selectedMembership?.role || "Member"}
               </span>
-              <span className={darkStatusPillClass("muted")}>Ozow + PayFast ready</span>
+              <span className={lightProductStatusPillClass("muted")}>Ozow + PayFast ready</span>
             </div>
 
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <Link href="/dashboard/api-keys" className={darkPrimaryButtonClass}>
+              <Link href="/dashboard/api-keys" className={publicPrimaryButtonClass}>
                 Open developer keys
               </Link>
-              <Link href="/payment-links" className={darkSecondaryButtonClass}>
+              <Link href="/payment-links" className={publicSecondaryButtonClass}>
                 Launch payment links
               </Link>
             </div>
           </div>
 
           <div className="grid gap-4">
-            <MerchantSwitcher
-              memberships={memberships}
-              selectedMerchantId={selectedMerchantId}
-            />
+            <MerchantSwitcher memberships={memberships} selectedMerchantId={selectedMerchantId} />
 
-            <div className={cn(darkInsetPanelClass, "p-5")}>
-              <div className="text-xs uppercase tracking-[0.2em] text-zinc-400">Console focus</div>
-              <div className="mt-4 grid gap-3 text-sm text-zinc-300">
-                <div className="rounded-[20px] border border-white/10 bg-black/18 px-4 py-3">
+            <div className={cn(lightProductInsetPanelClass, "p-5")}>
+              <div className="text-xs uppercase tracking-[0.2em] text-[#6b7c93]">Console focus</div>
+              <div className="mt-4 grid gap-3 text-sm text-[#425466]">
+                <div className="rounded-[20px] border border-white/42 bg-white/22 px-4 py-3 shadow-[0_8px_18px_rgba(133,156,180,0.08)]">
                   Issue and manage merchant API credentials across test and live environments.
                 </div>
-                <div className="rounded-[20px] border border-white/10 bg-black/18 px-4 py-3">
+                <div className="rounded-[20px] border border-white/42 bg-white/22 px-4 py-3 shadow-[0_8px_18px_rgba(133,156,180,0.08)]">
                   Guide merchants from paid onboarding into active infrastructure and integrations.
                 </div>
-                <div className="rounded-[20px] border border-white/10 bg-black/18 px-4 py-3">
+                <div className="rounded-[20px] border border-white/42 bg-white/22 px-4 py-3 shadow-[0_8px_18px_rgba(133,156,180,0.08)]">
                   Launch hosted checkout and payment links from the same Stackaura control plane.
                 </div>
               </div>
@@ -129,63 +125,63 @@ export default async function DashboardPage() {
                 detail: "Onboarding, payments, and developer tooling live",
               },
             ].map((item) => (
-              <div key={item.label} className={cn(darkRichPanelClass, "p-5")}>
-                <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">{item.label}</div>
-                <div className="mt-4 text-xl font-semibold tracking-tight text-white">{item.value}</div>
-                <div className="mt-3 text-xs text-zinc-400 break-all">{item.detail}</div>
+              <div key={item.label} className={cn(lightProductPanelClass, "p-5")}>
+                <div className="text-xs uppercase tracking-[0.2em] text-[#6b7c93]">{item.label}</div>
+                <div className="mt-4 text-xl font-semibold tracking-tight text-[#0a2540]">{item.value}</div>
+                <div className="mt-3 break-all text-xs text-[#6b7c93]">{item.detail}</div>
               </div>
             ))}
           </div>
 
-          <div className={cn(darkRichPanelClass, "p-6 lg:p-7")}>
+          <div className={cn(lightProductPanelClass, "p-6 lg:p-7")}>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <div className={darkSectionEyebrowClass}>Workspace overview</div>
-                <div className="mt-2 text-2xl font-semibold tracking-tight text-white">
+                <div className={lightProductSectionEyebrowClass}>Workspace overview</div>
+                <div className="mt-2 text-2xl font-semibold tracking-tight text-[#0a2540]">
                   Your authenticated Stackaura workspace
                 </div>
               </div>
-              <span className={darkStatusPillClass("muted")}>Merchant operations</span>
+              <span className={lightProductStatusPillClass("muted")}>Merchant operations</span>
             </div>
 
-            <p className={cn(darkMutedTextClass, "mt-4 max-w-3xl text-zinc-300")}>
-              This console is the product-side counterpart to the public Stackaura experience. It
-              is where merchant state, developer credentials, checkout tooling, and gateway
-              operations come together in one environment.
+            <p className={cn(lightProductMutedTextClass, "mt-4 max-w-3xl")}>
+              This dashboard is the logged-in extension of the public Stackaura experience. It is
+              where merchant state, developer credentials, checkout tooling, and gateway operations
+              come together in one consistent environment.
             </p>
 
             <div className="mt-6 grid gap-4 md:grid-cols-2">
-              <div className={cn(darkInsetPanelClass, "p-5")}>
-                <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">Merchant profile</div>
-                <div className="mt-4 space-y-3 text-sm text-zinc-300">
+              <div className={cn(lightProductInsetPanelClass, "p-5")}>
+                <div className="text-xs uppercase tracking-[0.2em] text-[#6b7c93]">Merchant profile</div>
+                <div className="mt-4 space-y-3 text-sm text-[#425466]">
                   <div className="flex items-start justify-between gap-4">
-                    <span className="text-zinc-500">Name</span>
-                    <span className="text-right text-white">{selectedMembership?.merchant.name || "—"}</span>
+                    <span className="text-[#6b7c93]">Name</span>
+                    <span className="text-right text-[#0a2540]">{selectedMembership?.merchant.name || "—"}</span>
                   </div>
                   <div className="flex items-start justify-between gap-4">
-                    <span className="text-zinc-500">Email</span>
-                    <span className="text-right text-white">{selectedMembership?.merchant.email || "—"}</span>
+                    <span className="text-[#6b7c93]">Email</span>
+                    <span className="text-right text-[#0a2540]">{selectedMembership?.merchant.email || "—"}</span>
                   </div>
                   <div className="flex items-start justify-between gap-4">
-                    <span className="text-zinc-500">Status</span>
-                    <span className="text-right text-white">
+                    <span className="text-[#6b7c93]">Status</span>
+                    <span className="text-right text-[#0a2540]">
                       {selectedMembership?.merchant.isActive ? "Active" : "Inactive"}
                     </span>
                   </div>
                 </div>
               </div>
 
-              <div className={cn(darkInsetPanelClass, "p-5")}>
-                <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">What’s live now</div>
-                <div className="mt-4 grid gap-3 text-sm text-zinc-300">
+              <div className={cn(lightProductInsetPanelClass, "p-5")}>
+                <div className="text-xs uppercase tracking-[0.2em] text-[#6b7c93]">What’s live now</div>
+                <div className="mt-4 grid gap-3 text-sm text-[#425466]">
                   {[
                     "Merchant onboarding and login",
                     "API keys and dashboard access",
                     "Payment intents, subscriptions, and ledger foundation",
                     "Ozow + PayFast orchestration readiness",
                   ].map((item) => (
-                    <div key={item} className="flex items-start gap-3 rounded-[18px] border border-white/8 bg-black/14 px-4 py-3">
-                      <span className="mt-0.5 text-[#A0E9FF]">•</span>
+                    <div key={item} className="flex items-start gap-3 rounded-[18px] border border-white/42 bg-white/22 px-4 py-3 shadow-[0_8px_18px_rgba(133,156,180,0.08)]">
+                      <span className="mt-0.5 text-[#635bff]">•</span>
                       <span>{item}</span>
                     </div>
                   ))}
@@ -196,9 +192,9 @@ export default async function DashboardPage() {
         </div>
 
         <div className="grid gap-6">
-          <div className={cn(darkRichPanelClass, "p-6")}>
-            <div className={darkSectionEyebrowClass}>Quick actions</div>
-            <div className="mt-2 text-2xl font-semibold tracking-tight text-white">
+          <div className={cn(lightProductPanelClass, "p-6")}>
+            <div className={lightProductSectionEyebrowClass}>Quick actions</div>
+            <div className="mt-2 text-2xl font-semibold tracking-tight text-[#0a2540]">
               Move into the next product task fast
             </div>
             <div className="mt-5 grid gap-3">
@@ -206,13 +202,7 @@ export default async function DashboardPage() {
                 <Link
                   key={action.href}
                   href={action.href}
-                  className={
-                    action.tone === "primary"
-                      ? darkPrimaryButtonClass
-                      : action.tone === "secondary"
-                        ? darkSecondaryButtonClass
-                        : darkGhostButtonClass
-                  }
+                  className={action.tone === "primary" ? publicPrimaryButtonClass : publicSecondaryButtonClass}
                 >
                   {action.label}
                 </Link>
@@ -220,18 +210,18 @@ export default async function DashboardPage() {
             </div>
           </div>
 
-          <div className={cn(darkRichPanelClass, "p-6")}>
-            <div className={darkSectionEyebrowClass}>Next build targets</div>
-            <div className="mt-2 text-2xl font-semibold tracking-tight text-white">
+          <div className={cn(lightProductPanelClass, "p-6")}>
+            <div className={lightProductSectionEyebrowClass}>Next build targets</div>
+            <div className="mt-2 text-2xl font-semibold tracking-tight text-[#0a2540]">
               Product areas to extend from here
             </div>
-            <div className="mt-5 grid gap-3 text-sm text-zinc-300">
+            <div className="mt-5 grid gap-3 text-sm text-[#425466]">
               {[
                 "Payment links directly inside the dashboard workspace",
                 "Live gateway connection UX for Ozow and PayFast",
                 "Merchant-facing payments, subscriptions, and ledger views",
               ].map((item) => (
-                <div key={item} className={cn(darkInsetPanelClass, "p-4")}>
+                <div key={item} className={cn(lightProductInsetPanelClass, "p-4")}>
                   {item}
                 </div>
               ))}

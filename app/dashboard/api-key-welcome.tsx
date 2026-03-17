@@ -4,14 +4,14 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
   cn,
-  darkGhostButtonClass,
-  darkInsetPanelClass,
-  darkMutedTextClass,
-  darkPrimaryButtonClass,
-  darkRichPanelClass,
-  darkSectionEyebrowClass,
-  darkStatusPillClass,
-  darkSubtleSurfaceClass,
+  lightProductInsetPanelClass,
+  lightProductMutedTextClass,
+  lightProductPanelClass,
+  lightProductSectionEyebrowClass,
+  lightProductStatusPillClass,
+  publicPrimaryButtonClass,
+  publicSecondaryButtonClass,
+  publicSubtleSurfaceClass,
 } from "../components/stackaura-ui";
 import {
   type ApiKeyRow,
@@ -157,16 +157,16 @@ export default function ApiKeyWelcome({
   }
 
   return (
-    <section className={cn(darkRichPanelClass, "relative mt-8 overflow-hidden p-6 lg:p-7")}>
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_22%,rgba(160,233,255,0.10),transparent_20%),radial-gradient(circle_at_88%_20%,rgba(122,115,255,0.10),transparent_24%)]" />
+    <section className={cn(lightProductPanelClass, "relative mt-8 overflow-hidden p-6 lg:p-7")}>
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_22%,rgba(255,255,255,0.32),transparent_20%),radial-gradient(circle_at_88%_20%,rgba(122,115,255,0.10),transparent_24%)]" />
 
       <div className="relative flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
         <div className="max-w-3xl">
-          <div className={darkSectionEyebrowClass}>Welcome to Stackaura</div>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white">
+          <div className={lightProductSectionEyebrowClass}>Welcome to Stackaura</div>
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#0a2540]">
             Your merchant workspace is active and ready for developer setup
           </h2>
-          <p className={cn(darkMutedTextClass, "mt-4 max-w-2xl text-zinc-300")}>
+          <p className={cn(lightProductMutedTextClass, "mt-4 max-w-2xl")}>
             {merchantName
               ? `${merchantName} is now in the live Stackaura product flow.`
               : "Your merchant account is now in the live Stackaura product flow."}{" "}
@@ -174,41 +174,41 @@ export default function ApiKeyWelcome({
           </p>
         </div>
 
-        <span className={darkStatusPillClass("success")}>Merchant active</span>
+        <span className={lightProductStatusPillClass("success")}>Merchant active</span>
       </div>
 
       <div className="relative mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className={cn(darkInsetPanelClass, "p-5")}>
+        <div className={cn(lightProductInsetPanelClass, "p-5")}>
           {loading ? (
-            <div className="text-sm text-zinc-300">Loading your developer access...</div>
+            <div className="text-sm text-[#425466]">Loading your developer access...</div>
           ) : error ? (
             <div className="space-y-4">
-              <div className="rounded-2xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+              <div className="rounded-2xl border border-rose-300/70 bg-rose-50/85 px-4 py-3 text-sm text-rose-700">
                 {error}
               </div>
               <div className="flex flex-col gap-3 sm:flex-row">
-                <Link href="/dashboard/api-keys" className={darkGhostButtonClass}>
+                <Link href="/dashboard/api-keys" className={publicSecondaryButtonClass}>
                   Open Developer Keys
                 </Link>
-                <button onClick={dismiss} className={darkPrimaryButtonClass}>
+                <button onClick={dismiss} className={publicPrimaryButtonClass}>
                   Continue to dashboard
                 </button>
               </div>
             </div>
           ) : !initialKey ? (
             <div className="space-y-4">
-              <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
+              <div className="rounded-2xl border border-amber-300/70 bg-amber-50/85 px-4 py-3 text-sm text-amber-700">
                 Your merchant is active, but no API key was returned yet.
               </div>
-              <p className={darkMutedTextClass}>
+              <p className={lightProductMutedTextClass}>
                 Open developer keys to confirm whether the initial key has been provisioned or to
                 create a new one for your first integration.
               </p>
               <div className="flex flex-col gap-3 sm:flex-row">
-                <Link href="/dashboard/api-keys" className={darkGhostButtonClass}>
+                <Link href="/dashboard/api-keys" className={publicSecondaryButtonClass}>
                   Open Developer Keys
                 </Link>
-                <button onClick={dismiss} className={darkPrimaryButtonClass}>
+                <button onClick={dismiss} className={publicPrimaryButtonClass}>
                   Continue to dashboard
                 </button>
               </div>
@@ -216,25 +216,25 @@ export default function ApiKeyWelcome({
           ) : (
             <div className="space-y-4">
               <div className="flex flex-wrap items-center gap-2">
-                <span className={darkStatusPillClass("violet")}>
+                <span className={lightProductStatusPillClass("violet")}>
                   {resolveEnv(initialKey).toUpperCase()}
                 </span>
-                <span className={darkStatusPillClass("muted")}>{initialKey.label}</span>
+                <span className={lightProductStatusPillClass("muted")}>{initialKey.label}</span>
               </div>
 
               <div>
-                <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">Initial API key</div>
-                <div className={cn(darkSubtleSurfaceClass, "mt-3 p-4")}>
-                  <code className="break-all text-sm text-zinc-100">{keyDisplay}</code>
+                <div className="text-xs uppercase tracking-[0.2em] text-[#6b7c93]">Initial API key</div>
+                <div className={cn(publicSubtleSurfaceClass, "mt-3 p-4")}>
+                  <code className="break-all text-sm text-[#0a2540]">{keyDisplay}</code>
                 </div>
               </div>
 
               {hasRevealableSecret ? (
-                <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
+                <div className="rounded-2xl border border-amber-300/70 bg-amber-50/85 px-4 py-3 text-sm text-amber-700">
                   This secret may only be shown once. Copy it now and store it in a password manager.
                 </div>
               ) : (
-                <div className={cn(darkSubtleSurfaceClass, "px-4 py-3 text-sm text-zinc-300")}>
+                <div className={cn(publicSubtleSurfaceClass, "px-4 py-3 text-sm text-[#425466]")}>
                   The backend returned a masked key only. If the full secret was shown once during
                   activation, use your saved copy or create a new key in Developer Keys.
                 </div>
@@ -243,23 +243,20 @@ export default function ApiKeyWelcome({
               <div className="flex flex-col gap-3 sm:flex-row">
                 {hasRevealableSecret ? (
                   <>
-                    <button onClick={copyKey} className={darkPrimaryButtonClass}>
+                    <button onClick={copyKey} className={publicPrimaryButtonClass}>
                       {copied ? "Copied API key" : "Copy API key"}
                     </button>
-                    <button
-                      onClick={() => setShowSecret((value) => !value)}
-                      className={darkGhostButtonClass}
-                    >
+                    <button onClick={() => setShowSecret((value) => !value)} className={publicSecondaryButtonClass}>
                       {showSecret ? "Hide key" : "Reveal key"}
                     </button>
                   </>
                 ) : (
-                  <Link href="/dashboard/api-keys" className={darkGhostButtonClass}>
+                  <Link href="/dashboard/api-keys" className={publicSecondaryButtonClass}>
                     Open Developer Keys
                   </Link>
                 )}
 
-                <button onClick={dismiss} className={darkGhostButtonClass}>
+                <button onClick={dismiss} className={publicSecondaryButtonClass}>
                   Continue to dashboard
                 </button>
               </div>
@@ -267,21 +264,21 @@ export default function ApiKeyWelcome({
           )}
         </div>
 
-        <div className={cn(darkInsetPanelClass, "p-5")}>
-          <div className={darkSectionEyebrowClass}>Quick start</div>
-          <div className="mt-2 text-xl font-semibold tracking-tight text-white">
+        <div className={cn(lightProductInsetPanelClass, "p-5")}>
+          <div className={lightProductSectionEyebrowClass}>Quick start</div>
+          <div className="mt-2 text-xl font-semibold tracking-tight text-[#0a2540]">
             Start calling Stackaura from your backend
           </div>
-          <p className={cn(darkMutedTextClass, "mt-3")}>
+          <p className={cn(lightProductMutedTextClass, "mt-3")}>
             Use your merchant API key in the `Authorization` header when calling Stackaura from
             your server, CLI tools, or local development environment.
           </p>
 
-          <div className={cn(darkSubtleSurfaceClass, "mt-4 p-4")}>
-            <code className="break-all text-sm text-zinc-100">{authorizationExample}</code>
+          <div className={cn(publicSubtleSurfaceClass, "mt-4 p-4")}>
+            <code className="break-all text-sm text-[#0a2540]">{authorizationExample}</code>
           </div>
 
-          <div className="mt-4 rounded-[20px] border border-white/10 bg-black/18 px-4 py-3 text-sm leading-6 text-zinc-400">
+          <div className="mt-4 rounded-[20px] border border-white/42 bg-white/22 px-4 py-3 text-sm leading-6 text-[#425466] shadow-[0_8px_18px_rgba(133,156,180,0.08)]">
             For production, keep live keys on your server only and store them outside the browser.
           </div>
         </div>

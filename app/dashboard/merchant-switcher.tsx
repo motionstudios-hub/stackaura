@@ -1,7 +1,12 @@
 "use client";
 
 import { useMemo, useState, useTransition } from "react";
-import { cn, darkInsetPanelClass, darkInputClass, darkStatusPillClass } from "../components/stackaura-ui";
+import {
+  cn,
+  lightProductInputClass,
+  lightProductInsetPanelClass,
+  lightProductStatusPillClass,
+} from "../components/stackaura-ui";
 
 type Membership = {
   id: string;
@@ -31,21 +36,19 @@ export default function MerchantSwitcher({
   }
 
   return (
-    <div className={cn(darkInsetPanelClass, "flex w-full flex-col gap-3 p-4 sm:w-auto sm:min-w-[340px]")}>
+    <div className={cn(lightProductInsetPanelClass, "flex w-full flex-col gap-3 p-4 sm:w-auto sm:min-w-[340px]")}>
       <div className="flex items-start justify-between gap-3">
         <div>
-          <div className="text-xs uppercase tracking-[0.2em] text-zinc-400">Active merchant</div>
-          <div className="mt-2 text-sm font-semibold text-white">
+          <div className="text-xs uppercase tracking-[0.2em] text-[#6b7c93]">Active merchant</div>
+          <div className="mt-2 text-sm font-semibold text-[#0a2540]">
             {selectedMerchant?.name || "No merchant selected"}
           </div>
-          <div className="mt-1 text-xs text-zinc-400">{selectedMerchant?.email || "Select a merchant workspace"}</div>
+          <div className="mt-1 text-xs text-[#6b7c93]">
+            {selectedMerchant?.email || "Select a merchant workspace"}
+          </div>
         </div>
 
-        <span
-          className={darkStatusPillClass(
-            selectedMerchant?.isActive ? "success" : "muted"
-          )}
-        >
+        <span className={lightProductStatusPillClass(selectedMerchant?.isActive ? "success" : "muted")}>
           {isPending ? "Updating" : selectedMerchant?.isActive ? "Active" : "Inactive"}
         </span>
       </div>
@@ -64,18 +67,18 @@ export default function MerchantSwitcher({
             });
           }}
           className={cn(
-            darkInputClass,
-            "min-h-[52px] appearance-none rounded-[20px] bg-black/24 pr-14 text-sm shadow-[0_10px_30px_rgba(0,0,0,0.22)]"
+            lightProductInputClass,
+            "min-h-[52px] appearance-none rounded-[20px] pr-14"
           )}
         >
           {options.map((m) => (
-            <option key={m.id} value={m.id} className="bg-[#08152f] text-white">
+            <option key={m.id} value={m.id} className="bg-white text-[#0a2540]">
               {m.name} ({m.email})
             </option>
           ))}
         </select>
 
-        <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-xs text-zinc-400">
+        <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-xs text-[#6b7c93]">
           ▼
         </span>
       </div>
