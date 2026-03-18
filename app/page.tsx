@@ -31,6 +31,20 @@ export default function Home() {
     url: "https://stackaura.co.za",
   };
 
+  const paymentProviderLogos = [
+    { name: "Ozow", mark: "OZOW" },
+    { name: "Paystack", mark: "paystack" },
+    { name: "Stripe", mark: "stripe" },
+    { name: "Shopify", mark: "shopify" },
+  ];
+
+  const commercePlatformLogos = [
+    { name: "WooCommerce", mark: "WooCommerce" },
+    { name: "Yoco", mark: "YOCO" },
+    { name: "Custom API", mark: "Custom API" },
+    { name: "SaaS Platforms", mark: "SaaS Platforms" },
+  ];
+
   return (
     <>
       <script
@@ -104,34 +118,78 @@ export default function Home() {
 </div>
           </section>
 
-          <section className="relative border-t border-[#e3e8ee] bg-white/90">
-            <div className="mx-auto max-w-[1440px] px-5 py-6 sm:px-6 sm:py-7 lg:px-10 lg:py-8">
-              <div className="grid gap-5 sm:gap-6 lg:grid-cols-[220px_1fr_1fr] lg:gap-8 lg:items-center">
-                <div className="text-sm font-semibold text-[#0a2540]">
-                  Integrates with payment providers and commerce platforms.
+          <section className="relative border-y border-white/35 bg-white/44 backdrop-blur-xl">
+            <div className="mx-auto max-w-[1440px] px-5 py-8 sm:px-6 sm:py-10 lg:px-10 lg:py-12">
+              <div className="grid gap-8 lg:grid-cols-[320px_1fr] lg:items-center">
+                <div>
+                  <div className="text-xs font-semibold uppercase tracking-[0.24em] text-[#6b7c93]">
+                    Integrations
+                  </div>
+                  <h2 className="mt-3 max-w-sm text-3xl font-semibold tracking-[-0.03em] text-[#0a2540]">
+                    Built for the modern payments stack.
+                  </h2>
+                  <p className="mt-3 max-w-sm text-base leading-7 text-[#425466]">
+                    Connect once to Stackaura, then extend across payment providers, commerce platforms, and custom product flows.
+                  </p>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-x-5 gap-y-4">
-  {['OZOW', 'PAYSTACK', 'STRIPE', 'SHOPIFY'].map((item) => (
-    <div
-      key={item}
-      className="rounded-full border border-white/45 bg-white/24 px-3 py-1.5 text-xs font-semibold tracking-[0.18em] text-[#0a2540] shadow-[0_8px_24px_rgba(133,156,180,0.10)] backdrop-blur-2xl supports-[backdrop-filter]:bg-white/18 sm:px-4 sm:py-2 sm:text-sm"
-    >
-      {item}
-    </div>
-  ))}
-</div>
+                <div className="space-y-8">
+                  <div>
+                    <div className="mb-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6b7c93]">
+                      Payment providers
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                      {paymentProviderLogos.map((item) => (
+                        <div
+                          key={item.name}
+                          className="group flex min-h-[76px] items-center justify-center rounded-[24px] border border-white/50 bg-[linear-gradient(180deg,rgba(255,255,255,0.46),rgba(255,255,255,0.22))] px-5 py-4 shadow-[0_10px_28px_rgba(133,156,180,0.08)] backdrop-blur-2xl transition duration-300 hover:-translate-y-0.5 hover:border-white/70 hover:bg-white/40 hover:shadow-[0_16px_34px_rgba(133,156,180,0.14)]"
+                        >
+                          <span
+                            className={`text-center text-[22px] font-semibold tracking-[-0.03em] text-[#0a2540]/72 transition duration-300 group-hover:text-[#0a2540] ${
+                              item.name === "Ozow"
+                                ? "tracking-[0.16em] text-[20px]"
+                                : item.name === "Paystack"
+                                  ? "text-[19px] font-semibold lowercase tracking-[-0.02em]"
+                                  : item.name === "Stripe"
+                                    ? "text-[22px] font-semibold lowercase tracking-[-0.04em]"
+                                    : "text-[19px] font-semibold"
+                            }`}
+                          >
+                            {item.mark}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
 
-                <div className="flex flex-wrap items-center gap-x-5 gap-y-4">
-  {['WOOCOMMERCE', 'YOCO', 'CUSTOM API', 'SAAS PLATFORMS'].map((item) => (
-    <div
-      key={item}
-      className="rounded-full border border-white/45 bg-white/24 px-3 py-1.5 text-xs font-semibold tracking-[0.18em] text-[#0a2540] shadow-[0_8px_24px_rgba(133,156,180,0.10)] backdrop-blur-2xl supports-[backdrop-filter]:bg-white/18 sm:px-4 sm:py-2 sm:text-sm"
-    >
-      {item}
-    </div>
-  ))}
-</div>
+                  <div>
+                    <div className="mb-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6b7c93]">
+                      Commerce platforms
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                      {commercePlatformLogos.map((item) => (
+                        <div
+                          key={item.name}
+                          className="group flex min-h-[76px] items-center justify-center rounded-[24px] border border-white/50 bg-[linear-gradient(180deg,rgba(255,255,255,0.46),rgba(255,255,255,0.22))] px-5 py-4 shadow-[0_10px_28px_rgba(133,156,180,0.08)] backdrop-blur-2xl transition duration-300 hover:-translate-y-0.5 hover:border-white/70 hover:bg-white/40 hover:shadow-[0_16px_34px_rgba(133,156,180,0.14)]"
+                        >
+                          <span
+                            className={`text-center text-[20px] font-semibold tracking-[-0.03em] text-[#0a2540]/72 transition duration-300 group-hover:text-[#0a2540] ${
+                              item.name === "WooCommerce"
+                                ? "text-[17px] font-semibold"
+                                : item.name === "Yoco"
+                                  ? "text-[19px] tracking-[0.16em]"
+                                  : item.name === "Custom API"
+                                    ? "text-[17px]"
+                                    : "text-[17px]"
+                            }`}
+                          >
+                            {item.mark}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
