@@ -68,8 +68,8 @@ export default function Home() {
 
           <PublicHeader />
 
-          <section className="relative mx-auto grid max-w-[1440px] gap-3 px-5 pb-3 pt-4 sm:gap-6 sm:px-6 sm:pb-8 sm:pt-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12 lg:px-10 lg:py-24">
-            <div className="relative z-10 max-w-3xl">
+          <section className="relative isolate mx-auto grid max-w-[1440px] gap-5 overflow-hidden px-5 pb-6 pt-6 sm:gap-6 sm:px-6 sm:pb-8 sm:pt-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12 lg:overflow-visible lg:px-10 lg:py-24">
+            <div className="relative z-10 max-w-3xl pr-2 sm:pr-0">
               <div className="inline-flex max-w-[20rem] flex-wrap items-center gap-1.5 rounded-full border border-white/45 bg-white/24 px-3 py-1.5 text-[11px] font-medium leading-5 text-[#0a2540] shadow-[0_8px_24px_rgba(133,156,180,0.10)] backdrop-blur-2xl supports-[backdrop-filter]:bg-white/18 sm:max-w-none sm:gap-2 sm:px-4 sm:py-2 sm:text-sm sm:leading-normal">
                 <span className="font-semibold text-[#0a2540]">African payments infrastructure</span>
                 <span className="text-[#6b7c93]">for modern merchants and platforms</span>
@@ -99,23 +99,23 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="relative -mt-4 min-h-[184px] overflow-hidden rounded-[28px] sm:mt-0 sm:min-h-[270px] lg:mt-0 lg:min-h-[560px] lg:overflow-visible lg:rounded-none">
-  <div className="absolute inset-0 rounded-[28px] bg-[radial-gradient(circle_at_62%_35%,rgba(176,206,233,0.30),transparent_28%),radial-gradient(circle_at_82%_52%,rgba(204,227,242,0.38),transparent_26%),linear-gradient(180deg,rgba(215,232,240,0.18),rgba(255,255,255,0))] lg:rounded-none" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[520px] overflow-hidden lg:pointer-events-auto lg:relative lg:inset-auto lg:mt-0 lg:min-h-[560px] lg:h-auto lg:overflow-visible lg:rounded-none">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_18%,rgba(186,214,227,0.20),transparent_24%),radial-gradient(circle_at_86%_22%,rgba(204,227,242,0.28),transparent_24%),linear-gradient(180deg,rgba(215,232,240,0.10),rgba(255,255,255,0))] lg:rounded-none" />
 
-  <div className="absolute left-1/2 top-[-18px] h-[260px] w-[260px] -translate-x-[18%] scale-[0.46] rotate-[28deg] sm:top-[10px] sm:h-[320px] sm:w-[320px] sm:-translate-x-[17%] sm:scale-[0.56] lg:left-auto lg:right-[-8%] lg:top-[-2%] lg:h-[620px] lg:w-[620px] lg:translate-x-0 lg:translate-y-0 lg:scale-100">
-    <div className="absolute left-[-38px] top-[286px] h-[184px] w-[300px] rounded-[18px] border border-[#a977ff]/38 bg-[linear-gradient(180deg,rgba(209,186,255,0.42)_0%,rgba(88,118,255,0.84)_58%,rgba(82,233,240,0.54)_100%)] shadow-[0_22px_44px_rgba(98,132,196,0.10),inset_0_1px_0_rgba(255,255,255,0.45)] backdrop-blur-md" />
-    <div className="absolute left-[54px] top-[198px] h-[212px] w-[334px] rounded-[20px] border border-[#9d7cff]/42 bg-[linear-gradient(180deg,rgba(214,194,255,0.44)_0%,rgba(104,130,255,0.76)_56%,rgba(95,229,237,0.44)_100%)] shadow-[0_24px_52px_rgba(98,132,196,0.12),inset_0_1px_0_rgba(255,255,255,0.46)] backdrop-blur-md" />
-    <div className="absolute left-[154px] top-[104px] h-[244px] w-[370px] rounded-[24px] border border-[#916fff]/46 bg-[linear-gradient(180deg,rgba(218,200,255,0.50)_0%,rgba(126,151,255,0.60)_52%,rgba(130,231,236,0.34)_100%)] shadow-[0_26px_60px_rgba(98,132,196,0.14),inset_0_1px_0_rgba(255,255,255,0.50)] backdrop-blur-md" />
-    <div className="absolute left-[276px] top-[16px] h-[282px] w-[408px] rounded-[28px] border border-[#8666ff]/50 bg-[linear-gradient(180deg,rgba(223,208,255,0.54)_0%,rgba(163,189,255,0.42)_48%,rgba(161,235,240,0.20)_100%)] shadow-[0_30px_70px_rgba(98,132,196,0.16),inset_0_1px_0_rgba(255,255,255,0.56)] backdrop-blur-md" />
+              <div className="absolute right-[-18px] top-[42px] h-[280px] w-[280px] rotate-[28deg] scale-[0.78] opacity-90 sm:right-[-8px] sm:top-[56px] sm:h-[320px] sm:w-[320px] sm:scale-[0.86] lg:left-auto lg:right-[-8%] lg:top-[-2%] lg:h-[620px] lg:w-[620px] lg:scale-100 lg:opacity-100">
+                <div className="absolute left-[-38px] top-[286px] h-[184px] w-[300px] rounded-[18px] border border-[#a977ff]/30 bg-[linear-gradient(180deg,rgba(209,186,255,0.30)_0%,rgba(88,118,255,0.72)_58%,rgba(82,233,240,0.38)_100%)] shadow-[0_18px_36px_rgba(98,132,196,0.08),inset_0_1px_0_rgba(255,255,255,0.36)] backdrop-blur-md lg:border-[#a977ff]/38 lg:bg-[linear-gradient(180deg,rgba(209,186,255,0.42)_0%,rgba(88,118,255,0.84)_58%,rgba(82,233,240,0.54)_100%)] lg:shadow-[0_22px_44px_rgba(98,132,196,0.10),inset_0_1px_0_rgba(255,255,255,0.45)]" />
+                <div className="absolute left-[54px] top-[198px] h-[212px] w-[334px] rounded-[20px] border border-[#9d7cff]/32 bg-[linear-gradient(180deg,rgba(214,194,255,0.30)_0%,rgba(104,130,255,0.62)_56%,rgba(95,229,237,0.30)_100%)] shadow-[0_20px_40px_rgba(98,132,196,0.09),inset_0_1px_0_rgba(255,255,255,0.38)] backdrop-blur-md lg:border-[#9d7cff]/42 lg:bg-[linear-gradient(180deg,rgba(214,194,255,0.44)_0%,rgba(104,130,255,0.76)_56%,rgba(95,229,237,0.44)_100%)] lg:shadow-[0_24px_52px_rgba(98,132,196,0.12),inset_0_1px_0_rgba(255,255,255,0.46)]" />
+                <div className="absolute left-[154px] top-[104px] h-[244px] w-[370px] rounded-[24px] border border-[#916fff]/34 bg-[linear-gradient(180deg,rgba(218,200,255,0.34)_0%,rgba(126,151,255,0.50)_52%,rgba(130,231,236,0.24)_100%)] shadow-[0_22px_48px_rgba(98,132,196,0.10),inset_0_1px_0_rgba(255,255,255,0.40)] backdrop-blur-md lg:border-[#916fff]/46 lg:bg-[linear-gradient(180deg,rgba(218,200,255,0.50)_0%,rgba(126,151,255,0.60)_52%,rgba(130,231,236,0.34)_100%)] lg:shadow-[0_26px_60px_rgba(98,132,196,0.14),inset_0_1px_0_rgba(255,255,255,0.50)]" />
+                <div className="absolute left-[276px] top-[16px] h-[282px] w-[408px] rounded-[28px] border border-[#8666ff]/38 bg-[linear-gradient(180deg,rgba(223,208,255,0.36)_0%,rgba(163,189,255,0.30)_48%,rgba(161,235,240,0.14)_100%)] shadow-[0_24px_56px_rgba(98,132,196,0.10),inset_0_1px_0_rgba(255,255,255,0.42)] backdrop-blur-md lg:border-[#8666ff]/50 lg:bg-[linear-gradient(180deg,rgba(223,208,255,0.54)_0%,rgba(163,189,255,0.42)_48%,rgba(161,235,240,0.20)_100%)] lg:shadow-[0_30px_70px_rgba(98,132,196,0.16),inset_0_1px_0_rgba(255,255,255,0.56)]" />
 
-    <div className="absolute left-[392px] top-[-48px] hidden h-[388px] w-[16px] rounded-full bg-[linear-gradient(180deg,rgba(102,82,255,0.94)_0%,rgba(89,140,255,0.82)_58%,rgba(48,225,236,0.78)_100%)] shadow-[0_10px_20px_rgba(112,139,210,0.16)] lg:block" />
-    <div className="absolute left-[458px] top-[-86px] hidden h-[430px] w-[16px] rounded-full bg-[linear-gradient(180deg,rgba(108,88,255,0.94)_0%,rgba(95,147,255,0.82)_58%,rgba(53,226,236,0.78)_100%)] shadow-[0_10px_20px_rgba(112,139,210,0.16)] lg:block" />
-    <div className="absolute left-[522px] top-[-122px] hidden h-[470px] w-[16px] rounded-full bg-[linear-gradient(180deg,rgba(113,92,255,0.94)_0%,rgba(101,153,255,0.82)_58%,rgba(58,227,236,0.78)_100%)] shadow-[0_10px_20px_rgba(112,139,210,0.16)] lg:block" />
-    <div className="absolute left-[586px] top-[-154px] hidden h-[500px] w-[16px] rounded-full bg-[linear-gradient(180deg,rgba(118,96,255,0.94)_0%,rgba(106,158,255,0.82)_58%,rgba(61,228,236,0.78)_100%)] shadow-[0_10px_20px_rgba(112,139,210,0.16)] lg:block" />
-    <div className="absolute left-[652px] top-[-182px] hidden h-[522px] w-[16px] rounded-full bg-[linear-gradient(180deg,rgba(122,100,255,0.94)_0%,rgba(112,164,255,0.82)_58%,rgba(66,229,236,0.78)_100%)] shadow-[0_10px_20px_rgba(112,139,210,0.16)] lg:block" />
-    <div className="absolute left-[720px] top-[-198px] hidden h-[518px] w-[12px] rounded-full bg-[linear-gradient(180deg,rgba(114,168,255,0.72)_0%,rgba(61,228,236,0.72)_100%)] opacity-92 shadow-[0_8px_18px_rgba(112,139,210,0.12)] lg:block" />
-  </div>
-</div>
+                <div className="absolute left-[392px] top-[-48px] hidden h-[388px] w-[16px] rounded-full bg-[linear-gradient(180deg,rgba(102,82,255,0.94)_0%,rgba(89,140,255,0.82)_58%,rgba(48,225,236,0.78)_100%)] shadow-[0_10px_20px_rgba(112,139,210,0.16)] lg:block" />
+                <div className="absolute left-[458px] top-[-86px] hidden h-[430px] w-[16px] rounded-full bg-[linear-gradient(180deg,rgba(108,88,255,0.94)_0%,rgba(95,147,255,0.82)_58%,rgba(53,226,236,0.78)_100%)] shadow-[0_10px_20px_rgba(112,139,210,0.16)] lg:block" />
+                <div className="absolute left-[522px] top-[-122px] hidden h-[470px] w-[16px] rounded-full bg-[linear-gradient(180deg,rgba(113,92,255,0.94)_0%,rgba(101,153,255,0.82)_58%,rgba(58,227,236,0.78)_100%)] shadow-[0_10px_20px_rgba(112,139,210,0.16)] lg:block" />
+                <div className="absolute left-[586px] top-[-154px] hidden h-[500px] w-[16px] rounded-full bg-[linear-gradient(180deg,rgba(118,96,255,0.94)_0%,rgba(106,158,255,0.82)_58%,rgba(61,228,236,0.78)_100%)] shadow-[0_10px_20px_rgba(112,139,210,0.16)] lg:block" />
+                <div className="absolute left-[652px] top-[-182px] hidden h-[522px] w-[16px] rounded-full bg-[linear-gradient(180deg,rgba(122,100,255,0.94)_0%,rgba(112,164,255,0.82)_58%,rgba(66,229,236,0.78)_100%)] shadow-[0_10px_20px_rgba(112,139,210,0.16)] lg:block" />
+                <div className="absolute left-[720px] top-[-198px] hidden h-[518px] w-[12px] rounded-full bg-[linear-gradient(180deg,rgba(114,168,255,0.72)_0%,rgba(61,228,236,0.72)_100%)] opacity-92 shadow-[0_8px_18px_rgba(112,139,210,0.12)] lg:block" />
+              </div>
+            </div>
           </section>
 
           <section className="relative border-y border-white/35 bg-white/44 backdrop-blur-xl">
