@@ -69,6 +69,19 @@ export default function ContactPage() {
       </section>
 
       <section className={cn(publicSurfaceClass, "p-8 lg:p-10")}>
+        <div className={publicSectionLabelClass}>Infrastructure role</div>
+        <div className="mt-4 max-w-4xl text-2xl font-semibold tracking-tight text-[#0a2540]">
+          Stackaura provides software infrastructure and orchestration tools. Stackaura does not
+          directly process, hold, or settle customer funds; payments are handled by licensed
+          payment providers.
+        </div>
+        <p className="mt-4 max-w-3xl text-sm leading-7 text-[#425466]">
+          This distinction is central to how Stackaura explains its role to merchants, platforms,
+          payment providers, and compliance teams reviewing the product.
+        </p>
+      </section>
+
+      <section className={cn(publicSurfaceClass, "p-8 lg:p-10")}>
         <div className={publicSectionLabelClass}>How we can help</div>
         <div className="mt-6 grid gap-4 md:grid-cols-3">
           {[

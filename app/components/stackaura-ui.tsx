@@ -152,14 +152,15 @@ export function darkStatusPillClass(tone: "default" | "success" | "violet" | "mu
 
 const navItems = [
   { href: "/signup", label: "Products" },
+  { href: "/integrations", label: "Integrations" },
   { href: "/docs", label: "Developers" },
   { href: "/dashboard", label: "Merchant Console" },
-  { href: "/contact", label: "Resources" },
   { href: "/pricing", label: "Pricing" },
 ];
 
 const footerItems = [
   { href: "/about", label: "About" },
+  { href: "/integrations", label: "Integrations" },
   { href: "/docs", label: "Docs" },
   { href: "/pricing", label: "Pricing" },
   { href: "/contact", label: "Contact" },

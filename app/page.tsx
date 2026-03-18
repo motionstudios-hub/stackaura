@@ -33,14 +33,14 @@ export default function Home() {
 
   const paymentProviderLogos = [
     { name: "Ozow", mark: "OZOW" },
+    { name: "PayFast", mark: "PayFast" },
     { name: "Paystack", mark: "paystack" },
     { name: "Stripe", mark: "stripe" },
-    { name: "Shopify", mark: "shopify" },
   ];
 
   const commercePlatformLogos = [
+    { name: "Shopify", mark: "shopify" },
     { name: "WooCommerce", mark: "WooCommerce" },
-    { name: "Yoco", mark: "YOCO" },
     { name: "Custom API", mark: "Custom API" },
     { name: "SaaS Platforms", mark: "SaaS Platforms" },
   ];
@@ -148,6 +148,8 @@ export default function Home() {
                             className={`text-center text-[22px] font-semibold tracking-[-0.03em] text-[#0a2540]/72 transition duration-300 group-hover:text-[#0a2540] ${
                               item.name === "Ozow"
                                 ? "tracking-[0.16em] text-[20px]"
+                                : item.name === "PayFast"
+                                  ? "text-[19px] font-semibold tracking-[-0.02em]"
                                 : item.name === "Paystack"
                                   ? "text-[19px] font-semibold lowercase tracking-[-0.02em]"
                                   : item.name === "Stripe"
@@ -174,11 +176,11 @@ export default function Home() {
                         >
                           <span
                             className={`text-center text-[20px] font-semibold tracking-[-0.03em] text-[#0a2540]/72 transition duration-300 group-hover:text-[#0a2540] ${
-                              item.name === "WooCommerce"
+                              item.name === "Shopify"
+                                ? "text-[19px] font-semibold lowercase tracking-[-0.03em]"
+                                : item.name === "WooCommerce"
                                 ? "text-[17px] font-semibold"
-                                : item.name === "Yoco"
-                                  ? "text-[19px] tracking-[0.16em]"
-                                  : item.name === "Custom API"
+                                : item.name === "Custom API"
                                     ? "text-[17px]"
                                     : "text-[17px]"
                             }`}
@@ -227,6 +229,76 @@ export default function Home() {
               <p className="mt-4 text-base leading-7 text-[#425466]">
                 Designed for SaaS products, online stores, marketplaces, and custom payment experiences across web and mobile.
               </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-[1440px] px-6 py-4 lg:px-10">
+          <div className="grid gap-6 overflow-hidden rounded-[32px] border border-white/45 bg-white/24 p-8 shadow-[0_16px_36px_rgba(122,146,168,0.10)] backdrop-blur-2xl lg:grid-cols-[0.92fr_1.08fr] lg:p-10">
+            <div>
+              <div className="text-sm font-semibold uppercase tracking-[0.18em] text-[#6b7c93]">
+                Infrastructure role
+              </div>
+              <h2 className="mt-4 text-4xl font-semibold tracking-tight text-[#0a2540] sm:text-5xl">
+                Stackaura sits between merchant systems and licensed payment providers.
+              </h2>
+              <p className="mt-5 max-w-2xl text-lg leading-8 text-[#425466]">
+                Stackaura provides software infrastructure and orchestration tools. Stackaura does
+                not directly process, hold, or settle customer funds; payments are handled by
+                licensed payment providers.
+              </p>
+
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <Link
+                  href="/integrations"
+                  className="inline-flex items-center justify-center rounded-2xl border border-white/45 bg-white/22 px-6 py-3.5 text-sm font-semibold text-[#4f46e5] shadow-[0_10px_24px_rgba(133,156,180,0.12)] backdrop-blur-2xl transition hover:bg-white/30 hover:border-white/55"
+                >
+                  See integrations
+                </Link>
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center justify-center rounded-2xl border border-white/35 bg-white/16 px-6 py-3.5 text-sm font-semibold text-[#0a2540] shadow-[0_10px_24px_rgba(133,156,180,0.10)] backdrop-blur-2xl transition hover:bg-white/24"
+                >
+                  Contact sales
+                </Link>
+              </div>
+            </div>
+
+            <div className="grid gap-4">
+              <div className="rounded-[24px] border border-white/42 bg-[linear-gradient(180deg,rgba(255,255,255,0.38)_0%,rgba(238,246,250,0.24)_100%)] p-6 shadow-[0_12px_28px_rgba(122,146,168,0.08)] backdrop-blur-2xl">
+                <div className="text-xs font-semibold uppercase tracking-[0.18em] text-[#6b7c93]">
+                  Payment processing boundary
+                </div>
+                <p className="mt-4 text-base leading-7 text-[#425466]">
+                  Licensed payment providers remain responsible for payment processing, fund flows,
+                  and settlement within their own regulated environments.
+                </p>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-3">
+                {[
+                  {
+                    title: "Merchant systems",
+                    body: "Commerce apps, marketplaces, SaaS products, and custom merchant workflows connect to Stackaura.",
+                  },
+                  {
+                    title: "Stackaura",
+                    body: "Stackaura coordinates checkout infrastructure, routing, onboarding, API access, and operational tooling.",
+                  },
+                  {
+                    title: "Licensed providers",
+                    body: "Licensed payment providers handle the underlying payment execution and settlement path.",
+                  },
+                ].map((item) => (
+                  <div
+                    key={item.title}
+                    className="rounded-[24px] border border-white/40 bg-white/20 p-5 shadow-[0_12px_28px_rgba(122,146,168,0.08)] backdrop-blur-2xl"
+                  >
+                    <div className="text-lg font-semibold tracking-tight text-[#0a2540]">{item.title}</div>
+                    <p className="mt-3 text-sm leading-6 text-[#425466]">{item.body}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>

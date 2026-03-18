@@ -16,6 +16,10 @@ const sections = [
     body: "Payment data may be processed through third-party payment gateways and financial service providers. Stackaura does not represent that it is a card scheme or issuing bank.",
   },
   {
+    title: "Infrastructure role",
+    body: "Stackaura provides software infrastructure and orchestration tools. Stackaura does not directly process, hold, or settle customer funds; licensed payment providers handle payment processing and settlement within their own regulated environments.",
+  },
+  {
     title: "Security measures",
     body: "We use reasonable technical and organisational measures to protect information processed through our systems.",
   },
