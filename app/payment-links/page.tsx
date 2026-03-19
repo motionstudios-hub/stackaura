@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   DarkBackground,
   cn,
@@ -33,15 +33,14 @@ function centsToAmountString(amountCents: number) {
 }
 
 export default function PaymentLinksPage() {
-  const backendBaseUrl =
-    process.env.NEXT_PUBLIC_CHECKOUT_API_BASE_URL || "http://localhost:3001";
-
   const [apiKey, setApiKey] = useState("");
   const [amount, setAmount] = useState("25.00");
   const [currency, setCurrency] = useState("ZAR");
   const [customerEmail, setCustomerEmail] = useState("");
   const [description, setDescription] = useState("Stackaura payment link");
   const [gateway, setGateway] = useState("PAYFAST");
+  const [activeMerchantId, setActiveMerchantId] = useState<string | null>(null);
+  const [loadingMerchantContext, setLoadingMerchantContext] = useState(true);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -73,6 +72,54 @@ export default function PaymentLinksPage() {
     return `mailto:?subject=${subject}&body=${body}`;
   }, [description, result, shareMessage]);
 
+  const usingMerchantApiKey = Boolean(apiKey.trim());
+  const canCreate = loading ? false : amountCents > 0 && (usingMerchantApiKey || Boolean(activeMerchantId));
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadActiveMerchant() {
+      try {
+        const response = await fetch("/api/active-merchant", {
+          credentials: "include",
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load active merchant context.");
+        }
+
+        const data: unknown = await response.json();
+        const merchantId =
+          typeof data === "object" &&
+          data !== null &&
+          "merchantId" in data &&
+          typeof data.merchantId === "string" &&
+          data.merchantId.trim()
+            ? data.merchantId.trim()
+            : null;
+
+        if (!cancelled) {
+          setActiveMerchantId(merchantId);
+        }
+      } catch {
+        if (!cancelled) {
+          setActiveMerchantId(null);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoadingMerchantContext(false);
+        }
+      }
+    }
+
+    void loadActiveMerchant();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   async function copyValue(value: string, key: string) {
     try {
       await navigator.clipboard.writeText(value);
@@ -90,12 +137,18 @@ export default function PaymentLinksPage() {
     setResult(null);
 
     try {
-      const response = await fetch(`${backendBaseUrl}/v1/payments`, {
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+
+      if (usingMerchantApiKey) {
+        headers.Authorization = `Bearer ${apiKey.trim()}`;
+      }
+
+      const response = await fetch("/api/payments", {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-        },
+        credentials: "include",
+        headers,
         body: JSON.stringify({
           amountCents,
           currency,
@@ -105,13 +158,17 @@ export default function PaymentLinksPage() {
         }),
       });
 
-      const data = await response.json();
+      const data = await response.json().catch(() => null);
 
       if (!response.ok) {
-        throw new Error(data?.message || "Failed to create payment link.");
+        throw new Error(
+          typeof data === "object" && data !== null && "message" in data && typeof data.message === "string"
+            ? data.message
+            : "Failed to create payment link."
+        );
       }
 
-      setResult(data);
+      setResult(data as CreatePaymentResponse);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create payment link.");
     } finally {
@@ -143,8 +200,9 @@ export default function PaymentLinksPage() {
                 Create shareable checkout links in the Stackaura console.
               </div>
               <div className="mt-3 max-w-2xl text-sm leading-7 text-zinc-300">
-                Generate a hosted checkout link with a merchant API key, then share it across
-                WhatsApp, Instagram DM, or email without leaving the Stackaura payments stack.
+                Generate a hosted checkout link with either the active merchant workspace or an
+                explicit merchant API key, then share it across WhatsApp, Instagram DM, or email
+                without leaving the Stackaura payments stack.
               </div>
             </div>
           </div>
@@ -158,7 +216,26 @@ export default function PaymentLinksPage() {
           <section className={cn(darkSurfaceClass, "p-6")}>
             <div className="text-sm font-semibold text-white">Create payment link</div>
             <div className="mt-2 text-sm text-zinc-400">
-              Generate a hosted Stackaura checkout link using a merchant API key.
+              Generate a hosted Stackaura checkout link with either the active merchant workspace
+              or an explicit merchant API key.
+            </div>
+
+            <div className={cn(darkSubtleSurfaceClass, "mt-5 p-4")}>
+              <div className="text-xs uppercase tracking-wide text-zinc-500">
+                Resolution path
+              </div>
+              <div className="mt-3 text-sm leading-6 text-zinc-300">
+                {usingMerchantApiKey
+                  ? "Using the provided merchant API key. This stays the source of truth for merchant-authenticated payment creation."
+                  : loadingMerchantContext
+                    ? "Checking for an active dashboard merchant context..."
+                    : activeMerchantId
+                      ? "No merchant API key provided, so payment creation will use the active dashboard merchant and its saved Ozow configuration."
+                      : "Add a merchant API key or sign in to a merchant workspace before creating a payment."}
+              </div>
+              <div className="mt-3 text-xs text-zinc-500">
+                Active merchant: {loadingMerchantContext ? "Loading..." : activeMerchantId ?? "None"}
+              </div>
             </div>
 
             <form onSubmit={createLink} className="mt-6 grid gap-4">
@@ -168,8 +245,7 @@ export default function PaymentLinksPage() {
                   className={cn(darkInputClass, "font-mono text-xs")}
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
-                  placeholder="ck_test_..."
-                  required
+                  placeholder="Optional when an active merchant is selected"
                 />
               </label>
 
@@ -238,7 +314,7 @@ export default function PaymentLinksPage() {
 
               <button
                 type="submit"
-                disabled={loading || !apiKey || amountCents <= 0}
+                disabled={!canCreate}
                 className={cn(darkPrimaryButtonClass, "w-full")}
               >
                 {loading ? "Creating link..." : "Create payment link"}

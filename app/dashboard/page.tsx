@@ -30,6 +30,7 @@ export default async function DashboardPage() {
   );
 
   const quickActions = [
+    { href: "/dashboard/gateways", label: "Open Gateway Connections", tone: "primary" as const },
     { href: "/dashboard/api-keys", label: "Open Developer Keys", tone: "primary" as const },
     { href: "/payment-links", label: "Launch Payment Links", tone: "secondary" as const },
     { href: "/docs", label: "Read API docs", tone: "secondary" as const },
@@ -218,7 +219,7 @@ export default async function DashboardPage() {
             <div className="mt-5 grid gap-3 text-sm text-[#425466]">
               {[
                 "Payment links directly inside the dashboard workspace",
-                "Live gateway connection UX for Ozow and PayFast",
+                "Expand gateway connection UX from Ozow into more merchant gateway rails",
                 "Merchant-facing payments, subscriptions, and ledger views",
               ].map((item) => (
                 <div key={item} className={cn(lightProductInsetPanelClass, "p-4")}>

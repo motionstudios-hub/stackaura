@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { use, useEffect, useMemo, useState } from "react";
+import { normalizeRedirectPayload, submitRedirect } from "../../lib/payment-redirect";
 import {
   DarkBackground,
   cn,
@@ -56,9 +57,6 @@ export default function HostedCheckoutPage({ params }: PageProps) {
   const [error, setError] = useState<string | null>(null);
   const [now, setNow] = useState(Date.now());
 
-  const backendBaseUrl =
-    process.env.NEXT_PUBLIC_CHECKOUT_API_BASE_URL || "http://localhost:3001";
-
   useEffect(() => {
     let cancelled = false;
 
@@ -67,7 +65,7 @@ export default function HostedCheckoutPage({ params }: PageProps) {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(`${backendBaseUrl}/v1/checkout/${token}`, {
+        const response = await fetch(`/api/checkout/${token}`, {
           cache: "no-store",
         });
 
@@ -96,7 +94,7 @@ export default function HostedCheckoutPage({ params }: PageProps) {
     return () => {
       cancelled = true;
     };
-  }, [backendBaseUrl, token]);
+  }, [token]);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -130,6 +128,7 @@ export default function HostedCheckoutPage({ params }: PageProps) {
   }, [now, payment]);
 
   const description = payment?.description ?? "Secure payment powered by Stackaura.";
+  const redirect = useMemo(() => normalizeRedirectPayload(payment), [payment]);
 
   return (
     <DarkBackground>
@@ -204,10 +203,14 @@ export default function HostedCheckoutPage({ params }: PageProps) {
                   </div>
 
                   <div className="mt-6 flex flex-wrap gap-3">
-                    {payment.redirectUrl && !expired ? (
-                      <a href={payment.redirectUrl} className={darkPrimaryButtonClass}>
+                    {redirect && !expired ? (
+                      <button
+                        type="button"
+                        className={darkPrimaryButtonClass}
+                        onClick={() => submitRedirect(redirect)}
+                      >
                         Continue to {gateway}
-                      </a>
+                      </button>
                     ) : (
                       <button
                         disabled

@@ -1,12 +1,11 @@
 "use client";
 
-type RedirectMethod = "GET" | "POST";
-
-type RedirectInstruction = {
-  url: string;
-  method?: RedirectMethod;
-  fields?: Record<string, string>;
-};
+import {
+  normalizeRedirectPayload,
+  submitRedirect,
+  type RedirectInstruction,
+  type RedirectMethod,
+} from "./payment-redirect";
 
 type OzowRedirectResponse =
   | {
@@ -81,109 +80,6 @@ function extractErrorMessage(payload: unknown) {
   }
 
   return null;
-}
-
-function normalizeRedirectPayload(payload: unknown): RedirectInstruction | null {
-  if (!isRecord(payload)) return null;
-
-  if (isRecord(payload.redirect) && typeof payload.redirect.url === "string") {
-    return {
-      url: payload.redirect.url,
-      method:
-        payload.redirect.method === "POST" || payload.redirect.method === "GET"
-          ? payload.redirect.method
-          : "GET",
-      fields: isRecord(payload.redirect.fields)
-        ? Object.fromEntries(
-            Object.entries(payload.redirect.fields).filter(
-              (entry): entry is [string, string] => typeof entry[1] === "string"
-            )
-          )
-        : undefined,
-    };
-  }
-
-  if (typeof payload.action === "string" && payload.action) {
-    return {
-      url: payload.action,
-      method: payload.method === "POST" || payload.method === "GET" ? payload.method : "POST",
-      fields: isRecord(payload.fields)
-        ? Object.fromEntries(
-            Object.entries(payload.fields).filter(
-              (entry): entry is [string, string] => typeof entry[1] === "string"
-            )
-          )
-        : undefined,
-    };
-  }
-
-  if (isRecord(payload.redirectForm)) {
-    if (typeof payload.redirectForm.url === "string" && payload.redirectForm.url) {
-      return {
-        url: payload.redirectForm.url,
-        method:
-          payload.redirectForm.method === "POST" || payload.redirectForm.method === "GET"
-            ? payload.redirectForm.method
-            : "GET",
-        fields: isRecord(payload.redirectForm.fields)
-          ? Object.fromEntries(
-              Object.entries(payload.redirectForm.fields).filter(
-                (entry): entry is [string, string] => typeof entry[1] === "string"
-              )
-            )
-          : undefined,
-      };
-    }
-
-    if (typeof payload.redirectForm.action === "string" && payload.redirectForm.action) {
-      return {
-        url: payload.redirectForm.action,
-        method:
-          payload.redirectForm.method === "POST" || payload.redirectForm.method === "GET"
-            ? payload.redirectForm.method
-            : "POST",
-        fields: isRecord(payload.redirectForm.fields)
-          ? Object.fromEntries(
-              Object.entries(payload.redirectForm.fields).filter(
-                (entry): entry is [string, string] => typeof entry[1] === "string"
-              )
-            )
-          : undefined,
-      };
-    }
-  }
-
-  if (typeof payload.redirectUrl === "string" && payload.redirectUrl) {
-    return {
-      url: payload.redirectUrl,
-      method: "GET",
-    };
-  }
-
-  return null;
-}
-
-function submitRedirect(instruction: RedirectInstruction) {
-  if (instruction.method === "POST") {
-    const form = document.createElement("form");
-    form.method = "POST";
-    form.action = instruction.url;
-    form.style.display = "none";
-
-    for (const [key, value] of Object.entries(instruction.fields ?? {})) {
-      const input = document.createElement("input");
-      input.type = "hidden";
-      input.name = key;
-      input.value = value;
-      form.appendChild(input);
-    }
-
-    document.body.appendChild(form);
-    form.submit();
-    return;
-  }
-
-  window.location.assign(instruction.url);
 }
 
 export async function initiateOzowSignupPayment(payload: OzowInitiateRequest) {
