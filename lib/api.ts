@@ -22,6 +22,7 @@ export type Payment = {
   createdAt: string;
   updatedAt: string;
   checkoutUrl: string;
+  metadata?: JsonValue | null;
   platformFeeCents?: number;
   merchantNetCents?: number;
   currentAttemptId?: string | null;

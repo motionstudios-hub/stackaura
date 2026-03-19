@@ -1,4 +1,6 @@
 import PaymentStatePage from "../../components/PaymentStatePage";
+import { resolvePaymentSuccessContent } from "../../lib/payment-success";
+import { getPayment } from "@/lib/api";
 
 type SearchParams =
   | Promise<{
@@ -19,18 +21,29 @@ export default async function PaymentsSuccessPage({
 }) {
   const resolvedSearchParams = await Promise.resolve(searchParams);
   const reference = getSearchValue(resolvedSearchParams.reference) || null;
+  let payment = null;
+
+  if (reference) {
+    try {
+      payment = await getPayment(reference);
+    } catch {
+      payment = null;
+    }
+  }
+
+  const content = resolvePaymentSuccessContent(payment);
 
   return (
     <PaymentStatePage
-      eyebrow="Payment successful"
-      title="Merchant account activated"
-      description="Your Ozow payment completed successfully, and your Stackaura merchant workspace is now active."
+      eyebrow={content.eyebrow}
+      title={content.title}
+      description={content.description}
       tone="success"
-      detail="You can continue to login and access your dashboard, API keys, and payment tools."
-      primaryHref="/login"
-      primaryLabel="Continue to login"
-      secondaryHref="/"
-      secondaryLabel="Back to homepage"
+      detail={content.detail}
+      primaryHref={content.primaryHref}
+      primaryLabel={content.primaryLabel}
+      secondaryHref={content.secondaryHref}
+      secondaryLabel={content.secondaryLabel}
       reference={reference}
     />
   );
