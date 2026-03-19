@@ -46,6 +46,18 @@ type YocoFormState = {
   testMode: boolean;
 };
 
+type PaystackConnectionState = {
+  connected: boolean;
+  hasSecretKey: boolean;
+  testMode: boolean;
+  updatedAt: string | null;
+};
+
+type PaystackFormState = {
+  secretKey: string;
+  testMode: boolean;
+};
+
 type PresenceTone = "success" | "warning" | "muted" | "violet";
 
 const emptyConnection: OzowConnectionState = {
@@ -60,6 +72,13 @@ const emptyConnection: OzowConnectionState = {
 const emptyYocoConnection: YocoConnectionState = {
   connected: false,
   hasPublicKey: false,
+  hasSecretKey: false,
+  testMode: false,
+  updatedAt: null,
+};
+
+const emptyPaystackConnection: PaystackConnectionState = {
+  connected: false,
   hasSecretKey: false,
   testMode: false,
   updatedAt: null,
@@ -155,6 +174,21 @@ function parseYocoConnectionPayload(payload: unknown): YocoConnectionState {
   };
 }
 
+function parsePaystackConnectionPayload(payload: unknown): PaystackConnectionState {
+  const record = isRecord(payload)
+    ? isRecord(payload.data)
+      ? payload.data
+      : payload
+    : {};
+
+  return {
+    connected: pickBoolean(record, ["connected"]) ?? false,
+    hasSecretKey: pickBoolean(record, ["hasSecretKey"]) ?? false,
+    testMode: pickBoolean(record, ["testMode"]) ?? false,
+    updatedAt: pickString(record, ["updatedAt"]),
+  };
+}
+
 function PresenceBadge({
   label,
   value,
@@ -201,17 +235,27 @@ export default function GatewayConnectionsPage() {
     secretKey: "",
     testMode: true,
   });
+  const [paystackForm, setPaystackForm] = useState<PaystackFormState>({
+    secretKey: "",
+    testMode: true,
+  });
   const [connection, setConnection] = useState<OzowConnectionState>(emptyConnection);
   const [yocoConnection, setYocoConnection] = useState<YocoConnectionState>(emptyYocoConnection);
+  const [paystackConnection, setPaystackConnection] =
+    useState<PaystackConnectionState>(emptyPaystackConnection);
   const [readbackStatus, setReadbackStatus] = useState<ReadbackStatus>("loading");
   const [yocoReadbackStatus, setYocoReadbackStatus] = useState<ReadbackStatus>("loading");
+  const [paystackReadbackStatus, setPaystackReadbackStatus] = useState<ReadbackStatus>("loading");
   const [loadingMerchant, setLoadingMerchant] = useState(true);
   const [saving, setSaving] = useState(false);
   const [yocoSaving, setYocoSaving] = useState(false);
+  const [paystackSaving, setPaystackSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [yocoError, setYocoError] = useState<string | null>(null);
   const [yocoSuccess, setYocoSuccess] = useState<string | null>(null);
+  const [paystackError, setPaystackError] = useState<string | null>(null);
+  const [paystackSuccess, setPaystackSuccess] = useState<string | null>(null);
 
   const hasActiveMerchant = Boolean(merchantId);
   const canSave =
@@ -223,6 +267,7 @@ export default function GatewayConnectionsPage() {
     Boolean(merchantId) &&
     Boolean(yocoForm.publicKey.trim()) &&
     Boolean(yocoForm.secretKey.trim());
+  const paystackCanSave = Boolean(merchantId) && Boolean(paystackForm.secretKey.trim());
 
   async function fetchActiveMerchant() {
     const res = await fetch("/api/active-merchant", {
@@ -315,8 +360,49 @@ export default function GatewayConnectionsPage() {
     }
   }
 
+  async function loadPaystackConnection(mid?: string) {
+    const resolvedMerchantId = mid ?? merchantId ?? (await fetchActiveMerchant());
+
+    setPaystackReadbackStatus("loading");
+    setPaystackError(null);
+
+    try {
+      const res = await fetch(`/api/proxy/v1/merchants/${resolvedMerchantId}/gateways/paystack`, {
+        credentials: "include",
+        cache: "no-store",
+      });
+
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        throw new Error(text || `Failed to load Paystack connection (${res.status})`);
+      }
+
+      const payload: unknown = await res.json();
+      const parsed = parsePaystackConnectionPayload(payload);
+      setPaystackConnection(parsed);
+      setPaystackReadbackStatus("available");
+      setPaystackForm((current) => ({ ...current, testMode: parsed.testMode }));
+      return parsed;
+    } catch (loadError: unknown) {
+      setPaystackReadbackStatus("error");
+      throw loadError;
+    }
+  }
+
+  async function refreshPaystackConnection() {
+    try {
+      await loadPaystackConnection();
+    } catch (loadError: unknown) {
+      setPaystackError(getErrorMessage(loadError, "Failed to load the Paystack connection"));
+    }
+  }
+
   async function refreshAllConnections() {
-    await Promise.allSettled([refreshConnection(), refreshYocoConnection()]);
+    await Promise.allSettled([
+      refreshConnection(),
+      refreshYocoConnection(),
+      refreshPaystackConnection(),
+    ]);
   }
 
   async function saveConnection() {
@@ -445,6 +531,65 @@ export default function GatewayConnectionsPage() {
     }
   }
 
+  async function savePaystackConnection() {
+    if (!merchantId) return;
+
+    const secretKey = paystackForm.secretKey.trim();
+
+    if (!secretKey) {
+      setPaystackError("Secret key is required.");
+      return;
+    }
+
+    setPaystackSaving(true);
+    setPaystackError(null);
+    setPaystackSuccess(null);
+
+    try {
+      const res = await fetch(`/api/proxy/v1/merchants/${merchantId}/gateways/paystack`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          secretKey,
+          testMode: paystackForm.testMode,
+        }),
+      });
+
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        throw new Error(text || `Failed to save Paystack credentials (${res.status})`);
+      }
+
+      setPaystackForm((current) => ({
+        secretKey: "",
+        testMode: current.testMode,
+      }));
+
+      try {
+        const refreshed = await loadPaystackConnection(merchantId);
+        setPaystackForm({
+          secretKey: "",
+          testMode: refreshed.testMode,
+        });
+        setPaystackSuccess("Paystack connection saved and refreshed from the backend.");
+      } catch (refreshError: unknown) {
+        setPaystackSuccess(
+          "Paystack connection saved. The dashboard could not refresh the latest backend state immediately."
+        );
+        setPaystackError(
+          getErrorMessage(refreshError, "Failed to refresh the Paystack connection")
+        );
+      }
+    } catch (saveError: unknown) {
+      setPaystackError(getErrorMessage(saveError, "Failed to save the Paystack connection"));
+    } finally {
+      setPaystackSaving(false);
+    }
+  }
+
   useEffect(() => {
     let cancelled = false;
 
@@ -457,6 +602,7 @@ export default function GatewayConnectionsPage() {
         await Promise.allSettled([
           loadConnection(resolvedMerchantId),
           loadYocoConnection(resolvedMerchantId),
+          loadPaystackConnection(resolvedMerchantId),
         ]);
       } catch (loadError: unknown) {
         if (cancelled) return;
@@ -476,11 +622,18 @@ export default function GatewayConnectionsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const connectedCount = Number(connection.connected) + Number(yocoConnection.connected);
+  const connectedCount =
+    Number(connection.connected) +
+    Number(yocoConnection.connected) +
+    Number(paystackConnection.connected);
   const readbackLabel =
-    readbackStatus === "available" && yocoReadbackStatus === "available"
+    readbackStatus === "available" &&
+    yocoReadbackStatus === "available" &&
+    paystackReadbackStatus === "available"
       ? "All rails synced"
-      : readbackStatus === "error" || yocoReadbackStatus === "error"
+      : readbackStatus === "error" ||
+          yocoReadbackStatus === "error" ||
+          paystackReadbackStatus === "error"
         ? "Readback issue"
         : "Checking state";
 
@@ -489,9 +642,13 @@ export default function GatewayConnectionsPage() {
       ? "Setup needed"
       : `${connectedCount} rail${connectedCount === 1 ? "" : "s"} connected`;
   const readbackTone =
-    readbackStatus === "available" && yocoReadbackStatus === "available"
+    readbackStatus === "available" &&
+    yocoReadbackStatus === "available" &&
+    paystackReadbackStatus === "available"
       ? "success"
-      : readbackStatus === "error" || yocoReadbackStatus === "error"
+      : readbackStatus === "error" ||
+          yocoReadbackStatus === "error" ||
+          paystackReadbackStatus === "error"
         ? "warning"
         : "muted";
 
@@ -505,12 +662,12 @@ export default function GatewayConnectionsPage() {
             <div className="max-w-3xl">
               <div className={lightProductSectionEyebrowClass}>Gateway connections</div>
               <h1 className="mt-3 text-4xl font-semibold tracking-tight text-[#0a2540] sm:text-5xl">
-                Connect each merchant to Ozow and Yoco from the dashboard.
+                Connect each merchant to Ozow, Yoco, and Paystack from the dashboard.
               </h1>
               <p className={cn(lightProductMutedTextClass, "mt-4 max-w-3xl")}>
                 Save merchant-scoped gateway credentials inside the Stackaura dashboard, keep
-                secrets masked after submission, and surface connection health for both checkout
-                rails in the same light glass workspace the rest of the console uses.
+                secrets masked after submission, and surface connection health for every checkout
+                rail in the same light glass workspace the rest of the console uses.
               </p>
             </div>
 
@@ -542,17 +699,21 @@ export default function GatewayConnectionsPage() {
                   loadingMerchant ||
                   saving ||
                   yocoSaving ||
+                  paystackSaving ||
                   readbackStatus === "loading" ||
-                  yocoReadbackStatus === "loading"
+                  yocoReadbackStatus === "loading" ||
+                  paystackReadbackStatus === "loading"
                 }
               >
-                {readbackStatus === "loading" || yocoReadbackStatus === "loading"
+                {readbackStatus === "loading" ||
+                yocoReadbackStatus === "loading" ||
+                paystackReadbackStatus === "loading"
                   ? "Refreshing..."
                   : "Refresh states"}
               </button>
               <span className={cn(lightProductMutedTextClass, "max-w-sm text-xs")}>
-                Refresh pulls the latest persisted non-secret Ozow and Yoco connection state for
-                this merchant from the gateway API.
+                Refresh pulls the latest persisted non-secret Ozow, Yoco, and Paystack connection
+                state for this merchant from the gateway API.
               </span>
             </div>
           </div>
@@ -770,6 +931,18 @@ export default function GatewayConnectionsPage() {
         </div>
       ) : null}
 
+      {paystackSuccess ? (
+        <div className="mt-6 rounded-[24px] border border-emerald-300/70 bg-emerald-50/85 p-4 text-sm text-emerald-700">
+          {paystackSuccess}
+        </div>
+      ) : null}
+
+      {paystackError ? (
+        <div className="mt-6 rounded-[24px] border border-rose-300/70 bg-rose-50/85 p-4 text-sm text-rose-700">
+          {paystackError}
+        </div>
+      ) : null}
+
       <section className="mt-6 grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
         <div className={cn(lightProductPanelClass, "overflow-hidden")}>
           <div className="border-b border-white/42 px-5 py-4">
@@ -936,6 +1109,189 @@ export default function GatewayConnectionsPage() {
                 disabled={!yocoCanSave || yocoSaving || !hasActiveMerchant}
               >
                 {yocoSaving ? "Saving..." : "Save Yoco connection"}
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mt-6 grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
+        <div className={cn(lightProductPanelClass, "overflow-hidden")}>
+          <div className="border-b border-white/42 px-5 py-4">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div className="text-base font-semibold text-[#0a2540]">Paystack connection state</div>
+                <div className="mt-1 text-xs uppercase tracking-[0.16em] text-[#6b7c93]">
+                  Masked merchant view
+                </div>
+              </div>
+              <span
+                className={lightProductStatusPillClass(
+                  paystackConnection.connected ? "success" : "muted"
+                )}
+              >
+                {paystackConnection.connected ? "Credentials saved" : "Awaiting setup"}
+              </span>
+            </div>
+          </div>
+
+          <div className="space-y-4 p-5">
+            <div className={cn(lightProductInsetPanelClass, "p-4")}>
+              <div className="text-xs uppercase tracking-[0.2em] text-[#6b7c93]">Connection state</div>
+              <div className="mt-3 text-lg font-semibold tracking-tight text-[#0a2540]">
+                {paystackConnection.connected
+                  ? "Paystack is connected for this merchant"
+                  : "Paystack is not configured yet"}
+              </div>
+              <div className="mt-2 text-sm text-[#425466]">
+                The dashboard only shows persisted presence indicators for the Paystack secret key
+                after save.
+              </div>
+            </div>
+
+            <div className="grid gap-3">
+              <PresenceBadge
+                label="Secret key"
+                value={paystackConnection.hasSecretKey ? "Stored and masked" : "Missing"}
+                tone={
+                  paystackConnection.hasSecretKey
+                    ? "success"
+                    : paystackConnection.connected
+                      ? "warning"
+                      : "muted"
+                }
+              />
+              <PresenceBadge
+                label="Test mode"
+                value={
+                  !paystackConnection.connected
+                    ? "No persisted mode reported yet"
+                    : paystackConnection.testMode
+                      ? "Test transactions are enabled"
+                      : "Live transactions are enabled"
+                }
+                tone={
+                  !paystackConnection.connected
+                    ? "warning"
+                    : paystackConnection.testMode
+                      ? "violet"
+                      : "success"
+                }
+                statusLabel={
+                  !paystackConnection.connected
+                    ? "Pending"
+                    : paystackConnection.testMode
+                      ? "Test"
+                      : "Live"
+                }
+              />
+            </div>
+
+            <div className={cn(lightProductInsetPanelClass, "p-4")}>
+              <div className="text-xs uppercase tracking-[0.2em] text-[#6b7c93]">Last update</div>
+              <div className="mt-2 text-sm text-[#0a2540]">
+                {formatTimestamp(paystackConnection.updatedAt)}
+              </div>
+              <div className="mt-2 text-sm text-[#425466]">
+                Raw Paystack secrets are intentionally hidden after save. Enter a new value below
+                whenever you need to rotate or replace the merchant configuration.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className={cn(lightProductPanelClass, "overflow-hidden")}>
+          <div className="border-b border-white/42 px-5 py-4">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div className="text-base font-semibold text-[#0a2540]">Configure Paystack</div>
+                <div className="mt-1 text-xs uppercase tracking-[0.16em] text-[#6b7c93]">
+                  Merchant gateway credentials
+                </div>
+              </div>
+              <span className={lightProductStatusPillClass("violet")}>Paystack</span>
+            </div>
+          </div>
+
+          <div className="space-y-5 p-5">
+            <div className={cn(lightProductInsetPanelClass, "p-4")}>
+              <div className="text-sm font-medium text-[#0a2540]">Connection behavior</div>
+              <div className={cn(lightProductMutedTextClass, "mt-2")}>
+                Saving posts the Paystack secret key and test mode to the merchant gateway API.
+                After a successful save, the dashboard refreshes from the persisted backend
+                readback and clears the secret input again.
+              </div>
+            </div>
+
+            <label className="block">
+              <div className="mb-1 text-xs uppercase tracking-[0.16em] text-[#6b7c93]">Secret key</div>
+              <input
+                className={lightProductInputClass}
+                type="password"
+                value={paystackForm.secretKey}
+                onChange={(event) =>
+                  setPaystackForm((current) => ({ ...current, secretKey: event.target.value }))
+                }
+                placeholder="sk_test_..."
+                autoComplete="new-password"
+              />
+            </label>
+
+            <div className={cn(lightProductInsetPanelClass, "p-4")}>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <div className="text-xs uppercase tracking-[0.16em] text-[#6b7c93]">Test mode</div>
+                  <div className="mt-2 text-sm font-medium text-[#0a2540]">
+                    {paystackForm.testMode ? "Enabled" : "Disabled"}
+                  </div>
+                  <div className={cn(lightProductMutedTextClass, "mt-2 max-w-md")}>
+                    Toggle the merchant between Paystack test and live mode before saving this
+                    connection.
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={paystackForm.testMode}
+                  aria-label="Toggle Paystack test mode"
+                  onClick={() =>
+                    setPaystackForm((current) => ({
+                      ...current,
+                      testMode: !current.testMode,
+                    }))
+                  }
+                  className={cn(
+                    "relative inline-flex h-12 w-[84px] shrink-0 items-center rounded-full border p-1 transition duration-200",
+                    paystackForm.testMode
+                      ? "border-[#b8b2ff]/70 bg-[linear-gradient(180deg,rgba(122,115,255,0.18)_0%,rgba(160,233,255,0.16)_100%)] shadow-[0_10px_24px_rgba(99,91,255,0.14)]"
+                      : "border-white/45 bg-white/24 shadow-[0_10px_24px_rgba(133,156,180,0.10)]"
+                  )}
+                >
+                  <span className="sr-only">Toggle Paystack test mode</span>
+                  <span
+                    className={cn(
+                      "inline-block h-10 w-10 rounded-full border bg-white shadow-[0_10px_20px_rgba(122,146,168,0.18)] transition-transform duration-200",
+                      paystackForm.testMode
+                        ? "translate-x-8 border-[#b8b2ff]/70"
+                        : "translate-x-0 border-white/55"
+                    )}
+                  />
+                </button>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3 border-t border-white/42 pt-5 sm:flex-row sm:items-center sm:justify-between">
+              <div className={cn(lightProductMutedTextClass, "max-w-lg")}>
+                Required fields: Paystack secret key. Saving updates the current merchant only.
+              </div>
+
+              <button
+                className={cn(lightProductCompactPrimaryButtonClass, "disabled:opacity-60")}
+                onClick={savePaystackConnection}
+                disabled={!paystackCanSave || paystackSaving || !hasActiveMerchant}
+              >
+                {paystackSaving ? "Saving..." : "Save Paystack connection"}
               </button>
             </div>
           </div>
