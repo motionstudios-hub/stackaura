@@ -148,13 +148,26 @@ function parseConnectionPayload(payload: unknown): OzowConnectionState {
       : payload
     : {};
 
+  const hasApiKey =
+    pickBoolean(record, ["hasApiKey", "ozowApiKeyConfigured"]) ?? false;
+  const hasPrivateKey =
+    pickBoolean(record, ["hasPrivateKey", "ozowPrivateKeyConfigured"]) ?? false;
+  const siteCodeMasked = pickString(record, [
+    "siteCodeMasked",
+    "siteCode",
+    "ozowSiteCode",
+  ]);
+  const connected =
+    pickBoolean(record, ["connected", "configured", "ozowConfigured"]) ??
+    Boolean(siteCodeMasked && hasApiKey && hasPrivateKey);
+
   return {
-    connected: pickBoolean(record, ["connected"]) ?? false,
-    siteCodeMasked: pickString(record, ["siteCodeMasked"]),
-    hasApiKey: pickBoolean(record, ["hasApiKey"]) ?? false,
-    hasPrivateKey: pickBoolean(record, ["hasPrivateKey"]) ?? false,
-    testMode: pickBoolean(record, ["testMode"]) ?? false,
-    updatedAt: pickString(record, ["updatedAt"]),
+    connected,
+    siteCodeMasked,
+    hasApiKey,
+    hasPrivateKey,
+    testMode: pickBoolean(record, ["testMode", "ozowTestMode"]) ?? false,
+    updatedAt: pickString(record, ["updatedAt", "lastUpdatedAt"]),
   };
 }
 
@@ -165,12 +178,18 @@ function parseYocoConnectionPayload(payload: unknown): YocoConnectionState {
       : payload
     : {};
 
+  const hasPublicKey = pickBoolean(record, ["hasPublicKey"]) ?? false;
+  const hasSecretKey = pickBoolean(record, ["hasSecretKey"]) ?? false;
+  const connected =
+    pickBoolean(record, ["connected", "configured", "yocoConfigured"]) ??
+    (hasPublicKey && hasSecretKey);
+
   return {
-    connected: pickBoolean(record, ["connected"]) ?? false,
-    hasPublicKey: pickBoolean(record, ["hasPublicKey"]) ?? false,
-    hasSecretKey: pickBoolean(record, ["hasSecretKey"]) ?? false,
+    connected,
+    hasPublicKey,
+    hasSecretKey,
     testMode: pickBoolean(record, ["testMode"]) ?? false,
-    updatedAt: pickString(record, ["updatedAt"]),
+    updatedAt: pickString(record, ["updatedAt", "lastUpdatedAt"]),
   };
 }
 
@@ -181,11 +200,16 @@ function parsePaystackConnectionPayload(payload: unknown): PaystackConnectionSta
       : payload
     : {};
 
+  const hasSecretKey = pickBoolean(record, ["hasSecretKey"]) ?? false;
+  const connected =
+    pickBoolean(record, ["connected", "configured", "paystackConfigured"]) ??
+    hasSecretKey;
+
   return {
-    connected: pickBoolean(record, ["connected"]) ?? false,
-    hasSecretKey: pickBoolean(record, ["hasSecretKey"]) ?? false,
+    connected,
+    hasSecretKey,
     testMode: pickBoolean(record, ["testMode"]) ?? false,
-    updatedAt: pickString(record, ["updatedAt"]),
+    updatedAt: pickString(record, ["updatedAt", "lastUpdatedAt"]),
   };
 }
 

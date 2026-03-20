@@ -2,12 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   ACTIVE_MERCHANT_COOKIE_NAME,
   ACTIVE_MERCHANT_HEADER_NAME,
-  injectMerchantIdIntoPaymentBody,
   resolvePaymentProxyContext,
 } from "@/app/lib/payment-context";
 
 const API_BASE = process.env.CHECKOUT_API_URL ?? "http://127.0.0.1:3001";
-const DASHBOARD_API_KEY = process.env.DASHBOARD_API_KEY ?? process.env.CHECKOUT_API_KEY ?? "";
 
 function buildResponseHeaders(res: Response) {
   const headers = new Headers();
@@ -20,7 +18,6 @@ export async function POST(req: NextRequest) {
   const context = resolvePaymentProxyContext({
     activeMerchantId,
     incomingAuthorization: req.headers.get("authorization"),
-    dashboardApiKey: DASHBOARD_API_KEY,
   });
 
   if (!context.ok) {
@@ -35,28 +32,22 @@ export async function POST(req: NextRequest) {
     headers.set("content-type", contentType);
   }
 
-  headers.set("authorization", context.authorization);
+  const cookie = req.headers.get("cookie");
+  const backendPath =
+    context.mode === "dashboard-merchant" ? "/v1/payments/dashboard" : "/v1/payments";
 
-  let body = await req.text();
   if (context.mode === "dashboard-merchant") {
     headers.set(ACTIVE_MERCHANT_HEADER_NAME, context.merchantId);
-
-    try {
-      body = injectMerchantIdIntoPaymentBody(body, context.merchantId);
-    } catch (error) {
-      return NextResponse.json(
-        {
-          message:
-            error instanceof Error
-              ? error.message
-              : "Payment creation expects a JSON object body.",
-        },
-        { status: 400 }
-      );
+    if (cookie) {
+      headers.set("cookie", cookie);
     }
+  } else {
+    headers.set("authorization", context.authorization);
   }
 
-  const res = await fetch(`${API_BASE}/v1/payments`, {
+  const body = await req.text();
+
+  const res = await fetch(`${API_BASE}${backendPath}`, {
     method: "POST",
     headers,
     body,

@@ -11,7 +11,7 @@ export type PaymentProxyContext =
   | {
       ok: true;
       mode: "dashboard-merchant";
-      authorization: string;
+      authorization: null;
       merchantId: string;
     }
   | {
@@ -33,12 +33,22 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 export function resolvePaymentProxyContext({
   activeMerchantId,
   incomingAuthorization,
-  dashboardApiKey,
+  dashboardApiKey: _dashboardApiKey,
 }: {
   activeMerchantId?: string | null;
   incomingAuthorization?: string | null;
   dashboardApiKey?: string | null;
 }): PaymentProxyContext {
+  const merchantId = trimToNull(activeMerchantId);
+  if (merchantId) {
+    return {
+      ok: true,
+      mode: "dashboard-merchant",
+      authorization: null,
+      merchantId,
+    };
+  }
+
   const authorization = trimToNull(incomingAuthorization);
   if (authorization) {
     return {
@@ -49,30 +59,11 @@ export function resolvePaymentProxyContext({
     };
   }
 
-  const merchantId = trimToNull(activeMerchantId);
-  if (!merchantId) {
-    return {
-      ok: false,
-      status: 400,
-      message:
-        "Provide a merchant API key or select an active merchant before creating a payment.",
-    };
-  }
-
-  const serviceKey = trimToNull(dashboardApiKey);
-  if (!serviceKey) {
-    return {
-      ok: false,
-      status: 500,
-      message: "Dashboard payment proxy is not configured with a backend API key.",
-    };
-  }
-
   return {
-    ok: true,
-    mode: "dashboard-merchant",
-    authorization: `Bearer ${serviceKey}`,
-    merchantId,
+    ok: false,
+    status: 400,
+    message:
+      "Provide a merchant API key or select an active merchant before creating a payment.",
   };
 }
 

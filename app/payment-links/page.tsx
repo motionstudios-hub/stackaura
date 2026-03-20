@@ -31,6 +31,95 @@ type CreatePaymentResponse = {
   description?: string | null;
 };
 
+type ConnectedGatewayValue = "OZOW" | "YOCO" | "PAYSTACK";
+
+type GatewayOption = {
+  value: ConnectedGatewayValue;
+  label: string;
+  endpoint: "ozow" | "yoco" | "paystack";
+};
+
+const GATEWAY_CONNECTION_CATALOG: GatewayOption[] = [
+  { value: "OZOW", label: "Ozow", endpoint: "ozow" },
+  { value: "YOCO", label: "Yoco", endpoint: "yoco" },
+  { value: "PAYSTACK", label: "Paystack", endpoint: "paystack" },
+];
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function parseBooleanLike(value: unknown) {
+  if (typeof value === "boolean") return value;
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase();
+    if (normalized === "true") return true;
+    if (normalized === "false") return false;
+  }
+
+  return null;
+}
+
+function pickBoolean(data: Record<string, unknown>, keys: string[]) {
+  for (const key of keys) {
+    const parsed = parseBooleanLike(data[key]);
+    if (parsed !== null) return parsed;
+  }
+
+  return null;
+}
+
+function pickString(data: Record<string, unknown>, keys: string[]) {
+  for (const key of keys) {
+    const value = data[key];
+    if (typeof value === "string" && value.trim()) {
+      return value.trim();
+    }
+  }
+
+  return null;
+}
+
+function parseGatewayConnected(endpoint: GatewayOption["endpoint"], payload: unknown) {
+  const record = isRecord(payload)
+    ? isRecord(payload.data)
+      ? payload.data
+      : payload
+    : {};
+
+  const connected = pickBoolean(record, [
+    "connected",
+    "configured",
+    endpoint === "ozow"
+      ? "ozowConfigured"
+      : endpoint === "yoco"
+        ? "yocoConfigured"
+        : "paystackConfigured",
+  ]);
+
+  if (connected !== null) {
+    return connected;
+  }
+
+  if (endpoint === "ozow") {
+    const hasApiKey =
+      pickBoolean(record, ["hasApiKey", "ozowApiKeyConfigured"]) ?? false;
+    const hasPrivateKey =
+      pickBoolean(record, ["hasPrivateKey", "ozowPrivateKeyConfigured"]) ?? false;
+    const siteCode = pickString(record, ["siteCodeMasked", "siteCode", "ozowSiteCode"]);
+    return Boolean(siteCode && hasApiKey && hasPrivateKey);
+  }
+
+  if (endpoint === "yoco") {
+    return Boolean(
+      (pickBoolean(record, ["hasPublicKey"]) ?? false) &&
+        (pickBoolean(record, ["hasSecretKey"]) ?? false)
+    );
+  }
+
+  return Boolean(pickBoolean(record, ["hasSecretKey"]) ?? false);
+}
+
 function centsToAmountString(amountCents: number) {
   return (amountCents / 100).toFixed(2);
 }
@@ -41,9 +130,11 @@ export default function PaymentLinksPage() {
   const [currency, setCurrency] = useState("ZAR");
   const [customerEmail, setCustomerEmail] = useState("");
   const [description, setDescription] = useState("Stackaura payment link");
-  const [gateway, setGateway] = useState("PAYFAST");
+  const [gateway, setGateway] = useState<ConnectedGatewayValue | "">("");
   const [activeMerchantId, setActiveMerchantId] = useState<string | null>(null);
   const [loadingMerchantContext, setLoadingMerchantContext] = useState(true);
+  const [connectedGateways, setConnectedGateways] = useState<GatewayOption[]>([]);
+  const [loadingGateways, setLoadingGateways] = useState(true);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -76,7 +167,13 @@ export default function PaymentLinksPage() {
   }, [description, result, shareMessage]);
 
   const usingMerchantApiKey = Boolean(apiKey.trim());
-  const canCreate = loading ? false : amountCents > 0 && (usingMerchantApiKey || Boolean(activeMerchantId));
+  const canCreate =
+    loading || loadingMerchantContext || loadingGateways
+      ? false
+      : amountCents > 0 &&
+        Boolean(activeMerchantId) &&
+        connectedGateways.length > 0 &&
+        Boolean(gateway);
 
   useEffect(() => {
     let cancelled = false;
@@ -123,6 +220,67 @@ export default function PaymentLinksPage() {
     };
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadConnectedGateways() {
+      if (!activeMerchantId) {
+        setConnectedGateways([]);
+        setGateway("");
+        setLoadingGateways(false);
+        return;
+      }
+
+      setLoadingGateways(true);
+
+      try {
+        const results = await Promise.allSettled(
+          GATEWAY_CONNECTION_CATALOG.map(async (option) => {
+            const response = await fetch(
+              `/api/proxy/v1/merchants/${activeMerchantId}/gateways/${option.endpoint}`,
+              {
+                credentials: "include",
+                cache: "no-store",
+              }
+            );
+
+            if (!response.ok) {
+              return null;
+            }
+
+            const payload: unknown = await response.json().catch(() => null);
+            return parseGatewayConnected(option.endpoint, payload) ? option : null;
+          })
+        );
+
+        if (cancelled) return;
+
+        const next = results.flatMap((result) =>
+          result.status === "fulfilled" && result.value ? [result.value] : []
+        );
+
+        setConnectedGateways(next);
+        setGateway((current) =>
+          next.some((option) => option.value === current) ? current : next[0]?.value ?? ""
+        );
+      } catch {
+        if (cancelled) return;
+        setConnectedGateways([]);
+        setGateway("");
+      } finally {
+        if (!cancelled) {
+          setLoadingGateways(false);
+        }
+      }
+    }
+
+    void loadConnectedGateways();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [activeMerchantId]);
+
   async function copyValue(value: string, key: string) {
     try {
       await navigator.clipboard.writeText(value);
@@ -135,6 +293,17 @@ export default function PaymentLinksPage() {
 
   async function createLink(e: React.FormEvent) {
     e.preventDefault();
+
+    if (!activeMerchantId) {
+      setError("Select a merchant workspace first.");
+      return;
+    }
+
+    if (!gateway) {
+      setError("Connect a gateway first");
+      return;
+    }
+
     setLoading(true);
     setError(null);
     setResult(null);
@@ -182,34 +351,37 @@ export default function PaymentLinksPage() {
     }
   }
 
-  const resolutionSummary = usingMerchantApiKey
-    ? "This payment link will use the API key you entered, so that merchant account remains the source of truth for routing and gateway settings."
-    : loadingMerchantContext
-      ? "Checking the merchant workspace selected in your dashboard..."
-      : activeMerchantId
-        ? "No API key was added, so Stackaura will use the merchant workspace selected in your dashboard and its saved gateway configuration."
-        : "Add an API key or select a merchant workspace before creating a payment link.";
+  const noConnectedGateways =
+    Boolean(activeMerchantId) && !loadingGateways && connectedGateways.length === 0;
 
-  const resolutionTone = usingMerchantApiKey
-    ? "violet"
-    : loadingMerchantContext
+  const resolutionSummary = loadingMerchantContext
+    ? "Checking the merchant workspace selected in your dashboard..."
+    : !activeMerchantId
+      ? "Select a merchant workspace before creating a payment link."
+      : loadingGateways
+        ? "Checking which gateways are actively connected for this merchant workspace..."
+        : noConnectedGateways
+          ? "Connect a gateway first"
+          : "This payment link will use the selected merchant workspace and only its actively connected gateways.";
+
+  const resolutionTone =
+    loadingMerchantContext || loadingGateways
       ? "muted"
-      : activeMerchantId
+      : activeMerchantId && connectedGateways.length > 0
         ? "success"
         : "warning";
 
-  const resolutionLabel = usingMerchantApiKey
-    ? "Direct API access"
-    : loadingMerchantContext
+  const resolutionLabel =
+    loadingMerchantContext || loadingGateways
       ? "Checking workspace"
-      : activeMerchantId
+      : activeMerchantId && connectedGateways.length > 0
         ? "Workspace ready"
         : "Setup needed";
 
-  const resolutionSource = usingMerchantApiKey
-    ? "Provided API key"
-    : activeMerchantId
-      ? "Selected merchant workspace"
+  const resolutionSource = activeMerchantId
+    ? "Selected merchant workspace"
+    : usingMerchantApiKey
+      ? "Provided API key"
       : "Unavailable";
 
   return (
@@ -229,9 +401,9 @@ export default function PaymentLinksPage() {
                 Create hosted checkout links with the right merchant setup.
               </h1>
               <p className="mt-5 max-w-3xl text-base leading-7 text-[#425466] sm:text-lg">
-                Generate a shareable Stackaura checkout link with either the selected merchant
-                workspace or a supplied API key, then send it across the channels where your
-                customers already buy.
+                Generate a shareable Stackaura checkout link tied to the merchant workspace
+                selected in your dashboard, then send it across the channels where your customers
+                already buy.
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
@@ -342,7 +514,7 @@ export default function PaymentLinksPage() {
                   className={cn(lightProductInputClass, "font-mono text-xs")}
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
-                  placeholder="Optional when an active merchant is selected"
+                  placeholder="Ignored when a merchant workspace is selected"
                 />
               </label>
 
@@ -396,12 +568,27 @@ export default function PaymentLinksPage() {
                   <select
                     className={lightProductInputClass}
                     value={gateway}
-                    onChange={(e) => setGateway(e.target.value)}
+                    onChange={(e) =>
+                      setGateway((e.target.value as ConnectedGatewayValue | "") ?? "")
+                    }
+                    disabled={loadingGateways || connectedGateways.length === 0}
                   >
-                    <option value="PAYFAST">PayFast</option>
-                    <option value="OZOW">Ozow</option>
-                    <option value="PAYGATE">PayGate</option>
+                    <option value="" disabled>
+                      {loadingGateways ? "Checking connected gateways..." : "Connect a gateway first"}
+                    </option>
+                    {connectedGateways.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
                   </select>
+                  <span className="text-xs text-[#6b7c93]">
+                    {loadingGateways
+                      ? "Checking connected gateways for the selected merchant..."
+                      : connectedGateways.length > 0
+                        ? "Only gateways actively connected for this merchant are shown."
+                        : "Connect a gateway first"}
+                  </span>
                 </label>
               </div>
 
@@ -428,6 +615,12 @@ export default function PaymentLinksPage() {
                 {loading ? "Creating link..." : "Create payment link"}
               </button>
             </form>
+
+            {noConnectedGateways ? (
+              <div className="mt-4 rounded-[22px] border border-amber-300/70 bg-amber-50/84 p-4 text-sm text-amber-700">
+                Connect a gateway first
+              </div>
+            ) : null}
 
             {error ? (
               <div className="mt-4 rounded-[22px] border border-rose-300/70 bg-rose-50/84 p-4 text-sm text-rose-700">
