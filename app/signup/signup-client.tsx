@@ -46,6 +46,7 @@ const plans = [
     price: "1.5%",
     suffix: "per transaction",
     description: "Unified checkout and auto routing for getting started.",
+    featured: false,
   },
   {
     code: "growth",
@@ -61,6 +62,7 @@ const plans = [
     price: "Custom",
     suffix: "pricing",
     description: "Custom routing support and optimization for larger teams.",
+    featured: false,
   },
 ] as const;
 
