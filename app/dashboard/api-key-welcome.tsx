@@ -94,7 +94,7 @@ export default function ApiKeyWelcome({
 
         if (!res.ok) {
           const text = await res.text();
-          throw new Error(text || `Failed to load keys (${res.status})`);
+          throw new Error(text || "We couldn't load your API keys right now.");
         }
 
         const payload: unknown = await res.json();
@@ -168,9 +168,9 @@ export default function ApiKeyWelcome({
           </h2>
           <p className={cn(lightProductMutedTextClass, "mt-4 max-w-2xl")}>
             {merchantName
-              ? `${merchantName} is now in the live Stackaura product flow.`
-              : "Your merchant account is now in the live Stackaura product flow."}{" "}
-            We fetched the initial API-key state so you can move straight into integration.
+              ? `${merchantName} is ready to start building on Stackaura.`
+              : "Your merchant account is ready to start building on Stackaura."}{" "}
+            Your developer access is ready for the next step.
           </p>
         </div>
 
@@ -180,7 +180,7 @@ export default function ApiKeyWelcome({
       <div className="relative mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
         <div className={cn(lightProductInsetPanelClass, "p-5")}>
           {loading ? (
-            <div className="text-sm text-[#425466]">Loading your developer access...</div>
+            <div className="text-sm text-[#425466]">Checking your developer access...</div>
           ) : error ? (
             <div className="space-y-4">
               <div className="rounded-2xl border border-rose-300/70 bg-rose-50/85 px-4 py-3 text-sm text-rose-700">
@@ -188,7 +188,7 @@ export default function ApiKeyWelcome({
               </div>
               <div className="flex flex-col gap-3 sm:flex-row">
                 <Link href="/dashboard/api-keys" className={publicSecondaryButtonClass}>
-                  Open Developer Keys
+                  Open developer keys
                 </Link>
                 <button onClick={dismiss} className={publicPrimaryButtonClass}>
                   Continue to dashboard
@@ -198,7 +198,7 @@ export default function ApiKeyWelcome({
           ) : !initialKey ? (
             <div className="space-y-4">
               <div className="rounded-2xl border border-amber-300/70 bg-amber-50/85 px-4 py-3 text-sm text-amber-700">
-                Your merchant is active, but no API key was returned yet.
+                Your workspace is active, but your first API key is not available yet.
               </div>
               <p className={lightProductMutedTextClass}>
                 Open developer keys to confirm whether the initial key has been provisioned or to
@@ -206,7 +206,7 @@ export default function ApiKeyWelcome({
               </p>
               <div className="flex flex-col gap-3 sm:flex-row">
                 <Link href="/dashboard/api-keys" className={publicSecondaryButtonClass}>
-                  Open Developer Keys
+                  Open developer keys
                 </Link>
                 <button onClick={dismiss} className={publicPrimaryButtonClass}>
                   Continue to dashboard
@@ -252,7 +252,7 @@ export default function ApiKeyWelcome({
                   </>
                 ) : (
                   <Link href="/dashboard/api-keys" className={publicSecondaryButtonClass}>
-                    Open Developer Keys
+                    Open developer keys
                   </Link>
                 )}
 
@@ -271,7 +271,7 @@ export default function ApiKeyWelcome({
           </div>
           <p className={cn(lightProductMutedTextClass, "mt-3")}>
             Use your merchant API key in the `Authorization` header when calling Stackaura from
-            your server, CLI tools, or local development environment.
+            your backend services and server-side tooling.
           </p>
 
           <div className={cn(publicSubtleSurfaceClass, "mt-4 p-4")}>

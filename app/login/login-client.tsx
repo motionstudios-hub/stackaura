@@ -37,6 +37,10 @@ const highlights = [
 function getErrorMessage(error: string | null) {
   if (!error) return null;
 
+  if (error.startsWith("Login failed")) {
+    return "We couldn't sign you in. Check your email and password, then try again.";
+  }
+
   return error.startsWith("<!DOCTYPE html>")
     ? "Unable to sign in right now. Please try again."
     : error;
@@ -44,15 +48,15 @@ function getErrorMessage(error: string | null) {
 
 export default function LoginClient({
   accountCreated,
-  initialEmail,
+  createdEmail,
 }: {
   accountCreated: boolean;
-  initialEmail: string;
+  createdEmail: string;
 }) {
   const router = useRouter();
 
-  const [email, setEmail] = useState(initialEmail);
-  const [password, setPassword] = useState("ChangeMe123!");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -98,8 +102,8 @@ export default function LoginClient({
       >
         {accountCreated ? (
           <div className="rounded-[22px] border border-emerald-300/70 bg-emerald-50/82 px-4 py-3 text-sm text-emerald-800">
-            Merchant workspace created{initialEmail ? ` for ${initialEmail}` : ""}. Sign in to
-            open your dashboard.
+            Your merchant workspace is ready{createdEmail ? ` for ${createdEmail}` : ""}. Sign in
+            to open your dashboard.
           </div>
         ) : null}
 
@@ -159,11 +163,6 @@ export default function LoginClient({
             Stackaura provides payment orchestration and infrastructure software. Licensed payment
             providers process and settle payments.
           </p>
-          {process.env.NODE_ENV === "development" ? (
-            <p className="mt-3 text-sm leading-6 text-[#6b7c93]">
-            
-            </p>
-          ) : null}
         </div>
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

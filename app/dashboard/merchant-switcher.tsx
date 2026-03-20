@@ -41,10 +41,10 @@ export default function MerchantSwitcher({
         <div>
           <div className="text-xs uppercase tracking-[0.2em] text-[#6b7c93]">Active merchant</div>
           <div className="mt-2 text-sm font-semibold text-[#0a2540]">
-            {selectedMerchant?.name || "No merchant selected"}
+            {selectedMerchant?.name || "Choose a merchant"}
           </div>
           <div className="mt-1 text-xs text-[#6b7c93]">
-            {selectedMerchant?.email || "Select a merchant workspace"}
+            {selectedMerchant?.email || "Select a workspace to continue"}
           </div>
         </div>
 

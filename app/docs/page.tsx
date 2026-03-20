@@ -11,8 +11,7 @@ import {
 } from "../components/stackaura-ui";
 
 export default function DocsPage() {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_CHECKOUT_API_BASE_URL || "http://localhost:3001";
+  const baseUrl = process.env.NEXT_PUBLIC_CHECKOUT_API_BASE_URL;
 
   return (
     <PublicPageShell
@@ -21,14 +20,20 @@ export default function DocsPage() {
       description="Use Stackaura APIs to create payments, route and recover transactions, activate merchants, issue API keys, and track webhook deliveries from one orchestration layer."
       actions={
         <>
-          <a
-            href={`${baseUrl}/docs`}
-            target="_blank"
-            rel="noreferrer"
-            className={publicPrimaryButtonClass}
-          >
-            Open Swagger
-          </a>
+          {baseUrl ? (
+            <a
+              href={`${baseUrl}/docs`}
+              target="_blank"
+              rel="noreferrer"
+              className={publicPrimaryButtonClass}
+            >
+              View API reference
+            </a>
+          ) : (
+            <Link href="/contact" className={publicPrimaryButtonClass}>
+              Request API access
+            </Link>
+          )}
           <Link href="/contact" className={publicSecondaryButtonClass}>
             Contact sales
           </Link>

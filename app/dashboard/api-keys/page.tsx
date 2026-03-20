@@ -112,7 +112,7 @@ export default function ApiKeysPage() {
   const [err, setErr] = useState<string | null>(null);
 
   const [createOpen, setCreateOpen] = useState(false);
-  const [newLabel, setNewLabel] = useState("local-dev");
+  const [newLabel, setNewLabel] = useState("primary-backend");
   const [creating, setCreating] = useState(false);
 
   const [revealOpen, setRevealOpen] = useState(false);
@@ -122,11 +122,11 @@ export default function ApiKeysPage() {
 
   async function loadActiveMerchant() {
     const res = await fetch("/api/active-merchant", { credentials: "include" });
-    if (!res.ok) throw new Error("Failed to load active merchant");
+    if (!res.ok) throw new Error("We couldn't load your selected merchant workspace.");
     const data: unknown = await res.json();
 
     if (!isRecord(data) || typeof data.merchantId !== "string" || !data.merchantId) {
-      throw new Error("No active merchant selected");
+      throw new Error("Select a merchant workspace to manage developer keys.");
     }
 
     setMerchantId(data.merchantId);
@@ -144,13 +144,13 @@ export default function ApiKeysPage() {
       });
       if (!res.ok) {
         const t = await res.text();
-        throw new Error(t || `Failed to load keys (${res.status})`);
+        throw new Error(t || "We couldn't load your developer keys.");
       }
 
       const data: unknown = await res.json();
       setRows(parseApiKeys(data).items);
     } catch (e: unknown) {
-      setErr(getErrorMessage(e, "Failed to load keys"));
+      setErr(getErrorMessage(e, "We couldn't load your developer keys."));
     } finally {
       setLoading(false);
     }
@@ -170,7 +170,7 @@ export default function ApiKeysPage() {
       });
       if (!res.ok) {
         const t = await res.text();
-        throw new Error(t || `Failed to create key (${res.status})`);
+        throw new Error(t || "We couldn't create the developer key.");
       }
 
       const created: unknown = await res.json();
@@ -188,7 +188,7 @@ export default function ApiKeysPage() {
       await loadKeys(merchantId);
       setEnv(createdEnv);
     } catch (e: unknown) {
-      setErr(getErrorMessage(e, "Failed to create key"));
+      setErr(getErrorMessage(e, "We couldn't create the developer key."));
     } finally {
       setCreating(false);
     }
@@ -206,11 +206,11 @@ export default function ApiKeysPage() {
       });
       if (!res.ok) {
         const t = await res.text();
-        throw new Error(t || `Failed to revoke key (${res.status})`);
+        throw new Error(t || "We couldn't revoke the developer key.");
       }
       await loadKeys(merchantId);
     } catch (e: unknown) {
-      setErr(getErrorMessage(e, "Failed to revoke key"));
+      setErr(getErrorMessage(e, "We couldn't revoke the developer key."));
     }
   }
 
@@ -224,7 +224,7 @@ export default function ApiKeysPage() {
         const mid = await loadActiveMerchant();
         await loadKeys(mid);
       } catch (e: unknown) {
-        setErr(getErrorMessage(e, "Failed to load merchant"));
+        setErr(getErrorMessage(e, "We couldn't load your merchant workspace."));
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -340,7 +340,7 @@ export default function ApiKeysPage() {
               {loading ? (
                 <tr>
                   <td className="px-5 py-8 text-[#6b7c93]" colSpan={6}>
-                    Loading...
+                    Loading keys...
                   </td>
                 </tr>
               ) : filteredRows.length === 0 ? (
@@ -358,7 +358,6 @@ export default function ApiKeysPage() {
                     <tr key={k.id} className="border-t border-white/40 transition hover:bg-white/18">
                       <td className="px-5 py-4">
                         <div className="font-medium text-[#0a2540]">{k.label}</div>
-                        <div className="mt-1 text-xs text-[#6b7c93]">{k.id}</div>
                       </td>
 
                       <td className="px-5 py-4 text-[#0a2540]">
@@ -382,9 +381,9 @@ export default function ApiKeysPage() {
                           <button
                             className={cn(lightProductCompactGhostButtonClass, "px-3 py-1.5 text-xs")}
                             onClick={() => copy(`${k.prefix ?? "ck"}_${k.last4 ?? ""}`)}
-                            title="Copies a masked identifier (full secret is not retrievable)"
+                            title="Copies the masked key value shown in this table"
                           >
-                            Copy ID
+                            Copy masked key
                           </button>
                           <button
                             className={cn(lightProductCompactGhostButtonClass, "px-3 py-1.5 text-xs disabled:opacity-50")}
@@ -443,7 +442,7 @@ export default function ApiKeysPage() {
               className={cn(lightProductInputClass, "min-h-[44px] rounded-xl px-3 py-2")}
               value={newLabel}
               onChange={(e) => setNewLabel(e.target.value)}
-              placeholder="e.g. local-dev, staging, production-backend"
+              placeholder="e.g. checkout-backend, production-server"
             />
           </label>
         </div>
@@ -475,7 +474,7 @@ export default function ApiKeysPage() {
 
           <div className={cn(lightProductInsetPanelClass, "p-3")}>
             <code className="break-all text-sm text-[#0a2540]" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
-              {createdSecret ?? "Your backend did not return a secret. Update the create response to include keyPlain."}
+              {createdSecret ?? "Your secret key is not available to display again. Create a new key if you need another copy."}
             </code>
           </div>
         </div>

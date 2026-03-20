@@ -59,7 +59,7 @@ const commerceIntegrations = [
     name: "SaaS platforms",
     status: "Current model",
     description:
-      "Built to sit behind SaaS products and internal merchant platforms that need one payment orchestration layer.",
+      "Built to sit behind SaaS products and merchant platforms that need one payment orchestration layer.",
   },
 ] as const;
 

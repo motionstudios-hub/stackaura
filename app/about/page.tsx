@@ -30,7 +30,7 @@ export default function AboutPage() {
           <div className={publicSectionLabelClass}>What we build</div>
           <p className="mt-5 text-base leading-8 text-[#425466]">
             Our platform helps businesses manage payment routing, gateway failover, webhooks,
-            subscriptions, merchant onboarding, and internal operations through one modern API layer.
+            subscriptions, merchant onboarding, and payment operations through one modern API layer.
           </p>
           <p className="mt-4 text-base leading-8 text-[#425466]">
             The goal is infrastructure-grade control: fewer fragmented integrations, clearer payment

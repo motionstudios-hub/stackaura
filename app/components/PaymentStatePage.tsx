@@ -67,7 +67,7 @@ export default function PaymentStatePage({
 
           {reference ? (
             <div className="mt-6 rounded-[24px] border border-white/42 bg-white/22 px-4 py-3 text-sm text-[#425466] shadow-[0_8px_24px_rgba(133,156,180,0.10)] backdrop-blur-2xl">
-              Reference: <span className="font-mono text-[#0a2540]">{reference}</span>
+              Payment reference: <span className="font-mono text-[#0a2540]">{reference}</span>
             </div>
           ) : null}
 
@@ -84,7 +84,7 @@ export default function PaymentStatePage({
           </div>
 
           <div className="mt-8 text-xs text-[#6b7c93]">
-            Powered by Stackaura Payments Infrastructure
+            Powered by Stackaura Payments (Pty) Ltd
           </div>
         </div>
       </div>

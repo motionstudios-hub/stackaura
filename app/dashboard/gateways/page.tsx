@@ -274,11 +274,11 @@ export default function GatewayConnectionsPage() {
       credentials: "include",
       cache: "no-store",
     });
-    if (!res.ok) throw new Error("Failed to load active merchant");
+    if (!res.ok) throw new Error("We couldn't load your selected merchant workspace.");
 
     const data: unknown = await res.json();
     if (!isRecord(data) || typeof data.merchantId !== "string" || !data.merchantId.trim()) {
-      throw new Error("No active merchant selected");
+      throw new Error("Select a merchant workspace to manage gateway connections.");
     }
 
     const resolvedMerchantId = data.merchantId.trim();
@@ -300,7 +300,7 @@ export default function GatewayConnectionsPage() {
 
       if (!res.ok) {
         const text = await res.text().catch(() => "");
-        throw new Error(text || `Failed to load Ozow connection (${res.status})`);
+        throw new Error(text || "We couldn't load the Ozow connection.");
       }
 
       const payload: unknown = await res.json();
@@ -319,7 +319,7 @@ export default function GatewayConnectionsPage() {
     try {
       await loadConnection();
     } catch (loadError: unknown) {
-      setError(getErrorMessage(loadError, "Failed to load the Ozow connection"));
+      setError(getErrorMessage(loadError, "We couldn't load the Ozow connection."));
     }
   }
 
@@ -337,7 +337,7 @@ export default function GatewayConnectionsPage() {
 
       if (!res.ok) {
         const text = await res.text().catch(() => "");
-        throw new Error(text || `Failed to load Yoco connection (${res.status})`);
+        throw new Error(text || "We couldn't load the Yoco connection.");
       }
 
       const payload: unknown = await res.json();
@@ -356,7 +356,7 @@ export default function GatewayConnectionsPage() {
     try {
       await loadYocoConnection();
     } catch (loadError: unknown) {
-      setYocoError(getErrorMessage(loadError, "Failed to load the Yoco connection"));
+      setYocoError(getErrorMessage(loadError, "We couldn't load the Yoco connection."));
     }
   }
 
@@ -374,7 +374,7 @@ export default function GatewayConnectionsPage() {
 
       if (!res.ok) {
         const text = await res.text().catch(() => "");
-        throw new Error(text || `Failed to load Paystack connection (${res.status})`);
+        throw new Error(text || "We couldn't load the Paystack connection.");
       }
 
       const payload: unknown = await res.json();
@@ -393,7 +393,7 @@ export default function GatewayConnectionsPage() {
     try {
       await loadPaystackConnection();
     } catch (loadError: unknown) {
-      setPaystackError(getErrorMessage(loadError, "Failed to load the Paystack connection"));
+      setPaystackError(getErrorMessage(loadError, "We couldn't load the Paystack connection."));
     }
   }
 
@@ -438,7 +438,7 @@ export default function GatewayConnectionsPage() {
 
       if (!res.ok) {
         const text = await res.text().catch(() => "");
-        throw new Error(text || `Failed to save Ozow credentials (${res.status})`);
+        throw new Error(text || "We couldn't save the Ozow connection.");
       }
 
       setForm((current) => ({
@@ -456,15 +456,13 @@ export default function GatewayConnectionsPage() {
           privateKey: "",
           testMode: refreshed.testMode,
         });
-        setSuccess("Ozow connection saved and refreshed from the backend.");
+        setSuccess("Ozow connection saved and refreshed.");
       } catch (refreshError: unknown) {
-        setSuccess(
-          "Ozow connection saved. The dashboard could not refresh the latest backend state immediately."
-        );
-        setError(getErrorMessage(refreshError, "Failed to refresh the Ozow connection"));
+        setSuccess("Ozow connection saved. We couldn't refresh the latest saved state right away.");
+        setError(getErrorMessage(refreshError, "We couldn't refresh the Ozow connection."));
       }
     } catch (saveError: unknown) {
-      setError(getErrorMessage(saveError, "Failed to save the Ozow connection"));
+      setError(getErrorMessage(saveError, "We couldn't save the Ozow connection."));
     } finally {
       setSaving(false);
     }
@@ -501,7 +499,7 @@ export default function GatewayConnectionsPage() {
 
       if (!res.ok) {
         const text = await res.text().catch(() => "");
-        throw new Error(text || `Failed to save Yoco credentials (${res.status})`);
+        throw new Error(text || "We couldn't save the Yoco connection.");
       }
 
       setYocoForm((current) => ({
@@ -517,15 +515,13 @@ export default function GatewayConnectionsPage() {
           secretKey: "",
           testMode: refreshed.testMode,
         });
-        setYocoSuccess("Yoco connection saved and refreshed from the backend.");
+        setYocoSuccess("Yoco connection saved and refreshed.");
       } catch (refreshError: unknown) {
-        setYocoSuccess(
-          "Yoco connection saved. The dashboard could not refresh the latest backend state immediately."
-        );
-        setYocoError(getErrorMessage(refreshError, "Failed to refresh the Yoco connection"));
+        setYocoSuccess("Yoco connection saved. We couldn't refresh the latest saved state right away.");
+        setYocoError(getErrorMessage(refreshError, "We couldn't refresh the Yoco connection."));
       }
     } catch (saveError: unknown) {
-      setYocoError(getErrorMessage(saveError, "Failed to save the Yoco connection"));
+      setYocoError(getErrorMessage(saveError, "We couldn't save the Yoco connection."));
     } finally {
       setYocoSaving(false);
     }
@@ -560,7 +556,7 @@ export default function GatewayConnectionsPage() {
 
       if (!res.ok) {
         const text = await res.text().catch(() => "");
-        throw new Error(text || `Failed to save Paystack credentials (${res.status})`);
+        throw new Error(text || "We couldn't save the Paystack connection.");
       }
 
       setPaystackForm((current) => ({
@@ -574,17 +570,17 @@ export default function GatewayConnectionsPage() {
           secretKey: "",
           testMode: refreshed.testMode,
         });
-        setPaystackSuccess("Paystack connection saved and refreshed from the backend.");
+        setPaystackSuccess("Paystack connection saved and refreshed.");
       } catch (refreshError: unknown) {
         setPaystackSuccess(
-          "Paystack connection saved. The dashboard could not refresh the latest backend state immediately."
+          "Paystack connection saved. We couldn't refresh the latest saved state right away."
         );
         setPaystackError(
-          getErrorMessage(refreshError, "Failed to refresh the Paystack connection")
+          getErrorMessage(refreshError, "We couldn't refresh the Paystack connection.")
         );
       }
     } catch (saveError: unknown) {
-      setPaystackError(getErrorMessage(saveError, "Failed to save the Paystack connection"));
+      setPaystackError(getErrorMessage(saveError, "We couldn't save the Paystack connection."));
     } finally {
       setPaystackSaving(false);
     }
@@ -608,7 +604,7 @@ export default function GatewayConnectionsPage() {
         if (cancelled) return;
 
         setReadbackStatus("error");
-        setError(getErrorMessage(loadError, "Failed to load gateway settings"));
+        setError(getErrorMessage(loadError, "We couldn't load your gateway connections."));
       } finally {
         if (!cancelled) {
           setLoadingMerchant(false);
@@ -682,8 +678,12 @@ export default function GatewayConnectionsPage() {
           <div className="mt-6 grid gap-4 xl:grid-cols-[1fr_auto]">
             <div className={cn(lightProductInsetPanelClass, "p-4")}>
               <div className="text-xs uppercase tracking-[0.2em] text-[#6b7c93]">Active merchant</div>
-              <div className="mt-3 break-all font-mono text-sm text-[#0a2540]">
-                {loadingMerchant ? "Loading merchant..." : merchantId ?? "No merchant selected"}
+              <div className="mt-3 text-sm font-semibold text-[#0a2540]">
+                {loadingMerchant
+                  ? "Checking workspace..."
+                  : merchantId
+                    ? "Workspace selected"
+                    : "Select a merchant workspace"}
               </div>
               <div className="mt-2 text-sm text-[#425466]">
                 Gateway credentials are saved against the currently selected merchant workspace.
@@ -712,8 +712,8 @@ export default function GatewayConnectionsPage() {
                   : "Refresh states"}
               </button>
               <span className={cn(lightProductMutedTextClass, "max-w-sm text-xs")}>
-                Refresh pulls the latest persisted non-secret Ozow, Yoco, and Paystack connection
-                state for this merchant from the gateway API.
+                Refresh checks the latest saved Ozow, Yoco, and Paystack connection state for this
+                merchant workspace.
               </span>
             </div>
           </div>

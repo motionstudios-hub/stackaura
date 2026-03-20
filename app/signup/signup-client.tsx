@@ -141,7 +141,7 @@ export default function SignupClient() {
     });
 
     if (!res.ok) {
-      let message = "Signup failed";
+      let message = "We couldn't create your account.";
       try {
         const payload: unknown = await res.json();
         message = extractSignupError(payload) || message;
@@ -169,7 +169,7 @@ export default function SignupClient() {
       setSubmissionMode("account");
       await createMerchantAccount();
     } catch (signupError: unknown) {
-      setError(getErrorMessage(signupError, "Signup failed. Please try again."));
+      setError(getErrorMessage(signupError, "We couldn't create your account. Please try again."));
     } finally {
       setSubmissionMode(null);
     }
@@ -192,7 +192,7 @@ export default function SignupClient() {
         returnUrls: buildReturnUrls(),
       });
     } catch (signupError: unknown) {
-      setError(getErrorMessage(signupError, "Unable to start Ozow signup right now."));
+      setError(getErrorMessage(signupError, "We couldn't start the payment step right now."));
       setSubmissionMode(null);
     }
   }

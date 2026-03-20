@@ -27,7 +27,7 @@ export default async function LoginPage({
 
   const resolvedSearchParams = await Promise.resolve(searchParams);
   const created = getSearchValue(resolvedSearchParams.created) === "1";
-  const email = getSearchValue(resolvedSearchParams.email) || "admin@stackaura.com";
+  const email = getSearchValue(resolvedSearchParams.email) || "";
 
-  return <LoginClient accountCreated={created} initialEmail={email} />;
+  return <LoginClient accountCreated={created} createdEmail={email} />;
 }

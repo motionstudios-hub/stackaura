@@ -89,7 +89,7 @@ export default function PaymentLinksPage() {
         });
 
         if (!response.ok) {
-          throw new Error("Failed to load active merchant context.");
+          throw new Error("We couldn't load your selected merchant workspace.");
         }
 
         const data: unknown = await response.json();
@@ -170,25 +170,25 @@ export default function PaymentLinksPage() {
             "message" in data &&
             typeof data.message === "string"
             ? data.message
-            : "Failed to create payment link."
+            : "We couldn't create the payment link."
         );
       }
 
       setResult(data as CreatePaymentResponse);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create payment link.");
+      setError(err instanceof Error ? err.message : "We couldn't create the payment link.");
     } finally {
       setLoading(false);
     }
   }
 
   const resolutionSummary = usingMerchantApiKey
-    ? "Using the provided merchant API key. This stays the source of truth for merchant-authenticated payment creation."
+    ? "This payment link will use the API key you entered, so that merchant account remains the source of truth for routing and gateway settings."
     : loadingMerchantContext
-      ? "Checking for an active dashboard merchant context..."
+      ? "Checking the merchant workspace selected in your dashboard..."
       : activeMerchantId
-        ? "No merchant API key provided, so payment creation will use the active dashboard merchant and its saved gateway configuration."
-        : "Add a merchant API key or sign in to a merchant workspace before creating a payment.";
+        ? "No API key was added, so Stackaura will use the merchant workspace selected in your dashboard and its saved gateway configuration."
+        : "Add an API key or select a merchant workspace before creating a payment link.";
 
   const resolutionTone = usingMerchantApiKey
     ? "violet"
@@ -199,17 +199,17 @@ export default function PaymentLinksPage() {
         : "warning";
 
   const resolutionLabel = usingMerchantApiKey
-    ? "API key override"
+    ? "Direct API access"
     : loadingMerchantContext
-      ? "Checking context"
+      ? "Checking workspace"
       : activeMerchantId
-        ? "Merchant context"
-        : "Action needed";
+        ? "Workspace ready"
+        : "Setup needed";
 
   const resolutionSource = usingMerchantApiKey
-    ? "Merchant API key"
+    ? "Provided API key"
     : activeMerchantId
-      ? "Active merchant workspace"
+      ? "Selected merchant workspace"
       : "Unavailable";
 
   return (
@@ -226,12 +226,12 @@ export default function PaymentLinksPage() {
               </div>
 
               <h1 className="mt-8 max-w-3xl text-4xl font-semibold leading-[1.02] tracking-[-0.04em] text-[#0a2540] sm:text-5xl">
-                Create hosted checkout links that stay aligned with merchant routing.
+                Create hosted checkout links with the right merchant setup.
               </h1>
               <p className="mt-5 max-w-3xl text-base leading-7 text-[#425466] sm:text-lg">
-                Generate a shareable Stackaura checkout link with either the active merchant
-                workspace or an explicit merchant API key, then send it across the channels where
-                your customers already buy.
+                Generate a shareable Stackaura checkout link with either the selected merchant
+                workspace or a supplied API key, then send it across the channels where your
+                customers already buy.
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
@@ -261,11 +261,11 @@ export default function PaymentLinksPage() {
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <div className="text-sm font-semibold tracking-tight text-[#0a2540]">
-                    Resolution path
+                    Payment setup
                   </div>
                   <p className={cn(lightProductMutedTextClass, "mt-2 max-w-xl")}>
-                    Payment links inherit the merchant context used to create the payment, so
-                    routing and saved gateway configuration stay intentional and deterministic.
+                    Payment links inherit the merchant setup used to create the payment, so routing
+                    and saved gateway configuration stay consistent.
                   </p>
                 </div>
 
@@ -289,10 +289,14 @@ export default function PaymentLinksPage() {
 
                   <div className={cn("p-4", lightProductInsetPanelClass)}>
                     <div className="text-xs uppercase tracking-[0.18em] text-[#6b7c93]">
-                      Active merchant
+                      Workspace status
                     </div>
-                    <div className="mt-2 break-all text-sm font-semibold text-[#0a2540]">
-                      {loadingMerchantContext ? "Loading..." : activeMerchantId ?? "None selected"}
+                    <div className="mt-2 text-sm font-semibold text-[#0a2540]">
+                      {loadingMerchantContext
+                        ? "Checking workspace..."
+                        : activeMerchantId
+                          ? "Workspace selected"
+                          : "No workspace selected"}
                     </div>
                   </div>
                 </div>
@@ -320,20 +324,19 @@ export default function PaymentLinksPage() {
                   Build a hosted payment link
                 </h2>
                 <p className={cn(lightProductMutedTextClass, "mt-3 max-w-2xl")}>
-                  Keep the full payment-link workflow intact while creating a shareable checkout
-                  experience tied to the right merchant context.
+                  Create a shareable checkout experience tied to the right merchant setup.
                 </p>
               </div>
 
               <span className={lightProductStatusPillClass(canCreate ? "success" : "muted")}>
-                {canCreate ? "Ready to create" : "Needs merchant context"}
+                {canCreate ? "Ready to create" : "Setup needed"}
               </span>
             </div>
 
             <form onSubmit={createLink} className="mt-8 grid gap-4">
               <label className="grid gap-1.5">
                 <span className="text-xs font-medium uppercase tracking-[0.18em] text-[#6b7c93]">
-                  Merchant API key
+                  API key
                 </span>
                 <input
                   className={cn(lightProductInputClass, "font-mono text-xs")}
@@ -455,8 +458,8 @@ export default function PaymentLinksPage() {
               {!result ? (
                 <div className={cn("mt-6 p-5", lightProductInsetPanelClass)}>
                   <p className={lightProductMutedTextClass}>
-                    Create a payment link to unlock WhatsApp, Instagram DM, and email sharing
-                    actions without leaving the Stackaura product flow.
+                    Create a payment link to unlock sharing across WhatsApp, Instagram, and email
+                    without leaving Stackaura.
                   </p>
                 </div>
               ) : (
@@ -525,7 +528,7 @@ export default function PaymentLinksPage() {
                     >
                       <div className="font-semibold text-[#0a2540]">Email</div>
                       <div className="mt-2 text-sm leading-6 text-[#425466]">
-                        Open your email client with a prefilled checkout message.
+                        Open your email client with a ready-to-send checkout message.
                       </div>
                     </a>
                   </div>
@@ -536,13 +539,6 @@ export default function PaymentLinksPage() {
                     </div>
 
                     <div className="mt-4 grid gap-3 text-sm md:grid-cols-2">
-                      <div>
-                        <div className="text-[#6b7c93]">Reference</div>
-                        <div className="mt-1 break-all font-mono text-[#0a2540]">
-                          {result.reference}
-                        </div>
-                      </div>
-
                       <div>
                         <div className="text-[#6b7c93]">Status</div>
                         <div className="mt-1 text-[#0a2540]">{result.status}</div>
@@ -559,6 +555,13 @@ export default function PaymentLinksPage() {
                         <div className="text-[#6b7c93]">Customer</div>
                         <div className="mt-1 text-[#0a2540]">
                           {result.customerEmail || "Not provided"}
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="text-[#6b7c93]">Description</div>
+                        <div className="mt-1 text-[#0a2540]">
+                          {result.description || "Stackaura payment link"}
                         </div>
                       </div>
                     </div>

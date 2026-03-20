@@ -23,12 +23,12 @@ export default async function PaymentsErrorPage({
   return (
     <PaymentStatePage
       eyebrow="Payment error"
-      title="Ozow payment could not be completed"
-      description="Something interrupted the payment flow before Stackaura could finish the checkout or onboarding path."
+      title="Payment could not be completed"
+      description="Something interrupted the payment flow before checkout could finish."
       tone="error"
-      detail="You can retry from signup or checkout once the payment service is available again."
+      detail="Please try again in a moment or contact support if the issue continues."
       primaryHref="/signup"
-      primaryLabel="Return to signup"
+      primaryLabel="Try again"
       secondaryHref="/"
       secondaryLabel="Back to homepage"
       reference={reference}

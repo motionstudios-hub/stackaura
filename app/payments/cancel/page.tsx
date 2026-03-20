@@ -23,12 +23,12 @@ export default async function PaymentsCancelPage({
   return (
     <PaymentStatePage
       eyebrow="Payment cancelled"
-      title="Ozow checkout was cancelled"
-      description="The payment session was not completed, so Stackaura did not continue the paid flow."
+      title="Payment was cancelled"
+      description="The payment session was not completed, so no further action was taken."
       tone="warning"
-      detail="No further action was taken from this frontend. You can restart the payment flow from signup or from a hosted checkout link."
+      detail="You can restart the payment flow whenever you're ready."
       primaryHref="/signup"
-      primaryLabel="Try signup again"
+      primaryLabel="Try again"
       secondaryHref="/"
       secondaryLabel="Back to homepage"
       reference={reference}

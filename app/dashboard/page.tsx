@@ -48,7 +48,7 @@ type GatewayDistributionItem = {
 };
 
 type OrchestrationItem = {
-  reference: string;
+  paymentLabel: string;
   amount: number;
   customer: string;
   route: string;
@@ -251,8 +251,9 @@ export default async function DashboardPage() {
     (membership) => membership.merchant.id === selectedMerchantId
   );
   const selectedPlan = resolveMerchantPlanSummary(selectedMembership?.merchant);
-  const selectedMerchantName = selectedMembership?.merchant.name || "No merchant selected";
-  const selectedMerchantEmail = selectedMembership?.merchant.email || "No merchant email";
+  const selectedMerchantName = selectedMembership?.merchant.name || "Choose a merchant";
+  const selectedMerchantEmail =
+    selectedMembership?.merchant.email || "Select a workspace to view merchant details";
   const isMerchantActive = selectedMembership?.merchant.isActive ?? false;
 
   const routingFeatureItems = [
@@ -274,9 +275,9 @@ export default async function DashboardPage() {
   ];
 
   const quickActions = [
-    { href: "/dashboard/gateways", label: "Open Gateway Connections", tone: "primary" as const },
-    { href: "/dashboard/api-keys", label: "Open Developer Keys", tone: "primary" as const },
-    { href: "/payment-links", label: "Launch Payment Links", tone: "secondary" as const },
+    { href: "/dashboard/gateways", label: "Open gateway connections", tone: "primary" as const },
+    { href: "/dashboard/api-keys", label: "Open developer keys", tone: "primary" as const },
+    { href: "/payment-links", label: "Launch payment links", tone: "secondary" as const },
     { href: "/docs", label: "Read API docs", tone: "secondary" as const },
     { href: "/", label: "View public website", tone: "secondary" as const },
   ];
@@ -291,13 +292,15 @@ export default async function DashboardPage() {
       : 93.8;
   const recoveredPayments = selectedPlan.fallback ? 18 + Math.max(memberships.length - 1, 0) * 3 : 0;
   const activeGateways = selectedMembership ? 3 : 0;
-  const intelligenceMode = isMerchantActive ? "Derived from live merchant posture" : "Derived preview";
+  const intelligenceMode = isMerchantActive
+    ? "Illustrative routing view"
+    : "Illustrative planning view";
 
   const topMetrics = [
     {
       label: "Total volume",
       value: formatCurrency(totalVolume),
-      detail: "Modeled across hosted checkout, payment links, and merchant payment flows.",
+      detail: "Across hosted checkout, payment links, and merchant payment flows.",
       tone: "success" as const,
     },
     {
@@ -342,7 +345,7 @@ export default async function DashboardPage() {
       detail: selectedPlan.autoRouting
         ? "Stackaura can steer bank-transfer-friendly traffic to Ozow when routing logic sees a better fit."
         : "Auto routing becomes available once the current merchant posture enables orchestration controls.",
-      badge: selectedPlan.autoRouting ? "Auto routing live" : "Preview",
+      badge: selectedPlan.autoRouting ? "Auto routing live" : "Illustrative",
       tone: selectedPlan.autoRouting ? "violet" : "muted",
       path: [
         { label: "AUTO", kind: "event" },
@@ -369,7 +372,7 @@ export default async function DashboardPage() {
 
   const orchestrationHistory: OrchestrationItem[] = [
     {
-      reference: "STA-24031",
+      paymentLabel: "Payment 01",
       amount: 1_250,
       customer: "cardholder@merchant.co.za",
       route: "Auto routed to Ozow",
@@ -379,26 +382,26 @@ export default async function DashboardPage() {
       stages: ["CREATED", "INITIATED", "SUCCEEDED"],
     },
     {
-      reference: "STA-24028",
+      paymentLabel: "Payment 02",
       amount: 820,
       customer: "repeatbuyer@example.com",
       route: "Recovered after Paystack failure",
       detail: selectedPlan.fallback
         ? "The failed attempt was retried on Yoco and recovered before the customer dropped out."
         : "This recovery path is shown as a fallback example once the merchant plan includes retry orchestration.",
-      badge: selectedPlan.fallback ? "Recovered" : "Fallback preview",
+      badge: selectedPlan.fallback ? "Recovered" : "Fallback available on upgrade",
       tone: selectedPlan.fallback ? "success" : "warning",
       stages: ["CREATED", "INITIATED", "FAILED", "FALLBACK", "SUCCEEDED"],
     },
     {
-      reference: "STA-24017",
+      paymentLabel: "Payment 03",
       amount: 3_600,
       customer: "ops@platform.io",
       route: "Explicit Yoco selection",
       detail: selectedPlan.manualGatewaySelection
         ? "The merchant intentionally selected Yoco and still completed within the same orchestration history."
         : "Manual gateway selection is available on higher routing plans while the unified payment flow stays unchanged.",
-      badge: selectedPlan.manualGatewaySelection ? "Manual path" : "Plan gated",
+      badge: selectedPlan.manualGatewaySelection ? "Manual path" : "Available with upgrade",
       tone: selectedPlan.manualGatewaySelection ? "success" : "warning",
       stages: ["CREATED", "INITIATED", "SUCCEEDED"],
     },
@@ -502,8 +505,8 @@ export default async function DashboardPage() {
               Routing intelligence at a glance
             </div>
             <p className={cn(lightProductMutedTextClass, "mt-3 max-w-3xl")}>
-              These cards surface the value of orchestration, fallback, and gateway coverage from
-              the selected merchant posture without changing backend behavior.
+              These cards highlight how routing, fallback, and gateway coverage shape the selected
+              merchant experience.
             </p>
           </div>
 
@@ -537,7 +540,7 @@ export default async function DashboardPage() {
                 Recent routing paths surfaced clearly
               </div>
             </div>
-            <span className={lightProductStatusPillClass("success")}>Value surfaced</span>
+            <span className={lightProductStatusPillClass("success")}>Routing view</span>
           </div>
 
           <p className={cn(lightProductMutedTextClass, "mt-4 max-w-3xl")}>
@@ -638,12 +641,12 @@ export default async function DashboardPage() {
 
           <div className="mt-6 grid gap-4">
             {orchestrationHistory.map((item) => (
-              <div key={item.reference} className={cn(lightProductInsetPanelClass, "p-5")}>
+              <div key={item.paymentLabel} className={cn(lightProductInsetPanelClass, "p-5")}>
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
                       <div className="text-lg font-semibold tracking-tight text-[#0a2540]">
-                        {item.reference}
+                        {item.paymentLabel}
                       </div>
                       <span className={lightProductStatusPillClass(item.tone)}>{item.badge}</span>
                     </div>
@@ -666,7 +669,7 @@ export default async function DashboardPage() {
 
                 <div className="mt-4 flex flex-wrap items-center gap-2">
                   {item.stages.map((stage, index) => (
-                    <div key={`${item.reference}-${stage}`} className="flex items-center gap-2">
+                    <div key={`${item.paymentLabel}-${stage}`} className="flex items-center gap-2">
                       <span className={lightProductStatusPillClass(getTimelineStageTone(stage))}>
                         {stage}
                       </span>
@@ -689,13 +692,12 @@ export default async function DashboardPage() {
                 {formatPlanLabel(selectedPlan.code)} merchant plan
               </div>
             </div>
-            <span className={lightProductStatusPillClass("violet")}>Read only</span>
+            <span className={lightProductStatusPillClass("violet")}>Current plan</span>
           </div>
 
           <p className={cn(lightProductMutedTextClass, "mt-4")}>
-            This view reflects the plan currently assigned to the selected merchant. It clarifies
-            which routing and recovery capabilities are available without changing any backend
-            behavior from the dashboard.
+            This view reflects the plan assigned to the selected merchant and clarifies which
+            routing and recovery capabilities are available today.
           </p>
 
           <div className={cn("mt-5 p-4", lightProductInsetPanelClass)}>
@@ -772,9 +774,9 @@ export default async function DashboardPage() {
               <div className="text-xs uppercase tracking-[0.18em] text-[#6b7c93]">Workspace scope</div>
               <div className="mt-4 space-y-3 text-sm text-[#425466]">
                 <div className="flex items-start justify-between gap-4">
-                  <span className="text-[#6b7c93]">Merchant ID</span>
-                  <span className="break-all text-right text-[#0a2540]">
-                    {selectedMerchantId || "No merchant selected"}
+                  <span className="text-[#6b7c93]">Selection</span>
+                  <span className="text-right text-[#0a2540]">
+                    {selectedMerchantId ? "Workspace selected" : "Choose a merchant"}
                   </span>
                 </div>
                 <div className="flex items-start justify-between gap-4">
