@@ -242,9 +242,10 @@ export default function PricingPage() {
             )}
           >
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_18%,rgba(255,255,255,0.52),transparent_26%),radial-gradient(circle_at_76%_20%,rgba(125,211,252,0.30),transparent_24%),radial-gradient(circle_at_84%_72%,rgba(168,85,247,0.16),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.16),rgba(219,232,238,0.02))]" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-[220px] bg-[radial-gradient(circle_at_84%_18%,rgba(125,211,252,0.20),transparent_26%),radial-gradient(circle_at_72%_14%,rgba(122,115,255,0.12),transparent_22%),linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0))] lg:hidden" />
 
             <div className="relative grid gap-8 lg:grid-cols-[1.02fr_0.98fr] lg:items-center">
-              <div className="relative z-10 max-w-3xl pr-3 sm:pr-24 lg:pr-0">
+              <div className="relative z-10 max-w-3xl pr-0">
                 <div className={cn(publicPillClass, "max-w-max px-3 py-1.5 text-xs sm:text-sm")}>
                   Pricing for orchestration, routing, and recovery
                 </div>
@@ -269,7 +270,7 @@ export default function PricingPage() {
                 </div>
               </div>
 
-              <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[520px] overflow-hidden lg:pointer-events-auto lg:relative lg:inset-auto lg:min-h-[540px] lg:h-auto lg:overflow-visible">
+              <div className="hidden pointer-events-none absolute inset-x-0 top-0 z-0 h-[520px] overflow-hidden lg:pointer-events-auto lg:relative lg:block lg:min-h-[540px] lg:h-auto lg:overflow-visible">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_16%,rgba(204,227,242,0.34),transparent_22%),linear-gradient(180deg,rgba(255,255,255,0.12),rgba(255,255,255,0))]" />
 
                 <div className="absolute right-[-34px] top-[32px] h-[340px] w-[340px] scale-[0.78] opacity-95 sm:right-[-8px] sm:top-[48px] sm:scale-[0.88] lg:right-0 lg:top-[12px] lg:h-[560px] lg:w-[560px] lg:scale-100 lg:opacity-100">
@@ -362,7 +363,7 @@ export default function PricingPage() {
           </div>
         </section>
 
-        <section className={cn(sectionClass, "py-6 sm:py-8 lg:py-10")}>
+        <section className={cn(sectionClass, "py-8 sm:py-8 lg:py-10")}>
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div className="max-w-3xl">
               <div className={publicSectionLabelClass}>Plans</div>
