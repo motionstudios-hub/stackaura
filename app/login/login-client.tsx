@@ -37,13 +37,30 @@ const highlights = [
 function getErrorMessage(error: string | null) {
   if (!error) return null;
 
-  if (error.startsWith("Login failed")) {
+  if (error === "Invalid credentials" || error.startsWith("Login failed")) {
     return "We couldn't sign you in. Check your email and password, then try again.";
   }
 
   return error.startsWith("<!DOCTYPE html>")
     ? "Unable to sign in right now. Please try again."
     : error;
+}
+
+function parseAuthErrorMessage(payload: string) {
+  try {
+    const parsed: unknown = JSON.parse(payload);
+    if (typeof parsed === "object" && parsed !== null && "message" in parsed) {
+      if (typeof parsed.message === "string") return parsed.message;
+      if (Array.isArray(parsed.message)) {
+        const messages = parsed.message.filter((item): item is string => typeof item === "string");
+        if (messages.length > 0) return messages.join(", ");
+      }
+    }
+  } catch {
+    // ignore JSON parse errors
+  }
+
+  return payload;
 }
 
 export default function LoginClient({
@@ -74,7 +91,7 @@ export default function LoginClient({
 
       if (!res.ok) {
         const msg = await res.text().catch(() => "");
-        throw new Error(msg || `Login failed (${res.status})`);
+        throw new Error(parseAuthErrorMessage(msg) || `Login failed (${res.status})`);
       }
 
       router.replace("/dashboard");
