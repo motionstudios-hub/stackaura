@@ -11,57 +11,57 @@ import {
 
 const paymentProviderIntegrations = [
   {
-    name: "Ozow",
-    status: "Current support",
-    description:
-      "Available in the current Stackaura gateway configuration and orchestration path for merchant payment flows.",
-  },
-  {
-    name: "PayFast",
-    status: "Current support",
-    description:
-      "Part of the current Stackaura gateway stack for merchant payment operations and hosted checkout coverage.",
-  },
-  {
     name: "Paystack",
-    status: "Roadmap",
+    status: "Current rail",
     description:
-      "Planned for broader regional payment coverage as Stackaura expands orchestration options for merchants and platforms.",
+      "A live rail in the current Stackaura orchestration layer for unified checkout, routing, and payment recovery.",
   },
   {
-    name: "Stripe",
+    name: "Yoco",
+    status: "Current rail",
+    description:
+      "A live rail in the same merchant infrastructure layer for hosted checkout, routing, and operational visibility.",
+  },
+  {
+    name: "Ozow",
+    status: "Current rail",
+    description:
+      "A live bank-payment rail connected through the same orchestration path for recovery-aware payment flows.",
+  },
+  {
+    name: "Additional rails",
     status: "Roadmap",
     description:
-      "Planned as part of the longer-term cross-border and platform expansion roadmap where merchants need additional payment rails.",
+      "Additional provider coverage, including PayFast and Stripe, is introduced carefully as Stackaura expands its multi-rail orchestration layer.",
   },
-];
+] as const;
 
 const commerceIntegrations = [
   {
     name: "Shopify",
     status: "Planned connector",
     description:
-      "A planned commerce integration path for merchants that need orchestration between storefront workflows and licensed payment providers.",
+      "A planned storefront connector for merchants that want Stackaura routing and fallback behind commerce workflows.",
   },
   {
     name: "WooCommerce",
     status: "Planned connector",
     description:
-      "A planned plugin and integration path for WooCommerce merchants that want Stackaura as an orchestration layer.",
+      "A planned plugin path for WooCommerce merchants that want one orchestration layer across multiple gateways.",
   },
   {
     name: "Custom API",
     status: "Current model",
     description:
-      "Custom merchant and platform APIs can integrate directly with Stackaura today for checkout, onboarding, and orchestration flows.",
+      "Merchant and platform backends can integrate directly with Stackaura today for checkout, routing, and payment recovery flows.",
   },
   {
     name: "SaaS platforms",
     status: "Current model",
     description:
-      "Stackaura is designed to sit behind SaaS products and internal merchant platforms that need one payments infrastructure layer.",
+      "Built to sit behind SaaS products and internal merchant platforms that need one payment orchestration layer.",
   },
-];
+] as const;
 
 function statusClass(status: string) {
   if (status.includes("Current")) {
@@ -79,8 +79,8 @@ export default function IntegrationsPage() {
   return (
     <PublicPageShell
       eyebrow="Integrations and orchestration"
-      title="How Stackaura fits between merchant systems and licensed payment providers."
-      description="Stackaura Payments (Pty) Ltd provides payment infrastructure and orchestration software for merchants, platforms, and developers. Stackaura sits in the operational layer between merchant systems and licensed payment providers so teams can manage routing, onboarding, checkout tooling, and integrations through one environment."
+      title="One integration for routing, fallback, and payment infrastructure across multiple gateways."
+      description="Stackaura Payments (Pty) Ltd is a payment orchestration and infrastructure layer for merchants, platforms, and developers. Stackaura sits between merchant systems and licensed payment providers so teams can route, optimize, and recover payments across multiple rails through one integration."
       actions={
         <>
           <Link href="/docs" className={publicPrimaryButtonClass}>
@@ -101,9 +101,9 @@ export default function IntegrationsPage() {
             Stackaura Payments (Pty) Ltd
           </div>
           <p className="mt-4 text-sm leading-7 text-[#425466]">
-            Stackaura provides software infrastructure and orchestration tools. Stackaura does not
-            directly process, hold, or settle customer funds; payments are handled by licensed
-            payment providers.
+            Stackaura is a software infrastructure and orchestration layer. Stackaura does not
+            directly process, hold, or settle customer funds; licensed payment providers process
+            and settle payments.
           </p>
         </div>
       }
@@ -124,16 +124,16 @@ export default function IntegrationsPage() {
         <div className="mt-8 grid gap-4 md:grid-cols-3">
           {[
             {
-              title: "1. Merchant or platform connects",
-              body: "Merchant systems, commerce platforms, and product workflows connect to Stackaura once instead of rebuilding the same gateway logic repeatedly.",
+              title: "1. Connect once",
+              body: "Merchant systems, commerce platforms, and product teams integrate with Stackaura once instead of rebuilding gateway logic provider by provider.",
             },
             {
-              title: "2. Stackaura orchestrates",
-              body: "Stackaura handles infrastructure concerns such as checkout orchestration, merchant onboarding, routing logic, operational tooling, and integration workflows.",
+              title: "2. Route, optimize, and recover",
+              body: "Stackaura handles checkout orchestration, routing logic, fallback, payment recovery, and the operational visibility around those flows.",
             },
             {
-              title: "3. Licensed providers process",
-              body: "Licensed payment providers handle payment processing, fund flows, and settlement within their own regulated and contractual environments.",
+              title: "3. Providers process and settle",
+              body: "Licensed payment providers remain responsible for payment execution, regulated processing, and settlement within their own environments.",
             },
           ].map((item) => (
             <div key={item.title} className={cn(publicSubtleSurfaceClass, "p-6")}>
@@ -149,7 +149,7 @@ export default function IntegrationsPage() {
           <div>
             <div className={publicSectionLabelClass}>Payment provider integrations</div>
             <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#0a2540] sm:text-4xl">
-              Current rails and roadmap direction.
+              Current rails and expansion path.
             </h2>
           </div>
           <p className="max-w-2xl text-sm leading-7 text-[#425466]">
@@ -209,20 +209,20 @@ export default function IntegrationsPage() {
         <div className="mt-6 grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
           <div className={cn(publicSubtleSurfaceClass, "p-6")}>
             <div className="text-2xl font-semibold tracking-tight text-[#0a2540]">
-              Stackaura is an orchestration and infrastructure layer.
+              Stackaura is the orchestration and infrastructure layer.
             </div>
             <p className="mt-4 text-base leading-8 text-[#425466]">
-              Stackaura provides software infrastructure and orchestration tools. Stackaura does
-              not directly process, hold, or settle customer funds; payments are handled by
-              licensed payment providers.
+              Stackaura is a software infrastructure and orchestration layer. Stackaura does not
+              directly process, hold, or settle customer funds; licensed payment providers process
+              and settle payments.
             </p>
           </div>
 
           <div className="grid gap-4">
             {[
-              "Stackaura coordinates merchant onboarding, checkout tooling, routing logic, and operational visibility.",
+              "Stackaura coordinates merchant onboarding, checkout tooling, routing logic, fallback, and operational visibility.",
               "Licensed payment providers remain responsible for payment execution, regulated processing, and settlement.",
-              "This separation helps merchants and platforms keep infrastructure control without confusing Stackaura’s role with that of a regulated payment processor.",
+              "This separation gives merchants and platforms one infrastructure layer without implying that Stackaura is the regulated payment processor.",
             ].map((item) => (
               <div key={item} className={cn(publicSubtleSurfaceClass, "p-5 text-sm leading-7 text-[#425466]")}>
                 {item}
@@ -238,8 +238,8 @@ export default function IntegrationsPage() {
           Explore the integration model, review the API surface, and plan the right rollout path.
         </h2>
         <p className="mt-5 max-w-3xl text-lg leading-8 text-[#425466]">
-          Stackaura is built for merchants and platforms that want a clearer operational layer
-          across checkout, onboarding, routing, and provider integrations.
+          Stackaura is built for merchants and platforms that want one operational layer across
+          checkout, routing, fallback, and provider integrations.
         </p>
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">

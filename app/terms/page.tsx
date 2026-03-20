@@ -13,11 +13,11 @@ const sections = [
   },
   {
     title: "Platform dependencies",
-    body: "Stackaura provides payment orchestration and merchant infrastructure software. Service availability may depend on third-party providers, payment gateways, and integrations.",
+    body: "Stackaura provides payment orchestration and infrastructure software. Service availability may depend on licensed payment providers, third-party gateways, and supporting integrations.",
   },
   {
     title: "Payment provider responsibility",
-    body: "Stackaura provides software infrastructure and orchestration tools. Stackaura does not directly process, hold, or settle customer funds; payments are handled by licensed payment providers operating within their own regulatory and contractual frameworks.",
+    body: "Stackaura is a software infrastructure and orchestration layer. Stackaura does not directly process, hold, or settle customer funds; licensed payment providers process and settle payments.",
   },
   {
     title: "User responsibilities",

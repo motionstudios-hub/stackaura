@@ -16,6 +16,74 @@ import { getServerMe } from "../lib/auth";
 import ApiKeyWelcome from "./api-key-welcome";
 import MerchantSwitcher from "./merchant-switcher";
 
+type MerchantPlanSummary = {
+  code: string;
+  manualGatewaySelection: boolean;
+  autoRouting: boolean;
+  fallback: boolean;
+};
+
+function resolveMerchantPlanSummary(
+  merchant:
+    | {
+        planCode?: string;
+        plan?: {
+          code: string;
+          manualGatewaySelection: boolean;
+          autoRouting: boolean;
+          fallback: boolean;
+        };
+      }
+    | null
+    | undefined
+): MerchantPlanSummary {
+  const normalizedPlanCode =
+    typeof merchant?.plan?.code === "string" && merchant.plan.code.trim()
+      ? merchant.plan.code.trim().toLowerCase()
+      : typeof merchant?.planCode === "string" && merchant.planCode.trim()
+        ? merchant.planCode.trim().toLowerCase()
+        : "growth";
+
+  if (merchant?.plan) {
+    return {
+      code: normalizedPlanCode,
+      manualGatewaySelection: merchant.plan.manualGatewaySelection,
+      autoRouting: merchant.plan.autoRouting,
+      fallback: merchant.plan.fallback,
+    };
+  }
+
+  if (normalizedPlanCode === "starter") {
+    return {
+      code: "starter",
+      manualGatewaySelection: false,
+      autoRouting: true,
+      fallback: false,
+    };
+  }
+
+  if (normalizedPlanCode === "scale") {
+    return {
+      code: "scale",
+      manualGatewaySelection: true,
+      autoRouting: true,
+      fallback: true,
+    };
+  }
+
+  return {
+    code: "growth",
+    manualGatewaySelection: true,
+    autoRouting: true,
+    fallback: true,
+  };
+}
+
+function formatPlanLabel(code: string) {
+  if (!code) return "Growth";
+  return code.charAt(0).toUpperCase() + code.slice(1);
+}
+
 export default async function DashboardPage() {
   const me = await getServerMe();
   if (!me) redirect("/login");
@@ -28,6 +96,21 @@ export default async function DashboardPage() {
   const selectedMembership = memberships.find(
     (membership) => membership.merchant.id === selectedMerchantId
   );
+  const selectedPlan = resolveMerchantPlanSummary(selectedMembership?.merchant);
+  const routingFeatureItems = [
+    {
+      label: "Manual gateway selection",
+      enabled: selectedPlan.manualGatewaySelection,
+    },
+    {
+      label: "Auto routing",
+      enabled: selectedPlan.autoRouting,
+    },
+    {
+      label: "Fallback",
+      enabled: selectedPlan.fallback,
+    },
+  ];
 
   const quickActions = [
     { href: "/dashboard/gateways", label: "Open Gateway Connections", tone: "primary" as const },
@@ -60,6 +143,9 @@ export default async function DashboardPage() {
               </span>
               <span className={lightProductStatusPillClass("violet")}>
                 {selectedMembership?.role || "Member"}
+              </span>
+              <span className={lightProductStatusPillClass("warning")}>
+                {formatPlanLabel(selectedPlan.code)} plan
               </span>
               <span className={lightProductStatusPillClass("muted")}>Ozow + PayFast ready</span>
             </div>
@@ -116,9 +202,12 @@ export default async function DashboardPage() {
                 detail: "Merchant-scoped dashboard permissions",
               },
               {
-                label: "Gateway rails",
-                value: "PayFast + Ozow",
-                detail: "Live South African infrastructure",
+                label: "Merchant plan",
+                value: formatPlanLabel(selectedPlan.code),
+                detail: routingFeatureItems
+                  .filter((item) => item.enabled)
+                  .map((item) => item.label)
+                  .join(" · "),
               },
               {
                 label: "Platform status",
@@ -173,17 +262,38 @@ export default async function DashboardPage() {
               </div>
 
               <div className={cn(lightProductInsetPanelClass, "p-5")}>
-                <div className="text-xs uppercase tracking-[0.2em] text-[#6b7c93]">What’s live now</div>
-                <div className="mt-4 grid gap-3 text-sm text-[#425466]">
-                  {[
-                    "Merchant onboarding and login",
-                    "API keys and dashboard access",
-                    "Payment intents, subscriptions, and ledger foundation",
-                    "Ozow + PayFast orchestration readiness",
-                  ].map((item) => (
-                    <div key={item} className="flex items-start gap-3 rounded-[18px] border border-white/42 bg-white/22 px-4 py-3 shadow-[0_8px_18px_rgba(133,156,180,0.08)]">
-                      <span className="mt-0.5 text-[#635bff]">•</span>
-                      <span>{item}</span>
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <div className="text-xs uppercase tracking-[0.2em] text-[#6b7c93]">Plan visibility</div>
+                    <div className="mt-2 text-lg font-semibold tracking-tight text-[#0a2540]">
+                      {formatPlanLabel(selectedPlan.code)} merchant plan
+                    </div>
+                  </div>
+                  <span className={lightProductStatusPillClass("violet")}>Read only</span>
+                </div>
+
+                <p className={cn(lightProductMutedTextClass, "mt-4 text-sm")}>
+                  This view reflects the plan currently assigned to the selected merchant. It shows
+                  routing access only and does not change payment behavior from the dashboard.
+                </p>
+
+                <div className="mt-4 grid gap-3">
+                  {routingFeatureItems.map((item) => (
+                    <div
+                      key={item.label}
+                      className="flex items-start justify-between gap-4 rounded-[18px] border border-white/42 bg-white/22 px-4 py-3 shadow-[0_8px_18px_rgba(133,156,180,0.08)]"
+                    >
+                      <div>
+                        <div className="text-sm font-medium text-[#0a2540]">{item.label}</div>
+                        <div className="mt-1 text-xs text-[#6b7c93]">
+                          {item.enabled
+                            ? "Included in the current merchant plan."
+                            : "Not included in the current merchant plan."}
+                        </div>
+                      </div>
+                      <span className={lightProductStatusPillClass(item.enabled ? "success" : "muted")}>
+                        {item.enabled ? "Included" : "Not included"}
+                      </span>
                     </div>
                   ))}
                 </div>

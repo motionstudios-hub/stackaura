@@ -17,8 +17,8 @@ export default function DocsPage() {
   return (
     <PublicPageShell
       eyebrow="Developer infrastructure"
-      title="Build on Stackaura with one payments control plane."
-      description="Use Stackaura APIs to create payment intents, orchestrate gateway routing, activate merchants, issue API keys, and track webhook deliveries from one platform."
+      title="Build on Stackaura with one integration for multiple gateways."
+      description="Use Stackaura APIs to create payments, route and recover transactions, activate merchants, issue API keys, and track webhook deliveries from one orchestration layer."
       actions={
         <>
           <a
@@ -77,7 +77,7 @@ GET  /v1/payments/subscriptions`}
           <ul className="mt-4 space-y-3 text-sm leading-7 text-[#425466]">
             <li>Issue merchant API keys for test and live environments.</li>
             <li>Launch hosted checkout and payment link flows from one backend.</li>
-            <li>Track delivery retries, failover state, and orchestration visibility.</li>
+            <li>Track fallback, delivery retries, and routing visibility across payment rails.</li>
           </ul>
         </div>
       </section>
@@ -86,8 +86,8 @@ GET  /v1/payments/subscriptions`}
         <div className={publicSectionLabelClass}>What Stackaura offers</div>
         <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
           {[
-            "Payment intents and gateway orchestration",
-            "Gateway failover and routing visibility",
+            "Payment creation, routing, and recovery",
+            "Gateway fallback and routing visibility",
             "Webhook delivery infrastructure",
             "Merchant operations and dashboard tooling",
             "Recurring billing foundations",

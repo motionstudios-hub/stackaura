@@ -1,31 +1,71 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { AuthFormFrame, AuthShell } from "../components/stackaura-auth";
+import {
+  cn,
+  lightProductInputClass,
+  lightProductInsetPanelClass,
+  lightProductMutedTextClass,
+  lightProductStatusPillClass,
+  publicPrimaryButtonClass,
+  publicSecondaryButtonClass,
+  publicSubtleSurfaceClass,
+} from "../components/stackaura-ui";
 import { initiateOzowSignupPayment } from "../lib/ozow";
 
-const highlights = [
+const DEFAULT_COUNTRY = "South Africa";
+
+const featureCards = [
   {
     label: "Unified API",
     title: "One integration",
     description:
-      "Launch checkout, payment links, payment intents, and ledger-backed flows from a single stack.",
+      "Create payments, launch hosted checkout, and manage gateway orchestration from one infrastructure layer.",
   },
   {
-    label: "Gateway orchestration",
-    title: "Smart routing",
+    label: "Smart routing",
+    title: "Route intelligently",
     description:
-      "Route across PayFast, Ozow, and future rails with failover, delivery tracking, and developer-first controls.",
+      "Send each payment across the right gateway path with better resilience and less operational friction.",
   },
   {
-    label: "Merchant workspace",
-    title: "Ready fast",
+    label: "Hosted checkout",
+    title: "Launch faster",
     description:
-      "Create your account, then continue to login with your email already prefilled.",
+      "Go live quickly with Stackaura checkout flows designed for merchant growth and payment recovery.",
   },
-];
+] as const;
+
+const plans = [
+  {
+    code: "starter",
+    name: "Starter",
+    price: "1.5%",
+    suffix: "per transaction",
+    description: "Unified checkout and auto routing for getting started.",
+  },
+  {
+    code: "growth",
+    name: "Growth",
+    price: "2.5% + R1",
+    suffix: "per transaction",
+    description: "Smart routing, fallback, and multi-gateway orchestration.",
+    featured: true,
+  },
+  {
+    code: "scale",
+    name: "Scale",
+    price: "Custom",
+    suffix: "pricing",
+    description: "Custom routing support and optimization for larger teams.",
+  },
+] as const;
+
+type PlanCode = (typeof plans)[number]["code"];
+type SubmissionMode = "account" | "ozow" | null;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
@@ -53,12 +93,12 @@ export default function SignupClient() {
   const [businessName, setBusinessName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [country, setCountry] = useState("South Africa");
-  const [checkoutPath, setCheckoutPath] = useState<"signup" | "ozow">("signup");
-  const [loading, setLoading] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<PlanCode>("growth");
+  const [submissionMode, setSubmissionMode] = useState<SubmissionMode>(null);
   const [error, setError] = useState<string | null>(null);
 
   const backend = process.env.NEXT_PUBLIC_CHECKOUT_API_BASE_URL || "http://localhost:3001";
+  const isLoading = submissionMode !== null;
 
   function buildReturnUrls() {
     const origin = window.location.origin;
@@ -70,287 +110,262 @@ export default function SignupClient() {
     };
   }
 
-  async function handleSignup(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
+  function validateSignupFields() {
+    if (!businessName.trim()) {
+      throw new Error("Business name is required.");
+    }
 
-    try {
-      setLoading(true);
+    if (!email.trim()) {
+      throw new Error("Email is required.");
+    }
 
-      if (checkoutPath === "ozow") {
-        await initiateOzowSignupPayment({
-          flow: "merchant_signup",
-          signup: {
-            businessName,
-            email,
-            password,
-            country,
-          },
-          returnUrls: buildReturnUrls(),
-        });
-        return;
-      }
-
-      const res = await fetch(`${backend}/v1/merchants/signup`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          businessName,
-          email,
-          password,
-          country,
-        }),
-      });
-
-      if (!res.ok) {
-        let message = "Signup failed";
-        try {
-          const payload: unknown = await res.json();
-          message = extractSignupError(payload) || message;
-        } catch {
-          // ignore json parse errors
-        }
-        throw new Error(message);
-      }
-
-      const params = new URLSearchParams({
-        created: "1",
-        email,
-      });
-
-      router.replace(`/login?${params.toString()}`);
-      router.refresh();
-    } catch (err: unknown) {
-      setError(getErrorMessage(err, "Signup failed. Please try again."));
-    } finally {
-      setLoading(false);
+    if (!password || password.length < 8) {
+      throw new Error("Password must be at least 8 characters.");
     }
   }
 
+  async function createMerchantAccount() {
+    const res = await fetch(`${backend}/v1/merchants/signup`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        businessName,
+        email,
+        password,
+        country: DEFAULT_COUNTRY,
+      }),
+    });
+
+    if (!res.ok) {
+      let message = "Signup failed";
+      try {
+        const payload: unknown = await res.json();
+        message = extractSignupError(payload) || message;
+      } catch {
+        // ignore json parse errors
+      }
+      throw new Error(message);
+    }
+
+    const params = new URLSearchParams({
+      created: "1",
+      email,
+    });
+
+    router.replace(`/login?${params.toString()}`);
+    router.refresh();
+  }
+
+  async function handleSignup(event: React.FormEvent) {
+    event.preventDefault();
+    setError(null);
+
+    try {
+      validateSignupFields();
+      setSubmissionMode("account");
+      await createMerchantAccount();
+    } catch (signupError: unknown) {
+      setError(getErrorMessage(signupError, "Signup failed. Please try again."));
+    } finally {
+      setSubmissionMode(null);
+    }
+  }
+
+  async function handleOzowSignup() {
+    setError(null);
+
+    try {
+      validateSignupFields();
+      setSubmissionMode("ozow");
+      await initiateOzowSignupPayment({
+        flow: "merchant_signup",
+        signup: {
+          businessName,
+          email,
+          password,
+          country: DEFAULT_COUNTRY,
+        },
+        returnUrls: buildReturnUrls(),
+      });
+    } catch (signupError: unknown) {
+      setError(getErrorMessage(signupError, "Unable to start Ozow signup right now."));
+      setSubmissionMode(null);
+    }
+  }
+
+  const planNote =
+    selectedPlan === "growth"
+      ? "Growth is the recommended starting plan and the default setup during signup today."
+      : "Growth is the default starting setup during signup today. Starter and Scale preferences can be aligned as your routing needs evolve.";
+
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#020817] text-white">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(32,188,237,0.24),transparent_30%),radial-gradient(circle_at_top_right,rgba(17,106,248,0.2),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(160,233,255,0.12),transparent_24%),linear-gradient(135deg,#061229_0%,#020817_48%,#04174a_100%)]" />
-      <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.05),transparent_18%)]" />
+    <AuthShell
+      eyebrow="Merchant onboarding"
+      title="Start accepting payments in minutes."
+      description="Launch with one integration for multiple gateways, then grow into smarter routing, fallback, and payment infrastructure built for merchant teams."
+      features={featureCards}
+    >
+      <AuthFormFrame
+        eyebrow="Create account"
+        title="Open your merchant workspace"
+        description="Create your account, step into the dashboard, and start building on a payment orchestration layer designed for routing, fallback, and merchant growth."
+        status="Growth recommended"
+        statusTone="violet"
+      >
+        <form onSubmit={handleSignup} className="space-y-4">
+          <label className="block">
+            <div className="text-xs font-medium uppercase tracking-[0.18em] text-[#6b7c93]">
+              Business name
+            </div>
+            <input
+              type="text"
+              required
+              value={businessName}
+              onChange={(event) => setBusinessName(event.target.value)}
+              placeholder="Stackaura Technologies"
+              className={cn(lightProductInputClass, "mt-2")}
+              disabled={isLoading}
+            />
+          </label>
 
-      <div className="relative mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-4 py-8 sm:px-6 sm:py-12">
-        <Link
-          href="/"
-          className="mb-6 inline-flex min-h-[44px] w-fit items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-zinc-200 backdrop-blur-xl transition hover:bg-white/10 sm:mb-8"
-        >
-          <span>←</span>
-          <span>Back to Stackaura</span>
-        </Link>
+          <label className="block">
+            <div className="text-xs font-medium uppercase tracking-[0.18em] text-[#6b7c93]">
+              Work email
+            </div>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="admin@company.com"
+              className={cn(lightProductInputClass, "mt-2")}
+              autoComplete="email"
+              disabled={isLoading}
+            />
+          </label>
 
-        <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-10">
-          <section className="order-2 lg:order-1">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.24em] text-[#A0E9FF] backdrop-blur-xl">
-              Self-serve merchant onboarding
+          <label className="block">
+            <div className="text-xs font-medium uppercase tracking-[0.18em] text-[#6b7c93]">
+              Password
+            </div>
+            <input
+              type="password"
+              required
+              minLength={8}
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              placeholder="Minimum 8 characters"
+              className={cn(lightProductInputClass, "mt-2")}
+              autoComplete="new-password"
+              disabled={isLoading}
+            />
+          </label>
+
+          <div>
+            <div className="flex items-center justify-between gap-3">
+              <div className="text-xs font-medium uppercase tracking-[0.18em] text-[#6b7c93]">
+                Starting plan
+              </div>
+              <span className={lightProductStatusPillClass("muted")}>Growth default</span>
             </div>
 
-            <div className="mt-8 flex items-center gap-4">
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-black/25 shadow-[0_10px_30px_rgba(0,0,0,0.28)]">
-                <Image
-                  src="/stackaura-logo.png"
-                  alt="Stackaura"
-                  width={42}
-                  height={42}
-                  className="object-contain mix-blend-screen"
-                  priority
-                />
-              </div>
+            <div className="mt-3 grid gap-3 sm:grid-cols-3">
+              {plans.map((plan) => {
+                const selected = selectedPlan === plan.code;
 
-              <div>
-                <div className="text-3xl font-semibold tracking-tight">Stackaura</div>
-                <div className="text-sm text-zinc-400">Payments Infrastructure</div>
-              </div>
-            </div>
-
-            <h1 className="mt-10 max-w-2xl text-4xl font-semibold tracking-tight sm:text-5xl">
-              Start accepting payments on Stackaura with a merchant workspace that is ready fast.
-            </h1>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-zinc-300 sm:text-lg">
-              Create your account, access your dashboard, generate API keys, launch payment links,
-              and connect gateways like PayFast and Ozow from one platform.
-            </p>
-
-            <div className="mt-8 grid gap-4 md:grid-cols-3 md:gap-5">
-              {highlights.map((item) => (
-                <div
-                  key={item.title}
-                  className="rounded-3xl border border-white/10 bg-[#08152f]/55 p-5 shadow-[0_12px_40px_rgba(0,0,0,0.22)] backdrop-blur-xl"
-                >
-                  <div className="text-xs uppercase tracking-wide text-zinc-500">{item.label}</div>
-                  <div className="mt-3 text-xl font-semibold tracking-tight text-white">
-                    {item.title}
-                  </div>
-                  <p className="mt-2 text-sm leading-6 text-zinc-400">{item.description}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section className="order-1 lg:order-2">
-            <div className="mx-auto max-w-xl rounded-[32px] border border-white/10 bg-[#08152f]/60 p-6 shadow-[0_20px_80px_rgba(0,0,0,0.32)] backdrop-blur-2xl sm:p-10">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <div className="text-sm uppercase tracking-[0.24em] text-[#A0E9FF]">
-                    Create account
-                  </div>
-                  <h2 className="mt-3 text-3xl font-semibold tracking-tight">
-                    Open your merchant workspace
-                  </h2>
-                </div>
-
-                <div className="rounded-full border border-emerald-900/40 bg-emerald-950/30 px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-emerald-300">
-                  Live onboarding
-                </div>
-              </div>
-
-              <p className="mt-4 text-sm leading-6 text-zinc-400">
-                Sign up in under a minute. You can create a merchant workspace directly, or hand
-                the customer off to Ozow once the payment path is needed.
-              </p>
-
-              <form onSubmit={handleSignup} className="mt-8 space-y-4">
-                <label className="block">
-                  <div className="text-xs font-medium uppercase tracking-wide text-zinc-400">
-                    Business name
-                  </div>
-                  <input
-                    type="text"
-                    required
-                    value={businessName}
-                    onChange={(e) => setBusinessName(e.target.value)}
-                    placeholder="Stackaura Technologies"
-                    className="mt-2 min-h-[48px] w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-500 focus:border-[#20BCED]/45 focus:ring-2 focus:ring-[#20BCED]/20"
-                  />
-                </label>
-
-                <label className="block">
-                  <div className="text-xs font-medium uppercase tracking-wide text-zinc-400">
-                    Work email
-                  </div>
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="admin@stackaura.co.za"
-                    className="mt-2 min-h-[48px] w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-500 focus:border-[#20BCED]/45 focus:ring-2 focus:ring-[#20BCED]/20"
-                  />
-                </label>
-
-                <label className="block">
-                  <div className="text-xs font-medium uppercase tracking-wide text-zinc-400">
-                    Password
-                  </div>
-                  <input
-                    type="password"
-                    required
-                    minLength={8}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Minimum 8 characters"
-                    className="mt-2 min-h-[48px] w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-500 focus:border-[#20BCED]/45 focus:ring-2 focus:ring-[#20BCED]/20"
-                  />
-                </label>
-
-                <label className="block">
-                  <div className="text-xs font-medium uppercase tracking-wide text-zinc-400">
-                    Country
-                  </div>
-                  <select
-                    value={country}
-                    onChange={(e) => setCountry(e.target.value)}
-                    className="mt-2 min-h-[48px] w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition focus:border-[#20BCED]/45 focus:ring-2 focus:ring-[#20BCED]/20"
+                return (
+                  <button
+                    key={plan.code}
+                    type="button"
+                    onClick={() => setSelectedPlan(plan.code)}
+                    disabled={isLoading}
+                    className={cn(
+                      "rounded-[24px] border p-4 text-left transition disabled:cursor-not-allowed disabled:opacity-70",
+                      selected
+                        ? "border-[#9288ff]/55 bg-[linear-gradient(180deg,rgba(122,115,255,0.18)_0%,rgba(160,233,255,0.12)_100%)] shadow-[0_16px_32px_rgba(99,91,255,0.16)]"
+                        : cn(lightProductInsetPanelClass, "hover:border-white/55"),
+                      plan.featured && !selected && "border-[#d6d0ff] bg-[#f6f3ff]/88"
+                    )}
                   >
-                    <option>South Africa</option>
-                    <option>Nigeria</option>
-                    <option>Kenya</option>
-                    <option>United Kingdom</option>
-                  </select>
-                </label>
-
-                <div>
-                  <div className="text-xs font-medium uppercase tracking-wide text-zinc-400">
-                    Continue with
-                  </div>
-                  <div className="mt-2 grid gap-3 sm:grid-cols-2">
-                    <button
-                      type="button"
-                      onClick={() => setCheckoutPath("signup")}
-                      className={
-                        checkoutPath === "signup"
-                          ? "rounded-2xl border border-[#20BCED]/35 bg-[#A0E9FF]/10 px-4 py-4 text-left shadow-[0_12px_30px_rgba(17,106,248,0.16)] transition"
-                          : "rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-left transition hover:border-white/20 hover:bg-black/30"
-                      }
-                    >
-                      <div className="text-sm font-semibold text-white">Merchant account</div>
-                      <div className="mt-1 text-sm leading-6 text-zinc-400">
-                        Create the workspace now and continue to login with the same email.
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <div className="text-sm font-semibold text-[#0a2540]">{plan.name}</div>
+                        <div className="mt-2 text-lg font-semibold tracking-tight text-[#0a2540]">
+                          {plan.price}
+                        </div>
+                        <div className="text-[11px] uppercase tracking-[0.18em] text-[#6b7c93]">
+                          {plan.suffix}
+                        </div>
                       </div>
-                    </button>
 
-                    <button
-                      type="button"
-                      onClick={() => setCheckoutPath("ozow")}
-                      className={
-                        checkoutPath === "ozow"
-                          ? "rounded-2xl border border-[#20BCED]/35 bg-[#A0E9FF]/10 px-4 py-4 text-left shadow-[0_12px_30px_rgba(17,106,248,0.16)] transition"
-                          : "rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-left transition hover:border-white/20 hover:bg-black/30"
-                      }
-                    >
-                      <div className="text-sm font-semibold text-white">Ozow checkout</div>
-                      <div className="mt-1 text-sm leading-6 text-zinc-400">
-                        Send the onboarding details to the API and redirect the browser to Ozow.
-                      </div>
-                    </button>
-                  </div>
-                </div>
+                      {plan.featured ? (
+                        <span
+                          className={lightProductStatusPillClass(
+                            selected ? "success" : "violet"
+                          )}
+                        >
+                          Popular
+                        </span>
+                      ) : null}
+                    </div>
 
-                {error ? (
-                  <div className="rounded-2xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
-                    {error}
-                  </div>
-                ) : null}
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="min-h-[48px] w-full rounded-2xl bg-[#A0E9FF] px-5 py-3 text-sm font-semibold text-[#02142b] transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-70"
-                >
-                  {loading
-                    ? checkoutPath === "ozow"
-                      ? "Redirecting to Ozow..."
-                      : "Creating account..."
-                    : checkoutPath === "ozow"
-                      ? "Continue to Ozow"
-                      : "Create merchant account"}
-                </button>
-              </form>
-
-              <div className="mt-6 rounded-2xl border border-white/10 bg-black/20 p-4 text-sm leading-6 text-zinc-300">
-                {checkoutPath === "ozow"
-                  ? "Ozow initiation is handled by the API only. The frontend expects the backend to return a redirect URL or redirect form payload."
-                  : "You&apos;ll continue straight to sign in after account creation, with your new merchant email already prefilled."}
-              </div>
-
-              <div className="mt-6 flex flex-col gap-3 text-sm text-zinc-400 sm:flex-row sm:items-center sm:justify-between">
-                <span>Already have an account?</span>
-                <Link
-                  href="/login"
-                  className="inline-flex min-h-[44px] items-center gap-2 text-[#A0E9FF] transition hover:text-white"
-                >
-                  Sign in
-                  <span>→</span>
-                </Link>
-              </div>
+                    <p className="mt-3 text-sm leading-6 text-[#425466]">{plan.description}</p>
+                  </button>
+                );
+              })}
             </div>
-          </section>
+
+            <p className="mt-3 text-sm leading-6 text-[#425466]">{planNote}</p>
+          </div>
+
+          {error ? (
+            <div className="rounded-[22px] border border-rose-300/70 bg-rose-50/84 px-4 py-3 text-sm text-rose-700">
+              {error}
+            </div>
+          ) : null}
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className={cn(
+              publicPrimaryButtonClass,
+              "w-full px-5 py-3 disabled:cursor-not-allowed disabled:opacity-70"
+            )}
+          >
+            {submissionMode === "account" ? "Creating account..." : "Create merchant account"}
+          </button>
+        </form>
+
+        <div className={cn("mt-6 p-4", publicSubtleSurfaceClass)}>
+          <p className={lightProductMutedTextClass}>
+            Stackaura provides software infrastructure and orchestration tools. Licensed payment
+            providers process and settle payments.
+          </p>
+
+          <button
+            type="button"
+            onClick={handleOzowSignup}
+            disabled={isLoading}
+            className={cn(
+              publicSecondaryButtonClass,
+              "mt-4 w-full px-5 py-3 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
+            )}
+          >
+            {submissionMode === "ozow"
+              ? "Redirecting to Ozow..."
+              : "Need a payment-linked activation flow? Continue with Ozow"}
+          </button>
         </div>
-      </div>
-    </main>
+
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <span className="text-sm text-[#6b7c93]">Already have an account?</span>
+          <Link href="/login" className={cn(publicSecondaryButtonClass, "px-5 py-3")}>
+            Sign in
+          </Link>
+        </div>
+      </AuthFormFrame>
+    </AuthShell>
   );
 }

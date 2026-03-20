@@ -13,11 +13,11 @@ const sections = [
   },
   {
     title: "How payment data is handled",
-    body: "Payment data may be processed through third-party payment gateways and financial service providers. Stackaura does not represent that it is a card scheme or issuing bank.",
+    body: "Payment data may flow through licensed payment providers and gateways connected through Stackaura. Stackaura operates the orchestration layer and does not directly process, hold, or settle customer funds.",
   },
   {
     title: "Infrastructure role",
-    body: "Stackaura provides software infrastructure and orchestration tools. Stackaura does not directly process, hold, or settle customer funds; licensed payment providers handle payment processing and settlement within their own regulated environments.",
+    body: "Stackaura is a software infrastructure and orchestration layer. Stackaura does not directly process, hold, or settle customer funds; licensed payment providers process and settle payments.",
   },
   {
     title: "Security measures",
@@ -34,7 +34,7 @@ export default function PrivacyPage() {
     <PublicPageShell
       eyebrow="Privacy policy"
       title="Privacy practices for Stackaura infrastructure and merchant services."
-      description="Stackaura Payments (Pty) Ltd provides software and payment infrastructure services for merchants, platforms, and developers. This page summarizes how we think about operational data, account information, and service security."
+      description="Stackaura Payments (Pty) Ltd provides payment orchestration and infrastructure services for merchants, platforms, and developers. This page summarizes how we think about operational data, account information, and service security."
       aside={
         <div className={cn(publicSurfaceClass, "p-7")}>
           <div className={publicSectionLabelClass}>Scope</div>

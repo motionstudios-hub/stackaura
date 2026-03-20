@@ -319,7 +319,7 @@ export function PublicFooter() {
           <div className="max-w-xl">
             <BrandLockup compact />
             <p className="mt-3 text-sm leading-6 text-[#425466]">
-              Payment orchestration, merchant activation, API keys, and gateway infrastructure for
+              Payment orchestration, smart routing, fallback, and unified infrastructure for
               modern African commerce teams.
             </p>
           </div>

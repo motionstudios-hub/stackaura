@@ -1,5 +1,148 @@
 import Link from "next/link";
-import { PublicFooter, PublicHeader } from "./components/stackaura-ui";
+import {
+  cn,
+  lightProductHeroClass,
+  lightProductInsetPanelClass,
+  lightProductPanelClass,
+  PublicBackground,
+  PublicFooter,
+  PublicHeader,
+  publicCodePanelClass,
+  publicPillClass,
+  publicPrimaryButtonClass,
+  publicSecondaryButtonClass,
+  publicSectionLabelClass,
+  publicSubtleSurfaceClass,
+} from "./components/stackaura-ui";
+
+const valueProps = [
+  {
+    title: "Smart routing",
+    description:
+      "Automatically send each payment to the best-performing gateway.",
+    accent:
+      "bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.26),transparent_68%)]",
+  },
+  {
+    title: "Built-in fallback",
+    description:
+      "If one provider fails, Stackaura retries with another.",
+    accent:
+      "bg-[radial-gradient(circle_at_top,rgba(56,189,248,0.24),transparent_68%)]",
+  },
+  {
+    title: "Unified API",
+    description: "One integration for checkout, routing, and multiple gateways.",
+    accent:
+      "bg-[radial-gradient(circle_at_top,rgba(168,85,247,0.18),transparent_70%)]",
+  },
+] as const;
+
+const gatewayRails = [
+  {
+    name: "Paystack",
+    mark: "paystack",
+    status: "Current rail",
+    description:
+      "A live rail in the Stackaura orchestration layer for unified checkout and payment recovery.",
+  },
+  {
+    name: "Yoco",
+    mark: "YOCO",
+    status: "Current rail",
+    description:
+      "A live rail in the same unified infrastructure layer for merchant checkout and routing control.",
+  },
+  {
+    name: "Ozow",
+    mark: "OZOW",
+    status: "Current rail",
+    description:
+      "A live bank-payment rail connected through the same orchestration and recovery path.",
+  },
+] as const;
+
+const howItWorks = [
+  {
+    step: "01",
+    title: "Integrate once",
+    description:
+      "Connect your product to Stackaura through one API or hosted checkout layer.",
+  },
+  {
+    step: "02",
+    title: "Route intelligently",
+    description:
+      "Stackaura selects the right gateway path for the transaction and merchant context.",
+  },
+  {
+    step: "03",
+    title: "Recover failed payments",
+    description:
+      "Fallback logic helps recover checkout attempts before they become lost revenue.",
+  },
+] as const;
+
+const infrastructureFeatures = [
+  "Hosted checkout",
+  "Webhooks",
+  "Unified API",
+  "Reconciliation",
+] as const;
+
+const merchantBenefits = [
+  {
+    title: "Higher success rates",
+    description:
+      "Route around provider interruptions before they turn into lost orders.",
+  },
+  {
+    title: "Fewer failed checkouts",
+    description:
+      "Keep customers moving even when a payment rail slows down or times out.",
+  },
+  {
+    title: "Simpler operations",
+    description:
+      "Manage routing, gateway visibility, and finance workflows through one control layer.",
+  },
+] as const;
+
+const pricingTiers = [
+  {
+    name: "Starter",
+    audience: "For merchants launching with unified checkout and auto routing.",
+    bullets: ["Auto routing", "Hosted checkout", "Unified API access"],
+    featured: false,
+  },
+  {
+    name: "Growth",
+    audience: "For growing teams that need fallback and manual gateway control.",
+    bullets: ["Manual gateway selection", "Fallback routing", "Multi-gateway orchestration"],
+    featured: true,
+  },
+  {
+    name: "Scale",
+    audience: "For larger merchants that need custom routing and optimization support.",
+    bullets: ["Custom routing support", "Custom optimization", "Priority support"],
+    featured: false,
+  },
+] as const;
+
+function GatewayMark({ name, mark }: { name: string; mark: string }) {
+  return (
+    <span
+      className={cn(
+        "text-center font-semibold tracking-[-0.04em] text-[#0a2540]",
+        name === "Paystack" && "text-[22px] lowercase",
+        name === "Yoco" && "text-[24px] tracking-[0.18em]",
+        name === "Ozow" && "text-[22px] tracking-[0.22em]"
+      )}
+    >
+      {mark}
+    </span>
+  );
+}
 
 export default function Home() {
   const organizationJsonLd = {
@@ -31,19 +174,7 @@ export default function Home() {
     url: "https://stackaura.co.za",
   };
 
-  const paymentProviderLogos = [
-    { name: "Ozow", mark: "OZOW" },
-    { name: "PayFast", mark: "PayFast" },
-    { name: "Paystack", mark: "paystack" },
-    { name: "Stripe", mark: "stripe" },
-  ];
-
-  const commercePlatformLogos = [
-    { name: "Shopify", mark: "shopify" },
-    { name: "WooCommerce", mark: "WooCommerce" },
-    { name: "Custom API", mark: "Custom API" },
-    { name: "SaaS Platforms", mark: "SaaS Platforms" },
-  ];
+  const sectionClass = "mx-auto max-w-[1440px] px-5 sm:px-6 lg:px-10";
 
   return (
     <>
@@ -60,428 +191,564 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareJsonLd) }}
       />
 
-      <main className="min-h-screen bg-[#dbe8ee] text-[#0a2540]">
-        <div className="relative overflow-hidden border-b border-white/35 bg-[#dbe8ee]">
-          <div className="absolute inset-x-0 top-0 h-[6px] bg-[linear-gradient(90deg,#7a73ff_0%,#4f46e5_22%,#7dd3fc_46%,#fb7185_72%,#f59e0b_100%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_14%_16%,rgba(255,255,255,0.30),transparent_24%),radial-gradient(circle_at_34%_40%,rgba(186,214,227,0.26),transparent_26%),radial-gradient(circle_at_78%_28%,rgba(241,248,251,0.28),transparent_30%)]" />
-          <div className="absolute left-0 top-[88px] h-[560px] w-[60%] bg-[linear-gradient(135deg,rgba(231,240,245,0.36)_0%,rgba(196,220,233,0.12)_30%,rgba(255,255,255,0)_76%)]" />
+      <PublicBackground>
+        <PublicHeader />
 
-          <PublicHeader />
+        <div className="relative pb-20">
+          <section className={cn(sectionClass, "pt-6 sm:pt-8 lg:pt-10")}>
+            <div
+              className={cn(
+                "relative isolate overflow-hidden px-5 pb-8 pt-6 sm:px-8 sm:pb-10 sm:pt-8 lg:px-10 lg:py-10",
+                lightProductHeroClass
+              )}
+            >
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_18%,rgba(255,255,255,0.52),transparent_26%),radial-gradient(circle_at_74%_18%,rgba(125,211,252,0.28),transparent_24%),radial-gradient(circle_at_84%_70%,rgba(168,85,247,0.16),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.16),rgba(219,232,238,0.02))]" />
 
-          <section className="relative isolate mx-auto grid max-w-[1440px] gap-5 overflow-hidden px-5 pb-6 pt-6 sm:gap-6 sm:px-6 sm:pb-8 sm:pt-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12 lg:overflow-visible lg:px-10 lg:py-24">
-            <div className="relative z-10 max-w-3xl pr-2 sm:pr-0">
-              <div className="inline-flex max-w-[20rem] flex-wrap items-center gap-1.5 rounded-full border border-white/45 bg-white/24 px-3 py-1.5 text-[11px] font-medium leading-5 text-[#0a2540] shadow-[0_8px_24px_rgba(133,156,180,0.10)] backdrop-blur-2xl supports-[backdrop-filter]:bg-white/18 sm:max-w-none sm:gap-2 sm:px-4 sm:py-2 sm:text-sm sm:leading-normal">
-                <span className="font-semibold text-[#0a2540]">African payments infrastructure</span>
-                <span className="text-[#6b7c93]">for modern merchants and platforms</span>
-              </div>
+              <div className="relative grid gap-8 lg:grid-cols-[1.03fr_0.97fr] lg:items-center">
+                <div className="relative z-10 max-w-3xl pr-4 sm:pr-24 lg:pr-0">
+                  <div className={cn(publicPillClass, "max-w-max px-3 py-1.5 text-xs sm:text-sm")}>
+                    Payment orchestration and infrastructure for African commerce
+                  </div>
 
-              <h1 className="mt-4 max-w-4xl text-5xl font-semibold leading-[1.02] tracking-[-0.04em] text-[#0a2540] sm:mt-6 sm:text-6xl lg:mt-8 lg:text-[72px]">
-                Financial infrastructure to launch, route, and scale payments.
-              </h1>
+                  <h1 className="mt-5 max-w-4xl text-5xl font-semibold leading-[1.01] tracking-[-0.05em] text-[#0a2540] sm:text-6xl lg:text-[78px]">
+                    Payments that never fail.
+                  </h1>
 
-              <p className="mt-4 max-w-2xl text-lg leading-8 text-[#425466] sm:mt-6 sm:text-[21px]">
-                Accept payments, orchestrate multiple gateways, and activate merchants through one API layer. Stackaura helps businesses unify checkout, onboarding, routing, and developer operations across Africa.
-              </p>
+                  <p className="mt-5 max-w-2xl text-lg leading-8 text-[#425466] sm:text-[21px]">
+                    Route every transaction across multiple gateways
+                    automatically. Increase success rates, reduce downtime, and
+                    scale faster with Stackaura.
+                  </p>
 
-              <div className="mt-5 flex flex-col gap-2.5 sm:mt-7 sm:flex-row sm:gap-3 lg:mt-8">
-                <Link
-                  href="/signup"
-                  className="inline-flex items-center justify-center rounded-2xl border border-white/30 bg-[linear-gradient(180deg,rgba(108,92,255,0.92),rgba(87,76,240,0.92))] px-6 py-3.5 text-sm font-semibold text-white shadow-[0_16px_30px_rgba(99,91,255,0.22)] backdrop-blur-xl transition hover:brightness-105"
-                >
-                  Start building
-                </Link>
-                <Link
-                  href="/docs"
-                  className="inline-flex items-center justify-center rounded-2xl border border-white/45 bg-white/22 px-6 py-3.5 text-sm font-semibold text-[#4f46e5] shadow-[0_10px_24px_rgba(133,156,180,0.12)] backdrop-blur-2xl transition hover:bg-white/30 hover:border-white/55"
-                >
-                  View docs
-                </Link>
-              </div>
-            </div>
+                  <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                    <Link href="/signup" className={publicPrimaryButtonClass}>
+                      Start accepting payments
+                    </Link>
+                    <Link href="/docs" className={publicSecondaryButtonClass}>
+                      View docs
+                    </Link>
+                  </div>
 
-            <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[520px] overflow-hidden lg:pointer-events-auto lg:relative lg:inset-auto lg:mt-0 lg:min-h-[560px] lg:h-auto lg:overflow-visible lg:rounded-none">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_18%,rgba(186,214,227,0.20),transparent_24%),radial-gradient(circle_at_86%_22%,rgba(204,227,242,0.28),transparent_24%),linear-gradient(180deg,rgba(215,232,240,0.10),rgba(255,255,255,0))] lg:rounded-none" />
+                  <div className="mt-6 inline-flex max-w-full rounded-full border border-white/48 bg-white/28 px-4 py-2 text-sm font-medium text-[#425466] shadow-[0_10px_24px_rgba(133,156,180,0.10)] backdrop-blur-2xl">
+                    One integration. Multiple gateways. Smart routing and fallback.
+                  </div>
 
-              <div className="absolute right-[-18px] top-[42px] h-[280px] w-[280px] rotate-[28deg] scale-[0.78] opacity-90 sm:right-[-8px] sm:top-[56px] sm:h-[320px] sm:w-[320px] sm:scale-[0.86] lg:left-auto lg:right-[-8%] lg:top-[-2%] lg:h-[620px] lg:w-[620px] lg:scale-100 lg:opacity-100">
-                <div className="absolute left-[-38px] top-[286px] h-[184px] w-[300px] rounded-[18px] border border-[#a977ff]/30 bg-[linear-gradient(180deg,rgba(209,186,255,0.30)_0%,rgba(88,118,255,0.72)_58%,rgba(82,233,240,0.38)_100%)] shadow-[0_18px_36px_rgba(98,132,196,0.08),inset_0_1px_0_rgba(255,255,255,0.36)] backdrop-blur-md lg:border-[#a977ff]/38 lg:bg-[linear-gradient(180deg,rgba(209,186,255,0.42)_0%,rgba(88,118,255,0.84)_58%,rgba(82,233,240,0.54)_100%)] lg:shadow-[0_22px_44px_rgba(98,132,196,0.10),inset_0_1px_0_rgba(255,255,255,0.45)]" />
-                <div className="absolute left-[54px] top-[198px] h-[212px] w-[334px] rounded-[20px] border border-[#9d7cff]/32 bg-[linear-gradient(180deg,rgba(214,194,255,0.30)_0%,rgba(104,130,255,0.62)_56%,rgba(95,229,237,0.30)_100%)] shadow-[0_20px_40px_rgba(98,132,196,0.09),inset_0_1px_0_rgba(255,255,255,0.38)] backdrop-blur-md lg:border-[#9d7cff]/42 lg:bg-[linear-gradient(180deg,rgba(214,194,255,0.44)_0%,rgba(104,130,255,0.76)_56%,rgba(95,229,237,0.44)_100%)] lg:shadow-[0_24px_52px_rgba(98,132,196,0.12),inset_0_1px_0_rgba(255,255,255,0.46)]" />
-                <div className="absolute left-[154px] top-[104px] h-[244px] w-[370px] rounded-[24px] border border-[#916fff]/34 bg-[linear-gradient(180deg,rgba(218,200,255,0.34)_0%,rgba(126,151,255,0.50)_52%,rgba(130,231,236,0.24)_100%)] shadow-[0_22px_48px_rgba(98,132,196,0.10),inset_0_1px_0_rgba(255,255,255,0.40)] backdrop-blur-md lg:border-[#916fff]/46 lg:bg-[linear-gradient(180deg,rgba(218,200,255,0.50)_0%,rgba(126,151,255,0.60)_52%,rgba(130,231,236,0.34)_100%)] lg:shadow-[0_26px_60px_rgba(98,132,196,0.14),inset_0_1px_0_rgba(255,255,255,0.50)]" />
-                <div className="absolute left-[276px] top-[16px] h-[282px] w-[408px] rounded-[28px] border border-[#8666ff]/38 bg-[linear-gradient(180deg,rgba(223,208,255,0.36)_0%,rgba(163,189,255,0.30)_48%,rgba(161,235,240,0.14)_100%)] shadow-[0_24px_56px_rgba(98,132,196,0.10),inset_0_1px_0_rgba(255,255,255,0.42)] backdrop-blur-md lg:border-[#8666ff]/50 lg:bg-[linear-gradient(180deg,rgba(223,208,255,0.54)_0%,rgba(163,189,255,0.42)_48%,rgba(161,235,240,0.20)_100%)] lg:shadow-[0_30px_70px_rgba(98,132,196,0.16),inset_0_1px_0_rgba(255,255,255,0.56)]" />
+                  <div className="mt-8 grid gap-3 sm:grid-cols-3">
+                    <div className={cn("p-4", publicSubtleSurfaceClass)}>
+                      <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6b7c93]">
+                        Routing layer
+                      </div>
+                      <p className="mt-2 text-sm leading-6 text-[#425466]">
+                        A single infrastructure layer for intelligent gateway
+                        selection.
+                      </p>
+                    </div>
+                    <div className={cn("p-4", publicSubtleSurfaceClass)}>
+                      <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6b7c93]">
+                        Fallback ready
+                      </div>
+                      <p className="mt-2 text-sm leading-6 text-[#425466]">
+                        Recovery flows designed to rescue payments before
+                        checkout fails.
+                      </p>
+                    </div>
+                    <div className={cn("p-4", publicSubtleSurfaceClass)}>
+                      <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6b7c93]">
+                        Unified ops
+                      </div>
+                      <p className="mt-2 text-sm leading-6 text-[#425466]">
+                        One API for checkout, routing, events, and gateway
+                        visibility.
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
-                <div className="absolute left-[392px] top-[-48px] hidden h-[388px] w-[16px] rounded-full bg-[linear-gradient(180deg,rgba(102,82,255,0.94)_0%,rgba(89,140,255,0.82)_58%,rgba(48,225,236,0.78)_100%)] shadow-[0_10px_20px_rgba(112,139,210,0.16)] lg:block" />
-                <div className="absolute left-[458px] top-[-86px] hidden h-[430px] w-[16px] rounded-full bg-[linear-gradient(180deg,rgba(108,88,255,0.94)_0%,rgba(95,147,255,0.82)_58%,rgba(53,226,236,0.78)_100%)] shadow-[0_10px_20px_rgba(112,139,210,0.16)] lg:block" />
-                <div className="absolute left-[522px] top-[-122px] hidden h-[470px] w-[16px] rounded-full bg-[linear-gradient(180deg,rgba(113,92,255,0.94)_0%,rgba(101,153,255,0.82)_58%,rgba(58,227,236,0.78)_100%)] shadow-[0_10px_20px_rgba(112,139,210,0.16)] lg:block" />
-                <div className="absolute left-[586px] top-[-154px] hidden h-[500px] w-[16px] rounded-full bg-[linear-gradient(180deg,rgba(118,96,255,0.94)_0%,rgba(106,158,255,0.82)_58%,rgba(61,228,236,0.78)_100%)] shadow-[0_10px_20px_rgba(112,139,210,0.16)] lg:block" />
-                <div className="absolute left-[652px] top-[-182px] hidden h-[522px] w-[16px] rounded-full bg-[linear-gradient(180deg,rgba(122,100,255,0.94)_0%,rgba(112,164,255,0.82)_58%,rgba(66,229,236,0.78)_100%)] shadow-[0_10px_20px_rgba(112,139,210,0.16)] lg:block" />
-                <div className="absolute left-[720px] top-[-198px] hidden h-[518px] w-[12px] rounded-full bg-[linear-gradient(180deg,rgba(114,168,255,0.72)_0%,rgba(61,228,236,0.72)_100%)] opacity-92 shadow-[0_8px_18px_rgba(112,139,210,0.12)] lg:block" />
+                <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[540px] overflow-hidden lg:pointer-events-auto lg:relative lg:inset-auto lg:min-h-[560px] lg:h-auto lg:overflow-visible">
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_18%,rgba(204,227,242,0.34),transparent_22%),linear-gradient(180deg,rgba(255,255,255,0.12),rgba(255,255,255,0))]" />
+
+                  <div className="absolute right-[-54px] top-[34px] h-[360px] w-[360px] scale-[0.74] opacity-95 sm:right-[-18px] sm:top-[54px] sm:scale-[0.84] lg:right-[-10px] lg:top-[-12px] lg:h-[620px] lg:w-[620px] lg:scale-100 lg:opacity-100">
+                    <div className="absolute left-[128px] top-[98px] h-[338px] w-[352px] rotate-[-10deg] rounded-[34px] border border-white/55 bg-[linear-gradient(180deg,rgba(255,255,255,0.46)_0%,rgba(234,244,248,0.30)_100%)] p-5 shadow-[0_28px_80px_rgba(122,146,168,0.18)] backdrop-blur-2xl">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6b7c93]">
+                            Routing engine
+                          </div>
+                          <div className="mt-2 text-lg font-semibold tracking-[-0.03em] text-[#0a2540]">
+                            Intelligent path selection
+                          </div>
+                        </div>
+                        <div className="rounded-full border border-emerald-300/70 bg-emerald-50/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-700">
+                          Live routing
+                        </div>
+                      </div>
+
+                      <div className="mt-5 rounded-[26px] border border-white/65 bg-white/46 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.62)]">
+                        <div className="flex items-start justify-between gap-4">
+                          <div>
+                            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6b7c93]">
+                              Transaction
+                            </div>
+                            <div className="mt-2 text-xl font-semibold tracking-[-0.03em] text-[#0a2540]">
+                              INV-2048
+                            </div>
+                            <p className="mt-1 text-sm text-[#425466]">
+                              Checkout request received and evaluated in real
+                              time.
+                            </p>
+                          </div>
+                          <div className="rounded-2xl border border-white/60 bg-white/54 px-3 py-2 text-right shadow-[0_12px_24px_rgba(133,156,180,0.10)]">
+                            <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#6b7c93]">
+                              Amount
+                            </div>
+                            <div className="mt-1 text-lg font-semibold text-[#0a2540]">
+                              R1 250.00
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mt-5 space-y-3">
+                        <div className="flex items-center justify-between rounded-[22px] border border-white/55 bg-[linear-gradient(180deg,rgba(122,115,255,0.16),rgba(160,233,255,0.14))] px-4 py-3">
+                          <div>
+                            <div className="text-sm font-semibold text-[#0a2540]">
+                              Paystack
+                            </div>
+                            <div className="text-xs text-[#425466]">
+                              Primary route selected
+                            </div>
+                          </div>
+                          <div className="rounded-full border border-emerald-300/70 bg-emerald-50/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-700">
+                            Healthy
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between rounded-[22px] border border-white/55 bg-white/38 px-4 py-3">
+                          <div>
+                            <div className="text-sm font-semibold text-[#0a2540]">
+                              Yoco
+                            </div>
+                            <div className="text-xs text-[#425466]">
+                              Ready as fallback
+                            </div>
+                          </div>
+                          <div className="rounded-full border border-white/55 bg-white/60 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#425466]">
+                            Standby
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between rounded-[22px] border border-white/55 bg-white/38 px-4 py-3">
+                          <div>
+                            <div className="text-sm font-semibold text-[#0a2540]">
+                              Ozow
+                            </div>
+                            <div className="text-xs text-[#425466]">
+                              Available for bank-driven flows
+                            </div>
+                          </div>
+                          <div className="rounded-full border border-sky-300/70 bg-sky-50/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-sky-700">
+                            Ready
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="absolute left-[24px] top-[212px] w-[228px] rotate-[-7deg] rounded-[26px] border border-white/55 bg-[linear-gradient(180deg,rgba(255,255,255,0.52),rgba(235,244,248,0.28))] p-4 shadow-[0_20px_48px_rgba(122,146,168,0.14)] backdrop-blur-2xl">
+                      <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6b7c93]">
+                        Fallback logic
+                      </div>
+                      <div className="mt-2 text-lg font-semibold tracking-[-0.03em] text-[#0a2540]">
+                        Recover failed attempts
+                      </div>
+                      <p className="mt-2 text-sm leading-6 text-[#425466]">
+                        If the primary provider times out, Stackaura shifts the
+                        payment to the next eligible rail.
+                      </p>
+                    </div>
+
+                    <div className="absolute left-[336px] top-[24px] w-[232px] rotate-[8deg] rounded-[26px] border border-white/55 bg-[linear-gradient(180deg,rgba(255,255,255,0.54),rgba(238,246,250,0.30))] p-4 shadow-[0_20px_48px_rgba(122,146,168,0.14)] backdrop-blur-2xl">
+                      <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6b7c93]">
+                        Gateway health
+                      </div>
+                      <div className="mt-3 space-y-2">
+                        <div className="flex items-center justify-between text-sm text-[#425466]">
+                          <span>Paystack</span>
+                          <span className="font-semibold text-emerald-700">
+                            Stable
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between text-sm text-[#425466]">
+                          <span>Yoco</span>
+                          <span className="font-semibold text-[#0a2540]">
+                            Warm standby
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between text-sm text-[#425466]">
+                          <span>Ozow</span>
+                          <span className="font-semibold text-sky-700">
+                            Bank rail ready
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="absolute left-[286px] top-[454px] w-[248px] rotate-[6deg] rounded-[24px] border border-white/55 bg-[linear-gradient(180deg,rgba(255,255,255,0.52),rgba(238,246,250,0.30))] p-4 shadow-[0_18px_44px_rgba(122,146,168,0.13)] backdrop-blur-2xl">
+                      <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6b7c93]">
+                        Trust layer
+                      </div>
+                      <p className="mt-2 text-sm leading-6 text-[#425466]">
+                        Licensed payment providers handle processing and
+                        settlement while Stackaura handles orchestration.
+                      </p>
+                    </div>
+
+                    <div className="absolute left-[214px] top-[180px] h-[2px] w-[172px] rotate-[6deg] bg-[linear-gradient(90deg,rgba(122,115,255,0.16),rgba(125,211,252,0.70),rgba(255,255,255,0))]" />
+                    <div className="absolute left-[162px] top-[420px] h-[2px] w-[182px] rotate-[-8deg] bg-[linear-gradient(90deg,rgba(122,115,255,0.10),rgba(168,85,247,0.58),rgba(255,255,255,0))]" />
+                  </div>
+                </div>
               </div>
             </div>
           </section>
 
-          <section className="relative border-y border-white/35 bg-white/44 backdrop-blur-xl">
-            <div className="mx-auto max-w-[1440px] px-5 py-8 sm:px-6 sm:py-10 lg:px-10 lg:py-12">
-              <div className="grid gap-8 lg:grid-cols-[320px_1fr] lg:items-center">
-                <div>
-                  <div className="text-xs font-semibold uppercase tracking-[0.24em] text-[#6b7c93]">
-                    Integrations
+          <section className={cn(sectionClass, "py-6 sm:py-8 lg:py-10")}>
+            <div className="max-w-3xl">
+              <div className={publicSectionLabelClass}>Value proposition</div>
+              <h2 className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-[#0a2540] sm:text-5xl">
+                Orchestration that protects every checkout.
+              </h2>
+            </div>
+
+            <div className="mt-8 grid gap-4 lg:grid-cols-3">
+              {valueProps.map((item) => (
+                <div
+                  key={item.title}
+                  className={cn(
+                    "relative overflow-hidden p-6 sm:p-7",
+                    lightProductPanelClass
+                  )}
+                >
+                  <div className={cn("absolute inset-x-0 top-0 h-28", item.accent)} />
+                  <div className="relative">
+                    <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/55 bg-white/50 text-sm font-semibold text-[#635bff] shadow-[0_12px_24px_rgba(133,156,180,0.12)]">
+                      {item.title.split(" ")[0]}
+                    </div>
+                    <h3 className="mt-5 text-2xl font-semibold tracking-[-0.03em] text-[#0a2540]">
+                      {item.title}
+                    </h3>
+                    <p className="mt-3 text-base leading-7 text-[#425466]">
+                      {item.description}
+                    </p>
                   </div>
-                  <h2 className="mt-3 max-w-sm text-3xl font-semibold tracking-[-0.03em] text-[#0a2540]">
-                    Built for the modern payments stack.
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className={cn(sectionClass, "py-6 sm:py-8 lg:py-10")}>
+            <div className={cn("overflow-hidden p-6 sm:p-8 lg:p-10", lightProductPanelClass)}>
+              <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+                <div className="max-w-xl">
+                  <div className={publicSectionLabelClass}>
+                    Gateway infrastructure
+                  </div>
+                  <h2 className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-[#0a2540] sm:text-5xl">
+                    Connect Africa&apos;s leading payment rails
                   </h2>
-                  <p className="mt-3 max-w-sm text-base leading-7 text-[#425466]">
-                    Connect once to Stackaura, then extend across payment providers, commerce platforms, and custom product flows.
+                  <p className="mt-5 text-lg leading-8 text-[#425466]">
+                    Stackaura sits above licensed payment providers, routing,
+                    optimizing, and recovering payments through one integration.
                   </p>
                 </div>
 
-                <div className="space-y-8">
-                  <div>
-                    <div className="mb-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6b7c93]">
-                      Payment providers
+                <div className="grid gap-4 sm:grid-cols-3">
+                  {gatewayRails.map((gateway) => (
+                    <div key={gateway.name} className={cn("p-5", lightProductInsetPanelClass)}>
+                      <div className="flex items-center justify-between gap-3">
+                        <GatewayMark name={gateway.name} mark={gateway.mark} />
+                        <span className="rounded-full border border-white/52 bg-white/54 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#425466]">
+                          {gateway.status}
+                        </span>
+                      </div>
+                      <p className="mt-4 text-sm leading-6 text-[#425466]">
+                        {gateway.description}
+                      </p>
                     </div>
-                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                      {paymentProviderLogos.map((item) => (
-                        <div
-                          key={item.name}
-                          className="group flex min-h-[76px] items-center justify-center rounded-[24px] border border-white/50 bg-[linear-gradient(180deg,rgba(255,255,255,0.46),rgba(255,255,255,0.22))] px-5 py-4 shadow-[0_10px_28px_rgba(133,156,180,0.08)] backdrop-blur-2xl transition duration-300 hover:-translate-y-0.5 hover:border-white/70 hover:bg-white/40 hover:shadow-[0_16px_34px_rgba(133,156,180,0.14)]"
-                        >
-                          <span
-                            className={`text-center text-[22px] font-semibold tracking-[-0.03em] text-[#0a2540]/72 transition duration-300 group-hover:text-[#0a2540] ${
-                              item.name === "Ozow"
-                                ? "tracking-[0.16em] text-[20px]"
-                                : item.name === "PayFast"
-                                  ? "text-[19px] font-semibold tracking-[-0.02em]"
-                                : item.name === "Paystack"
-                                  ? "text-[19px] font-semibold lowercase tracking-[-0.02em]"
-                                  : item.name === "Stripe"
-                                    ? "text-[22px] font-semibold lowercase tracking-[-0.04em]"
-                                    : "text-[19px] font-semibold"
-                            }`}
-                          >
-                            {item.mark}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                  ))}
+                </div>
+              </div>
 
-                  <div>
-                    <div className="mb-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6b7c93]">
-                      Commerce platforms
+              <div className="mt-8 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+                <div className={cn("p-5 sm:p-6", lightProductInsetPanelClass)}>
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6b7c93]">
+                    How Stackaura fits
+                  </div>
+                  <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_auto_1fr_auto_1fr] sm:items-center">
+                    <div className="rounded-2xl border border-white/52 bg-white/54 px-4 py-4 text-center text-sm font-semibold text-[#0a2540] shadow-[0_12px_24px_rgba(133,156,180,0.10)]">
+                      Merchant / Platform
                     </div>
-                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                      {commercePlatformLogos.map((item) => (
-                        <div
-                          key={item.name}
-                          className="group flex min-h-[76px] items-center justify-center rounded-[24px] border border-white/50 bg-[linear-gradient(180deg,rgba(255,255,255,0.46),rgba(255,255,255,0.22))] px-5 py-4 shadow-[0_10px_28px_rgba(133,156,180,0.08)] backdrop-blur-2xl transition duration-300 hover:-translate-y-0.5 hover:border-white/70 hover:bg-white/40 hover:shadow-[0_16px_34px_rgba(133,156,180,0.14)]"
-                        >
-                          <span
-                            className={`text-center text-[20px] font-semibold tracking-[-0.03em] text-[#0a2540]/72 transition duration-300 group-hover:text-[#0a2540] ${
-                              item.name === "Shopify"
-                                ? "text-[19px] font-semibold lowercase tracking-[-0.03em]"
-                                : item.name === "WooCommerce"
-                                ? "text-[17px] font-semibold"
-                                : item.name === "Custom API"
-                                    ? "text-[17px]"
-                                    : "text-[17px]"
-                            }`}
-                          >
-                            {item.mark}
-                          </span>
-                        </div>
-                      ))}
+                    <div className="hidden text-center text-xl text-[#635bff] sm:block">
+                      →
+                    </div>
+                    <div className="rounded-2xl border border-white/52 bg-[linear-gradient(180deg,rgba(122,115,255,0.18),rgba(160,233,255,0.14))] px-4 py-4 text-center text-sm font-semibold text-[#0a2540] shadow-[0_12px_24px_rgba(133,156,180,0.10)]">
+                      Stackaura
+                    </div>
+                    <div className="hidden text-center text-xl text-[#635bff] sm:block">
+                      →
+                    </div>
+                    <div className="rounded-2xl border border-white/52 bg-white/54 px-4 py-4 text-center text-sm font-semibold text-[#0a2540] shadow-[0_12px_24px_rgba(133,156,180,0.10)]">
+                      Licensed Payment Providers
                     </div>
                   </div>
+                </div>
+
+                <div className={cn("p-5 sm:p-6", publicSubtleSurfaceClass)}>
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6b7c93]">
+                    Trust clarification
+                  </div>
+                  <p className="mt-3 text-sm leading-7 text-[#425466]">
+                    Stackaura is a software infrastructure and orchestration
+                    layer. Stackaura does not directly process, hold, or settle
+                    customer funds; licensed payment providers process and
+                    settle payments.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className={cn(sectionClass, "py-6 sm:py-8 lg:py-10")}>
+            <div className="max-w-3xl">
+              <div className={publicSectionLabelClass}>How it works</div>
+              <h2 className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-[#0a2540] sm:text-5xl">
+                Built for reliable checkout flows
+              </h2>
+            </div>
+
+            <div className="mt-8 grid gap-4 lg:grid-cols-3">
+              {howItWorks.map((item) => (
+                <div key={item.step} className={cn("p-6 sm:p-7", lightProductPanelClass)}>
+                  <div className="flex items-center gap-3">
+                    <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/55 bg-white/52 text-sm font-semibold text-[#635bff] shadow-[0_10px_24px_rgba(133,156,180,0.10)]">
+                      {item.step}
+                    </div>
+                    <div className="text-lg font-semibold tracking-[-0.02em] text-[#0a2540]">
+                      {item.title}
+                    </div>
+                  </div>
+                  <p className="mt-4 text-base leading-7 text-[#425466]">
+                    {item.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className={cn(sectionClass, "py-6 sm:py-8 lg:py-10")}>
+            <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-stretch">
+              <div className={cn("p-6 sm:p-8", lightProductPanelClass)}>
+                <div className={publicSectionLabelClass}>
+                  Developer infrastructure
+                </div>
+                <h2 className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-[#0a2540] sm:text-5xl">
+                  API-first payments infrastructure for shipping teams
+                </h2>
+                <p className="mt-5 text-lg leading-8 text-[#425466]">
+                  Build on hosted checkout or your own flows while keeping
+                  routing, event delivery, and payment operations aligned in one
+                  layer.
+                </p>
+
+                <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                  {infrastructureFeatures.map((item) => (
+                    <div key={item} className={cn("px-4 py-4", lightProductInsetPanelClass)}>
+                      <div className="text-sm font-semibold text-[#0a2540]">
+                        {item}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-7">
+                  <Link href="/docs" className={publicSecondaryButtonClass}>
+                    Explore developer docs
+                  </Link>
+                </div>
+              </div>
+
+              <div className={cn("p-6 sm:p-8", publicCodePanelClass)}>
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#8dd8ff]">
+                      Unified API
+                    </div>
+                    <h3 className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-white">
+                      One payment request. Smarter routing underneath.
+                    </h3>
+                  </div>
+                  <div className="rounded-full border border-white/12 bg-white/8 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#d7dcff]">
+                    API-first
+                  </div>
+                </div>
+
+                <pre className="mt-6 overflow-x-auto rounded-[24px] border border-white/10 bg-[#06152f]/72 p-5 text-sm leading-7 text-[#d7dcff] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+                  <code>{`const payment = await stackaura.payments.create({
+  amountCents: 125000,
+  currency: "ZAR",
+  reference: "INV-2048",
+  routing: {
+    mode: "smart",
+    fallback: true,
+  },
+});`}</code>
+                </pre>
+
+                <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-[22px] border border-white/10 bg-white/6 p-4">
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8dd8ff]">
+                      Events
+                    </div>
+                    <p className="mt-2 text-sm leading-6 text-zinc-300">
+                      Webhooks keep checkout, payment, and merchant state in
+                      sync.
+                    </p>
+                  </div>
+                  <div className="rounded-[22px] border border-white/10 bg-white/6 p-4">
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8dd8ff]">
+                      Finance ops
+                    </div>
+                    <p className="mt-2 text-sm leading-6 text-zinc-300">
+                      Reconciliation-ready records make downstream operations
+                      cleaner.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className={cn(sectionClass, "py-6 sm:py-8 lg:py-10")}>
+            <div className="grid gap-6 lg:grid-cols-[0.92fr_1.08fr]">
+              <div className={cn("p-6 sm:p-8", lightProductPanelClass)}>
+                <div className={publicSectionLabelClass}>Merchant outcomes</div>
+                <h2 className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-[#0a2540] sm:text-5xl">
+                  Better payment performance without operational sprawl
+                </h2>
+                <p className="mt-5 text-lg leading-8 text-[#425466]">
+                  Stackaura is designed for merchants, platforms, and SaaS teams
+                  that want stronger conversion without managing every payment
+                  edge case gateway by gateway.
+                </p>
+                <div className="mt-6 rounded-[26px] border border-white/52 bg-[linear-gradient(180deg,rgba(122,115,255,0.14),rgba(255,255,255,0.28))] p-5 shadow-[0_16px_30px_rgba(133,156,180,0.10)]">
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6b7c93]">
+                    Business impact
+                  </div>
+                  <p className="mt-3 text-base leading-7 text-[#425466]">
+                    Higher payment success, fewer failed checkouts, and a much
+                    simpler operating model for growth teams.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid gap-4">
+                {merchantBenefits.map((item) => (
+                  <div key={item.title} className={cn("p-5 sm:p-6", lightProductInsetPanelClass)}>
+                    <h3 className="text-2xl font-semibold tracking-[-0.03em] text-[#0a2540]">
+                      {item.title}
+                    </h3>
+                    <p className="mt-3 text-base leading-7 text-[#425466]">
+                      {item.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className={cn(sectionClass, "py-6 sm:py-8 lg:py-10")}>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+              <div className="max-w-3xl">
+                <div className={publicSectionLabelClass}>Pricing</div>
+                <h2 className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-[#0a2540] sm:text-5xl">
+                  Plans that grow with your payment volume
+                </h2>
+              </div>
+              <Link href="/pricing" className={publicSecondaryButtonClass}>
+                View pricing
+              </Link>
+            </div>
+
+            <div className="mt-8 grid gap-4 lg:grid-cols-3">
+              {pricingTiers.map((tier) => (
+                <div
+                  key={tier.name}
+                  className={cn(
+                    "p-6 sm:p-7",
+                    tier.featured
+                      ? "rounded-[28px] border border-white/55 bg-[linear-gradient(180deg,rgba(122,115,255,0.18),rgba(255,255,255,0.28))] shadow-[0_18px_42px_rgba(122,146,168,0.14)] backdrop-blur-2xl"
+                      : lightProductPanelClass
+                  )}
+                >
+                  <div className="flex items-center justify-between gap-4">
+                    <h3 className="text-2xl font-semibold tracking-[-0.03em] text-[#0a2540]">
+                      {tier.name}
+                    </h3>
+                    {tier.featured ? (
+                      <span className="rounded-full border border-[#b8b2ff]/70 bg-[#eeedff]/82 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#5146df]">
+                        Popular
+                      </span>
+                    ) : null}
+                  </div>
+                  <p className="mt-3 text-base leading-7 text-[#425466]">
+                    {tier.audience}
+                  </p>
+                  <div className="mt-5 space-y-3">
+                    {tier.bullets.map((bullet) => (
+                      <div
+                        key={bullet}
+                        className="rounded-2xl border border-white/50 bg-white/42 px-4 py-3 text-sm font-medium text-[#425466] shadow-[0_10px_20px_rgba(133,156,180,0.08)]"
+                      >
+                        {bullet}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className={cn(sectionClass, "pt-6 sm:pt-8 lg:pt-10")}>
+            <div
+              className={cn(
+                "relative overflow-hidden p-6 sm:p-8 lg:p-10",
+                lightProductPanelClass
+              )}
+            >
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(255,255,255,0.32),transparent_24%),radial-gradient(circle_at_80%_24%,rgba(125,211,252,0.24),transparent_24%),linear-gradient(180deg,rgba(122,115,255,0.06),rgba(255,255,255,0.02))]" />
+              <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+                <div className="max-w-3xl">
+                  <div className={publicSectionLabelClass}>Start building</div>
+                  <h2 className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-[#0a2540] sm:text-5xl">
+                    Ready to route payments intelligently?
+                  </h2>
+                  <p className="mt-5 text-lg leading-8 text-[#425466]">
+                    Launch with one integration, add multiple gateways, and
+                    build a more resilient payment stack with Stackaura.
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <Link href="/signup" className={publicPrimaryButtonClass}>
+                    Start accepting payments
+                  </Link>
+                  <Link href="/contact" className={publicSecondaryButtonClass}>
+                    Contact sales
+                  </Link>
                 </div>
               </div>
             </div>
           </section>
         </div>
 
-        <section className="mx-auto max-w-[1440px] px-6 py-16 lg:px-10">
-          <div className="grid gap-6 xl:grid-cols-4">
-            <div className="rounded-[28px] border border-white/45 bg-white/24 p-7 shadow-[0_16px_34px_rgba(122,146,168,0.10)] backdrop-blur-2xl">
-              <div className="text-sm font-semibold text-[#6b7c93]">Unified API</div>
-              <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#0a2540]">Connect once</h2>
-              <p className="mt-4 text-base leading-7 text-[#425466]">
-                Manage multiple payment providers, merchant onboarding, and checkout flows through one infrastructure layer.
-              </p>
-            </div>
-
-            <div className="rounded-[28px] border border-white/45 bg-white/24 p-7 shadow-[0_16px_34px_rgba(122,146,168,0.10)] backdrop-blur-2xl">
-              <div className="text-sm font-semibold text-[#6b7c93]">Smart routing</div>
-              <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#0a2540]">Improve reliability</h2>
-              <p className="mt-4 text-base leading-7 text-[#425466]">
-                Route transactions across gateways for stronger resilience, operational control, and better checkout performance.
-              </p>
-            </div>
-
-            <div className="rounded-[28px] border border-white/45 bg-white/24 p-7 shadow-[0_16px_34px_rgba(122,146,168,0.10)] backdrop-blur-2xl">
-              <div className="text-sm font-semibold text-[#6b7c93]">Merchant activation</div>
-              <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#0a2540]">Onboard faster</h2>
-              <p className="mt-4 text-base leading-7 text-[#425466]">
-                Move merchants from signup to active infrastructure with payment-linked activation, API keys, and clean automation.
-              </p>
-            </div>
-
-            <div className="rounded-[28px] border border-white/45 bg-white/24 p-7 shadow-[0_16px_34px_rgba(122,146,168,0.10)] backdrop-blur-2xl">
-              <div className="text-sm font-semibold text-[#6b7c93]">Commerce-ready</div>
-              <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#0a2540]">Build for growth</h2>
-              <p className="mt-4 text-base leading-7 text-[#425466]">
-                Designed for SaaS products, online stores, marketplaces, and custom payment experiences across web and mobile.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <section className="mx-auto max-w-[1440px] px-6 py-4 lg:px-10">
-          <div className="grid gap-6 overflow-hidden rounded-[32px] border border-white/45 bg-white/24 p-8 shadow-[0_16px_36px_rgba(122,146,168,0.10)] backdrop-blur-2xl lg:grid-cols-[0.92fr_1.08fr] lg:p-10">
-            <div>
-              <div className="text-sm font-semibold uppercase tracking-[0.18em] text-[#6b7c93]">
-                Infrastructure role
-              </div>
-              <h2 className="mt-4 text-4xl font-semibold tracking-tight text-[#0a2540] sm:text-5xl">
-                Stackaura sits between merchant systems and licensed payment providers.
-              </h2>
-              <p className="mt-5 max-w-2xl text-lg leading-8 text-[#425466]">
-                Stackaura provides software infrastructure and orchestration tools. Stackaura does
-                not directly process, hold, or settle customer funds; payments are handled by
-                licensed payment providers.
-              </p>
-
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Link
-                  href="/integrations"
-                  className="inline-flex items-center justify-center rounded-2xl border border-white/45 bg-white/22 px-6 py-3.5 text-sm font-semibold text-[#4f46e5] shadow-[0_10px_24px_rgba(133,156,180,0.12)] backdrop-blur-2xl transition hover:bg-white/30 hover:border-white/55"
-                >
-                  See integrations
-                </Link>
-                <Link
-                  href="/contact"
-                  className="inline-flex items-center justify-center rounded-2xl border border-white/35 bg-white/16 px-6 py-3.5 text-sm font-semibold text-[#0a2540] shadow-[0_10px_24px_rgba(133,156,180,0.10)] backdrop-blur-2xl transition hover:bg-white/24"
-                >
-                  Contact sales
-                </Link>
-              </div>
-            </div>
-
-            <div className="grid gap-4">
-              <div className="rounded-[24px] border border-white/42 bg-[linear-gradient(180deg,rgba(255,255,255,0.38)_0%,rgba(238,246,250,0.24)_100%)] p-6 shadow-[0_12px_28px_rgba(122,146,168,0.08)] backdrop-blur-2xl">
-                <div className="text-xs font-semibold uppercase tracking-[0.18em] text-[#6b7c93]">
-                  Payment processing boundary
-                </div>
-                <p className="mt-4 text-base leading-7 text-[#425466]">
-                  Licensed payment providers remain responsible for payment processing, fund flows,
-                  and settlement within their own regulated environments.
-                </p>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-3">
-                {[
-                  {
-                    title: "Merchant systems",
-                    body: "Commerce apps, marketplaces, SaaS products, and custom merchant workflows connect to Stackaura.",
-                  },
-                  {
-                    title: "Stackaura",
-                    body: "Stackaura coordinates checkout infrastructure, routing, onboarding, API access, and operational tooling.",
-                  },
-                  {
-                    title: "Licensed providers",
-                    body: "Licensed payment providers handle the underlying payment execution and settlement path.",
-                  },
-                ].map((item) => (
-                  <div
-                    key={item.title}
-                    className="rounded-[24px] border border-white/40 bg-white/20 p-5 shadow-[0_12px_28px_rgba(122,146,168,0.08)] backdrop-blur-2xl"
-                  >
-                    <div className="text-lg font-semibold tracking-tight text-[#0a2540]">{item.title}</div>
-                    <p className="mt-3 text-sm leading-6 text-[#425466]">{item.body}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="mx-auto max-w-[1440px] px-6 py-4 lg:px-10">
-          <div className="overflow-hidden rounded-[32px] border border-white/45 bg-white/24 shadow-[0_16px_36px_rgba(122,146,168,0.10)] backdrop-blur-2xl">
-            <div className="grid gap-0 lg:grid-cols-[1.05fr_0.95fr]">
-              <div className="p-8 lg:p-10">
-                <div className="text-sm font-semibold uppercase tracking-[0.18em] text-[#6b7c93]">
-                  Infrastructure layer
-                </div>
-                <h2 className="mt-4 max-w-2xl text-4xl font-semibold tracking-tight text-[#0a2540] sm:text-5xl">
-                  One layer between your business and multiple payment providers.
-                </h2>
-                <p className="mt-5 max-w-2xl text-lg leading-8 text-[#425466]">
-                  Commerce apps and storefronts connect to Stackaura. Stackaura connects to multiple payment rails. Your business gets one integration instead of many.
-                </p>
-
-              <div className="mt-8 grid gap-4 sm:grid-cols-3">
-                  <div className="rounded-[24px] border border-white/40 bg-white/20 p-5 shadow-[0_12px_28px_rgba(122,146,168,0.08)] backdrop-blur-2xl">
-                    <div className="text-xs font-semibold uppercase tracking-[0.18em] text-[#6b7c93]">Commerce apps</div>
-                    <div className="mt-3 text-2xl font-semibold tracking-tight text-[#0a2540]">Store / App / Platform</div>
-                    <div className="mt-3 text-sm leading-6 text-[#425466]">
-                      Connect storefronts, products, and merchant platforms through one backend layer.
-                    </div>
-                  </div>
-
-                  <div className="rounded-[24px] border border-white/42 bg-[linear-gradient(180deg,rgba(238,242,255,0.56)_0%,rgba(234,248,255,0.32)_100%)] p-5 shadow-[0_12px_28px_rgba(122,146,168,0.08)] backdrop-blur-2xl">
-                    <div className="text-xs font-semibold uppercase tracking-[0.18em] text-[#6b7c93]">Core orchestration</div>
-                    <div className="mt-3 text-2xl font-semibold tracking-tight text-[#0a2540]">Stackaura</div>
-                    <div className="mt-3 text-sm leading-6 text-[#425466]">
-                      Unify checkout, merchant onboarding, API access, routing, and gateway failover.
-                    </div>
-                  </div>
-
-                  <div className="rounded-[24px] border border-white/40 bg-white/20 p-5 shadow-[0_12px_28px_rgba(122,146,168,0.08)] backdrop-blur-2xl">
-                    <div className="text-xs font-semibold uppercase tracking-[0.18em] text-[#6b7c93]">Payment providers</div>
-                    <div className="mt-3 text-2xl font-semibold tracking-tight text-[#0a2540]">Ozow / Paystack / Stripe</div>
-                    <div className="mt-3 text-sm leading-6 text-[#425466]">
-                      Connect once and orchestrate across multiple providers instead of managing each integration separately.
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="border-l border-white/30 bg-white/10 p-8 backdrop-blur-xl lg:p-10">
-                <div className="text-sm font-semibold uppercase tracking-[0.18em] text-[#6b7c93]">
-                  What Stackaura handles
-                </div>
-                <div className="mt-6 space-y-4">
-                  {[
-                    {
-                      title: 'Merchant onboarding and API key issuance',
-                      body: 'Move businesses from signup to active infrastructure with payment-linked activation, API keys, and secure access patterns.',
-                    },
-                    {
-                      title: 'Gateway routing, failover, and transaction state tracking',
-                      body: 'Route payments intelligently, reduce single-provider dependency, and keep payment state consistent across flows.',
-                    },
-                    {
-                      title: 'Checkout sessions, subscriptions, webhooks, and developer operations',
-                      body: 'Support hosted checkout, webhook delivery, subscriptions, and the operational tooling developers need to ship faster.',
-                    },
-                  ].map((item) => (
-                    <div key={item.title} className="rounded-[24px] border border-white/42 bg-white/22 p-5 shadow-[0_12px_28px_rgba(122,146,168,0.08)] backdrop-blur-2xl">
-                      <div className="text-lg font-semibold tracking-tight text-[#0a2540]">{item.title}</div>
-                      <p className="mt-2 text-sm leading-6 text-[#425466]">{item.body}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="mx-auto max-w-[1440px] px-6 py-16 lg:px-10">
-          <div className="grid gap-6 lg:grid-cols-[1fr_0.9fr]">
-            <div className="rounded-[32px] border border-white/45 bg-white/24 p-8 shadow-[0_16px_34px_rgba(122,146,168,0.10)] backdrop-blur-2xl lg:p-10">
-              <div className="text-sm font-semibold uppercase tracking-[0.18em] text-[#6b7c93]">Built for developers</div>
-              <h2 className="mt-4 text-4xl font-semibold tracking-tight text-[#0a2540] sm:text-5xl">
-                Ship faster with developer-first infrastructure.
-              </h2>
-              <p className="mt-5 max-w-2xl text-lg leading-8 text-[#425466]">
-                Build faster with merchant onboarding, checkout sessions, API keys, webhooks, and infrastructure designed for real payment operations.
-              </p>
-
-              <div className="mt-8 rounded-[28px] border border-white/25 bg-[linear-gradient(180deg,rgba(10,37,64,0.84),rgba(28,53,94,0.80))] p-6 text-white shadow-[0_16px_36px_rgba(10,37,64,0.16)] backdrop-blur-2xl">
-                <div className="text-xs font-semibold uppercase tracking-[0.2em] text-[#7dd3fc]">Quick start</div>
-                <pre className="mt-4 overflow-x-auto text-sm leading-7 text-[#d6e3f0]">
-{`curl -X POST https://api.stackaura.co.za/v1/payments \
-  -H "Authorization: Bearer sk_live_..." \
-  -H "Content-Type: application/json" \
-  -d '{
-    "amountCents": 9900,
-    "currency": "ZAR",
-    "reference": "ORDER-123",
-    "customerEmail": "buyer@example.com"
-  }'`}
-                </pre>
-              </div>
-
-              <div className="mt-8 flex flex-wrap gap-3">
-                {['API keys', 'Checkout sessions', 'Webhooks', 'Merchant onboarding', 'Gateway orchestration'].map((item) => (
-                  <div
-                    key={item}
-                    className="rounded-full border border-white/42 bg-white/22 px-4 py-2 text-sm font-medium text-[#425466] shadow-[0_8px_22px_rgba(122,146,168,0.08)] backdrop-blur-2xl"
-                  >
-                    {item}
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-8">
-                <Link
-                  href="/docs"
-                  className="inline-flex items-center justify-center rounded-xl bg-[#635bff] px-6 py-3 text-sm font-semibold text-white shadow-[0_16px_30px_rgba(99,91,255,0.22)] transition hover:brightness-105"
-                >
-                  Read the docs
-                </Link>
-              </div>
-            </div>
-
-            <div className="rounded-[32px] border border-white/45 bg-white/24 p-8 shadow-[0_16px_34px_rgba(122,146,168,0.10)] backdrop-blur-2xl lg:p-10">
-              <div className="text-sm font-semibold uppercase tracking-[0.18em] text-[#6b7c93]">Built for modern commerce across Africa</div>
-              <div className="mt-6 space-y-4">
-                {[
-                  {
-                    title: 'African-first infrastructure',
-                    body: 'Designed for businesses operating across local payment environments and regional growth paths.',
-                  },
-                  {
-                    title: 'Multi-gateway architecture',
-                    body: 'Reduce dependency on a single provider and build more resilient checkout experiences.',
-                  },
-                  {
-                    title: 'Fast merchant onboarding',
-                    body: 'Move merchants from signup to active payment infrastructure with less operational friction.',
-                  },
-                  {
-                    title: 'Developer-first foundation',
-                    body: 'Clear APIs, backend automation, and extensible flows for product and engineering teams.',
-                  },
-                ].map((item) => (
-                  <div key={item.title} className="rounded-[24px] border border-white/40 bg-white/20 p-5 shadow-[0_12px_28px_rgba(122,146,168,0.08)] backdrop-blur-2xl">
-                    <div className="text-lg font-semibold tracking-tight text-[#0a2540]">{item.title}</div>
-                    <p className="mt-2 text-sm leading-6 text-[#425466]">{item.body}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="mx-auto max-w-[1440px] px-6 pb-20 pt-4 lg:px-10">
-          <div className="rounded-[36px] border border-white/30 bg-[linear-gradient(135deg,rgba(10,37,64,0.88)_0%,rgba(28,53,94,0.82)_52%,rgba(99,91,255,0.76)_100%)] p-8 text-white shadow-[0_20px_48px_rgba(15,23,42,0.12)] backdrop-blur-2xl sm:p-10 lg:p-12">
-            <div className="max-w-3xl">
-              <div className="text-sm font-semibold uppercase tracking-[0.18em] text-[#a3bffa]">
-                Connect once. Orchestrate across multiple providers.
-              </div>
-              <h2 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
-                Stackaura gives businesses and platforms a cleaner way to manage payments, onboarding, and checkout infrastructure through one modern API layer.
-              </h2>
-            </div>
-
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link
-                href="/signup"
-                className="inline-flex items-center justify-center rounded-2xl border border-white/45 bg-white/24 px-6 py-3.5 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(133,156,180,0.12)] backdrop-blur-2xl transition hover:bg-white/30"
-              >
-                Start building
-              </Link>
-              <Link
-                href="/contact"
-                className="inline-flex items-center justify-center rounded-2xl border border-white/35 bg-white/12 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-2xl transition hover:bg-white/18"
-              >
-                Contact sales
-              </Link>
-            </div>
-          </div>
-        </section>
-
         <PublicFooter />
-      </main>
+      </PublicBackground>
     </>
   );
 }

@@ -10,7 +10,21 @@ export type AuthMeResponse = {
   memberships: Array<{
     id: string;
     role: string;
-    merchant: { id: string; name: string; email: string; isActive: boolean };
+    merchant: {
+      id: string;
+      name: string;
+      email: string;
+      isActive: boolean;
+      planCode?: string;
+      plan?: {
+        code: string;
+        source?: string;
+        feeSource?: string;
+        manualGatewaySelection: boolean;
+        autoRouting: boolean;
+        fallback: boolean;
+      };
+    };
   }>;
 };
 

@@ -1,19 +1,22 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
-  DarkBackground,
+  BrandLockup,
+  SoftProductBackground,
   cn,
-  darkCompactGhostButtonClass,
-  darkGhostButtonClass,
-  darkInputClass,
-  darkPanelClass,
-  darkPillClass,
-  darkPrimaryButtonClass,
-  darkSubtleSurfaceClass,
-  darkSurfaceClass,
+  lightProductCompactGhostButtonClass,
+  lightProductHeroClass,
+  lightProductInsetPanelClass,
+  lightProductInputClass,
+  lightProductMutedTextClass,
+  lightProductPanelClass,
+  lightProductSectionEyebrowClass,
+  lightProductStatusPillClass,
+  publicPillClass,
+  publicPrimaryButtonClass,
+  publicSecondaryButtonClass,
 } from "../components/stackaura-ui";
 
 type CreatePaymentResponse = {
@@ -162,7 +165,10 @@ export default function PaymentLinksPage() {
 
       if (!response.ok) {
         throw new Error(
-          typeof data === "object" && data !== null && "message" in data && typeof data.message === "string"
+          typeof data === "object" &&
+            data !== null &&
+            "message" in data &&
+            typeof data.message === "string"
             ? data.message
             : "Failed to create payment link."
         );
@@ -176,73 +182,161 @@ export default function PaymentLinksPage() {
     }
   }
 
+  const resolutionSummary = usingMerchantApiKey
+    ? "Using the provided merchant API key. This stays the source of truth for merchant-authenticated payment creation."
+    : loadingMerchantContext
+      ? "Checking for an active dashboard merchant context..."
+      : activeMerchantId
+        ? "No merchant API key provided, so payment creation will use the active dashboard merchant and its saved gateway configuration."
+        : "Add a merchant API key or sign in to a merchant workspace before creating a payment.";
+
+  const resolutionTone = usingMerchantApiKey
+    ? "violet"
+    : loadingMerchantContext
+      ? "muted"
+      : activeMerchantId
+        ? "success"
+        : "warning";
+
+  const resolutionLabel = usingMerchantApiKey
+    ? "API key override"
+    : loadingMerchantContext
+      ? "Checking context"
+      : activeMerchantId
+        ? "Merchant context"
+        : "Action needed";
+
+  const resolutionSource = usingMerchantApiKey
+    ? "Merchant API key"
+    : activeMerchantId
+      ? "Active merchant workspace"
+      : "Unavailable";
+
   return (
-    <DarkBackground>
-      <div className="relative mx-auto max-w-7xl px-6 py-8 sm:px-8 sm:py-10">
-        <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex items-start gap-4">
-            <div className={cn(darkSurfaceClass, "flex h-16 w-16 items-center justify-center overflow-hidden rounded-[24px]")}>
-              <Image
-                src="/stackaura-logo.png"
-                alt="Stackaura"
-                width={40}
-                height={40}
-                className="object-contain mix-blend-screen"
-                priority
-              />
+    <SoftProductBackground>
+      <div className="relative z-10 mx-auto max-w-7xl px-4 pt-5 pb-10 sm:px-6 sm:pt-6 lg:px-10">
+        <section className={cn(lightProductHeroClass, "relative overflow-hidden p-6 lg:p-8")}>
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(255,255,255,0.40),transparent_24%),radial-gradient(circle_at_82%_16%,rgba(122,115,255,0.16),transparent_24%),radial-gradient(circle_at_76%_72%,rgba(125,211,252,0.16),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.16),transparent_22%)]" />
+
+          <div className="relative grid gap-6 xl:grid-cols-[1.04fr_0.96fr] xl:items-start">
+            <div className="min-w-0">
+              <div className={lightProductSectionEyebrowClass}>Payment links</div>
+              <div className="mt-4">
+                <BrandLockup />
+              </div>
+
+              <h1 className="mt-8 max-w-3xl text-4xl font-semibold leading-[1.02] tracking-[-0.04em] text-[#0a2540] sm:text-5xl">
+                Create hosted checkout links that stay aligned with merchant routing.
+              </h1>
+              <p className="mt-5 max-w-3xl text-base leading-7 text-[#425466] sm:text-lg">
+                Generate a shareable Stackaura checkout link with either the active merchant
+                workspace or an explicit merchant API key, then send it across the channels where
+                your customers already buy.
+              </p>
+
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <Link href="/dashboard" className={publicPrimaryButtonClass}>
+                  Back to dashboard
+                </Link>
+                <Link href="/docs" className={publicSecondaryButtonClass}>
+                  View docs
+                </Link>
+              </div>
+
+              <div className="mt-8 flex flex-wrap gap-3">
+                {[
+                  "Hosted checkout",
+                  "Merchant-aware routing",
+                  "Shareable links",
+                  "One integration, multiple gateways",
+                ].map((item) => (
+                  <span key={item} className={publicPillClass}>
+                    {item}
+                  </span>
+                ))}
+              </div>
             </div>
 
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.24em] text-[#A0E9FF] backdrop-blur-xl">
-                Payment links
+            <div className={cn(lightProductInsetPanelClass, "p-5 sm:p-6")}>
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <div className="text-sm font-semibold tracking-tight text-[#0a2540]">
+                    Resolution path
+                  </div>
+                  <p className={cn(lightProductMutedTextClass, "mt-2 max-w-xl")}>
+                    Payment links inherit the merchant context used to create the payment, so
+                    routing and saved gateway configuration stay intentional and deterministic.
+                  </p>
+                </div>
+
+                <span className={lightProductStatusPillClass(resolutionTone)}>
+                  {resolutionLabel}
+                </span>
               </div>
-              <div className="mt-4 text-3xl font-semibold tracking-tight text-white">
-                Create shareable checkout links in the Stackaura console.
+
+              <div className={cn("mt-5 p-4", lightProductPanelClass)}>
+                <p className={lightProductMutedTextClass}>{resolutionSummary}</p>
+
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  <div className={cn("p-4", lightProductInsetPanelClass)}>
+                    <div className="text-xs uppercase tracking-[0.18em] text-[#6b7c93]">
+                      Resolution source
+                    </div>
+                    <div className="mt-2 text-sm font-semibold text-[#0a2540]">
+                      {resolutionSource}
+                    </div>
+                  </div>
+
+                  <div className={cn("p-4", lightProductInsetPanelClass)}>
+                    <div className="text-xs uppercase tracking-[0.18em] text-[#6b7c93]">
+                      Active merchant
+                    </div>
+                    <div className="mt-2 break-all text-sm font-semibold text-[#0a2540]">
+                      {loadingMerchantContext ? "Loading..." : activeMerchantId ?? "None selected"}
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="mt-3 max-w-2xl text-sm leading-7 text-zinc-300">
-                Generate a hosted checkout link with either the active merchant workspace or an
-                explicit merchant API key, then share it across WhatsApp, Instagram DM, or email
-                without leaving the Stackaura payments stack.
+
+              <div className={cn("mt-4 p-4", lightProductPanelClass)}>
+                <div className="text-xs uppercase tracking-[0.18em] text-[#6b7c93]">
+                  Compliance clarity
+                </div>
+                <p className={cn(lightProductMutedTextClass, "mt-3")}>
+                  Stackaura provides payment orchestration and infrastructure software. Licensed
+                  payment providers process and settle payments after checkout.
+                </p>
               </div>
             </div>
           </div>
+        </section>
 
-          <Link href="/dashboard" className={darkGhostButtonClass}>
-            Back to dashboard
-          </Link>
-        </div>
+        <div className="mt-6 grid gap-6 xl:grid-cols-[1.02fr_0.98fr]">
+          <section className={cn(lightProductPanelClass, "overflow-hidden p-6 lg:p-7")}>
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <div className={lightProductSectionEyebrowClass}>Create payment link</div>
+                <h2 className="mt-3 text-2xl font-semibold tracking-tight text-[#0a2540]">
+                  Build a hosted payment link
+                </h2>
+                <p className={cn(lightProductMutedTextClass, "mt-3 max-w-2xl")}>
+                  Keep the full payment-link workflow intact while creating a shareable checkout
+                  experience tied to the right merchant context.
+                </p>
+              </div>
 
-        <div className="grid gap-6 lg:grid-cols-[1fr_0.95fr]">
-          <section className={cn(darkSurfaceClass, "p-6")}>
-            <div className="text-sm font-semibold text-white">Create payment link</div>
-            <div className="mt-2 text-sm text-zinc-400">
-              Generate a hosted Stackaura checkout link with either the active merchant workspace
-              or an explicit merchant API key.
+              <span className={lightProductStatusPillClass(canCreate ? "success" : "muted")}>
+                {canCreate ? "Ready to create" : "Needs merchant context"}
+              </span>
             </div>
 
-            <div className={cn(darkSubtleSurfaceClass, "mt-5 p-4")}>
-              <div className="text-xs uppercase tracking-wide text-zinc-500">
-                Resolution path
-              </div>
-              <div className="mt-3 text-sm leading-6 text-zinc-300">
-                {usingMerchantApiKey
-                  ? "Using the provided merchant API key. This stays the source of truth for merchant-authenticated payment creation."
-                  : loadingMerchantContext
-                    ? "Checking for an active dashboard merchant context..."
-                    : activeMerchantId
-                      ? "No merchant API key provided, so payment creation will use the active dashboard merchant and its saved Ozow configuration."
-                      : "Add a merchant API key or sign in to a merchant workspace before creating a payment."}
-              </div>
-              <div className="mt-3 text-xs text-zinc-500">
-                Active merchant: {loadingMerchantContext ? "Loading..." : activeMerchantId ?? "None"}
-              </div>
-            </div>
-
-            <form onSubmit={createLink} className="mt-6 grid gap-4">
-              <label className="grid gap-1">
-                <span className="text-xs uppercase tracking-wide text-zinc-400">Merchant API key</span>
+            <form onSubmit={createLink} className="mt-8 grid gap-4">
+              <label className="grid gap-1.5">
+                <span className="text-xs font-medium uppercase tracking-[0.18em] text-[#6b7c93]">
+                  Merchant API key
+                </span>
                 <input
-                  className={cn(darkInputClass, "font-mono text-xs")}
+                  className={cn(lightProductInputClass, "font-mono text-xs")}
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
                   placeholder="Optional when an active merchant is selected"
@@ -250,10 +344,12 @@ export default function PaymentLinksPage() {
               </label>
 
               <div className="grid gap-4 md:grid-cols-2">
-                <label className="grid gap-1">
-                  <span className="text-xs uppercase tracking-wide text-zinc-400">Amount</span>
+                <label className="grid gap-1.5">
+                  <span className="text-xs font-medium uppercase tracking-[0.18em] text-[#6b7c93]">
+                    Amount
+                  </span>
                   <input
-                    className={darkInputClass}
+                    className={lightProductInputClass}
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     placeholder="25.00"
@@ -261,10 +357,12 @@ export default function PaymentLinksPage() {
                   />
                 </label>
 
-                <label className="grid gap-1">
-                  <span className="text-xs uppercase tracking-wide text-zinc-400">Currency</span>
+                <label className="grid gap-1.5">
+                  <span className="text-xs font-medium uppercase tracking-[0.18em] text-[#6b7c93]">
+                    Currency
+                  </span>
                   <select
-                    className={darkInputClass}
+                    className={lightProductInputClass}
                     value={currency}
                     onChange={(e) => setCurrency(e.target.value)}
                   >
@@ -276,22 +374,24 @@ export default function PaymentLinksPage() {
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
-                <label className="grid gap-1">
-                  <span className="text-xs uppercase tracking-wide text-zinc-400">Customer email</span>
+                <label className="grid gap-1.5">
+                  <span className="text-xs font-medium uppercase tracking-[0.18em] text-[#6b7c93]">
+                    Customer email
+                  </span>
                   <input
-                    className={darkInputClass}
+                    className={lightProductInputClass}
                     value={customerEmail}
                     onChange={(e) => setCustomerEmail(e.target.value)}
                     placeholder="customer@example.com"
                   />
                 </label>
 
-                <label className="grid gap-1">
-                  <span className="text-xs uppercase tracking-wide text-zinc-400">
+                <label className="grid gap-1.5">
+                  <span className="text-xs font-medium uppercase tracking-[0.18em] text-[#6b7c93]">
                     Preferred gateway
                   </span>
                   <select
-                    className={darkInputClass}
+                    className={lightProductInputClass}
                     value={gateway}
                     onChange={(e) => setGateway(e.target.value)}
                   >
@@ -302,10 +402,12 @@ export default function PaymentLinksPage() {
                 </label>
               </div>
 
-              <label className="grid gap-1">
-                <span className="text-xs uppercase tracking-wide text-zinc-400">Description</span>
+              <label className="grid gap-1.5">
+                <span className="text-xs font-medium uppercase tracking-[0.18em] text-[#6b7c93]">
+                  Description
+                </span>
                 <input
-                  className={darkInputClass}
+                  className={lightProductInputClass}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Product / invoice description"
@@ -315,133 +417,158 @@ export default function PaymentLinksPage() {
               <button
                 type="submit"
                 disabled={!canCreate}
-                className={cn(darkPrimaryButtonClass, "w-full")}
+                className={cn(
+                  publicPrimaryButtonClass,
+                  "w-full disabled:cursor-not-allowed disabled:opacity-70"
+                )}
               >
                 {loading ? "Creating link..." : "Create payment link"}
               </button>
             </form>
 
             {error ? (
-              <div className="mt-4 rounded-2xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm text-rose-200">
+              <div className="mt-4 rounded-[22px] border border-rose-300/70 bg-rose-50/84 p-4 text-sm text-rose-700">
                 {error}
               </div>
             ) : null}
           </section>
 
-          <section className={cn(darkSurfaceClass, "p-6")}>
-            <div className="text-sm font-semibold text-white">Share payment link</div>
-            <div className="mt-2 text-sm text-zinc-400">
-              Create one checkout link, then distribute it everywhere the merchant sells.
-            </div>
+          <div className="space-y-6">
+            <section className={cn(lightProductPanelClass, "overflow-hidden p-6 lg:p-7")}>
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <div className={lightProductSectionEyebrowClass}>Sharing panel</div>
+                  <h2 className="mt-3 text-2xl font-semibold tracking-tight text-[#0a2540]">
+                    Share one link everywhere
+                  </h2>
+                  <p className={cn(lightProductMutedTextClass, "mt-3")}>
+                    Create one checkout link, then distribute it across the channels where the
+                    merchant sells.
+                  </p>
+                </div>
 
-            {!result ? (
-              <div className={cn(darkSubtleSurfaceClass, "mt-6 p-5 text-sm text-zinc-400")}>
-                Create a payment link to unlock WhatsApp, Instagram DM, and email sharing actions.
+                <span className={lightProductStatusPillClass(result ? "success" : "muted")}>
+                  {result ? "Link ready" : "Awaiting payment link"}
+                </span>
               </div>
-            ) : (
-              <div className="mt-6 space-y-4">
-                <div className={cn(darkSubtleSurfaceClass, "p-5")}>
-                  <div className="text-xs uppercase tracking-wide text-zinc-500">Checkout URL</div>
-                  <div className="mt-2 break-all font-mono text-sm text-zinc-100">
-                    {result.checkoutUrl}
+
+              {!result ? (
+                <div className={cn("mt-6 p-5", lightProductInsetPanelClass)}>
+                  <p className={lightProductMutedTextClass}>
+                    Create a payment link to unlock WhatsApp, Instagram DM, and email sharing
+                    actions without leaving the Stackaura product flow.
+                  </p>
+                </div>
+              ) : (
+                <div className="mt-6 space-y-4">
+                  <div className={cn("p-5", lightProductInsetPanelClass)}>
+                    <div className="text-xs uppercase tracking-[0.18em] text-[#6b7c93]">
+                      Checkout URL
+                    </div>
+                    <div className="mt-3 break-all rounded-[20px] border border-white/42 bg-white/34 px-4 py-3 font-mono text-sm text-[#0a2540]">
+                      {result.checkoutUrl}
+                    </div>
+
+                    <div className="mt-4 flex flex-wrap gap-3">
+                      <button
+                        type="button"
+                        onClick={() => copyValue(result.checkoutUrl, "checkout")}
+                        className={lightProductCompactGhostButtonClass}
+                      >
+                        {copied === "checkout" ? "Copied" : "Copy link"}
+                      </button>
+
+                      <a
+                        href={result.checkoutUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className={cn(publicPrimaryButtonClass, "px-5 py-3")}
+                      >
+                        Open checkout
+                      </a>
+                    </div>
                   </div>
-                  <div className="mt-4 flex flex-wrap gap-3">
-                    <button
-                      onClick={() => copyValue(result.checkoutUrl, "checkout")}
-                      className={darkCompactGhostButtonClass}
+
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <a
+                      href={whatsappHref}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={cn(lightProductInsetPanelClass, "p-4 transition hover:border-white/55")}
                     >
-                      {copied === "checkout" ? "Copied" : "Copy link"}
+                      <div className="font-semibold text-[#0a2540]">WhatsApp</div>
+                      <div className="mt-2 text-sm leading-6 text-[#425466]">
+                        Open WhatsApp with a ready-to-send payment message.
+                      </div>
+                    </a>
+
+                    <button
+                      type="button"
+                      onClick={() => copyValue(shareMessage, "instagram")}
+                      className={cn(
+                        lightProductInsetPanelClass,
+                        "p-4 text-left transition hover:border-white/55"
+                      )}
+                    >
+                      <div className="font-semibold text-[#0a2540]">Instagram DM</div>
+                      <div className="mt-2 text-sm leading-6 text-[#425466]">
+                        Copy the share message, then paste it into Instagram DM.
+                      </div>
+                      <div className="mt-3 text-xs uppercase tracking-[0.16em] text-[#5146df]">
+                        {copied === "instagram" ? "Copied message" : "Copy message"}
+                      </div>
                     </button>
 
                     <a
-                      href={result.checkoutUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className={darkCompactGhostButtonClass}
+                      href={emailHref}
+                      className={cn(lightProductInsetPanelClass, "p-4 transition hover:border-white/55")}
                     >
-                      Open checkout
+                      <div className="font-semibold text-[#0a2540]">Email</div>
+                      <div className="mt-2 text-sm leading-6 text-[#425466]">
+                        Open your email client with a prefilled checkout message.
+                      </div>
                     </a>
                   </div>
-                </div>
 
-                <div className="grid gap-4 md:grid-cols-3">
-                  <a
-                    href={whatsappHref}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={cn(darkPanelClass, "p-4")}
-                  >
-                    <div className="font-semibold text-white">WhatsApp</div>
-                    <div className="mt-2 text-xs leading-6 text-zinc-400">
-                      Open WhatsApp with a ready-to-send payment message.
-                    </div>
-                  </a>
-
-                  <button
-                    onClick={() => copyValue(shareMessage, "instagram")}
-                    className={cn(darkPanelClass, "p-4 text-left")}
-                  >
-                    <div className="font-semibold text-white">Instagram DM</div>
-                    <div className="mt-2 text-xs leading-6 text-zinc-400">
-                      Copy the share message, then paste it into Instagram DM.
-                    </div>
-                    <div className="mt-3 text-xs text-[#A0E9FF]">
-                      {copied === "instagram" ? "Copied message" : "Copy message"}
-                    </div>
-                  </button>
-
-                  <a href={emailHref} className={cn(darkPanelClass, "p-4")}>
-                    <div className="font-semibold text-white">Email</div>
-                    <div className="mt-2 text-xs leading-6 text-zinc-400">
-                      Open your email client with a prefilled checkout message.
-                    </div>
-                  </a>
-                </div>
-
-                <div className={cn(darkSubtleSurfaceClass, "p-5")}>
-                  <div className="text-xs uppercase tracking-wide text-zinc-500">Payment details</div>
-
-                  <div className="mt-4 grid gap-3 text-sm md:grid-cols-2">
-                    <div>
-                      <div className="text-zinc-500">Reference</div>
-                      <div className="mt-1 font-mono text-zinc-100">{result.reference}</div>
+                  <div className={cn("p-5", lightProductInsetPanelClass)}>
+                    <div className="text-xs uppercase tracking-[0.18em] text-[#6b7c93]">
+                      Payment details
                     </div>
 
-                    <div>
-                      <div className="text-zinc-500">Status</div>
-                      <div className="mt-1 text-zinc-100">{result.status}</div>
-                    </div>
-
-                    <div>
-                      <div className="text-zinc-500">Amount</div>
-                      <div className="mt-1 text-zinc-100">
-                        {result.currency} {centsToAmountString(result.amountCents)}
+                    <div className="mt-4 grid gap-3 text-sm md:grid-cols-2">
+                      <div>
+                        <div className="text-[#6b7c93]">Reference</div>
+                        <div className="mt-1 break-all font-mono text-[#0a2540]">
+                          {result.reference}
+                        </div>
                       </div>
-                    </div>
 
-                    <div>
-                      <div className="text-zinc-500">Customer</div>
-                      <div className="mt-1 text-zinc-100">
-                        {result.customerEmail || "Not provided"}
+                      <div>
+                        <div className="text-[#6b7c93]">Status</div>
+                        <div className="mt-1 text-[#0a2540]">{result.status}</div>
+                      </div>
+
+                      <div>
+                        <div className="text-[#6b7c93]">Amount</div>
+                        <div className="mt-1 text-[#0a2540]">
+                          {result.currency} {centsToAmountString(result.amountCents)}
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="text-[#6b7c93]">Customer</div>
+                        <div className="mt-1 text-[#0a2540]">
+                          {result.customerEmail || "Not provided"}
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </section>
-        </div>
-
-        <div className="mt-6 flex flex-wrap gap-3">
-          {["Hosted checkout", "Shareable links", "Merchant API auth", "Ozow + PayFast ready"].map(
-            (item) => (
-              <span key={item} className={darkPillClass}>
-                {item}
-              </span>
-            )
-          )}
+              )}
+            </section>
+          </div>
         </div>
       </div>
-    </DarkBackground>
+    </SoftProductBackground>
   );
 }

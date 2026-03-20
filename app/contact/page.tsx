@@ -12,8 +12,8 @@ export default function ContactPage() {
   return (
     <PublicPageShell
       eyebrow="Contact Stackaura"
-      title="Talk to the team building your payments infrastructure layer."
-      description="For business, partnership, developer, merchant activation, and compliance enquiries, reach Stackaura directly and we’ll route you to the right team."
+      title="Talk to the team behind your payment orchestration layer."
+      description="For commercial, developer, merchant growth, and compliance enquiries, reach Stackaura directly and we’ll route you to the right team."
       actions={
         <>
           <a href="mailto:admin@stackaura.co.za" className={publicPrimaryButtonClass}>
@@ -62,8 +62,8 @@ export default function ContactPage() {
         <div className={cn(publicSurfaceClass, "p-7")}>
           <div className={publicSectionLabelClass}>Use cases</div>
           <div className="mt-3 text-sm leading-6 text-[#425466]">
-            Merchant onboarding, orchestration, API access, hosted checkout, and platform
-            partnerships.
+            Merchant growth, orchestration, API access, hosted checkout, and platform
+            integrations.
           </div>
         </div>
       </section>
@@ -71,9 +71,9 @@ export default function ContactPage() {
       <section className={cn(publicSurfaceClass, "p-8 lg:p-10")}>
         <div className={publicSectionLabelClass}>Infrastructure role</div>
         <div className="mt-4 max-w-4xl text-2xl font-semibold tracking-tight text-[#0a2540]">
-          Stackaura provides software infrastructure and orchestration tools. Stackaura does not
-          directly process, hold, or settle customer funds; payments are handled by licensed
-          payment providers.
+          Stackaura is a software infrastructure and orchestration layer. Stackaura does not
+          directly process, hold, or settle customer funds; licensed payment providers process and
+          settle payments.
         </div>
         <p className="mt-4 max-w-3xl text-sm leading-7 text-[#425466]">
           This distinction is central to how Stackaura explains its role to merchants, platforms,
@@ -87,15 +87,15 @@ export default function ContactPage() {
           {[
             {
               title: "Commercial onboarding",
-              body: "Discuss merchant activation, volumes, pricing structure, and rollout planning.",
+              body: "Discuss rollout planning, pricing structure, merchant growth, and payment infrastructure adoption.",
             },
             {
               title: "Developer support",
-              body: "Review API docs, sandbox flows, payment links, and hosted checkout setup.",
+              body: "Review API docs, hosted checkout, routing flows, and payment recovery setup.",
             },
             {
               title: "Compliance and operations",
-              body: "Route governance, security, and payment-operations conversations with the right team.",
+              body: "Route governance, trust, security, and payment-operations conversations to the right team.",
             },
           ].map((item) => (
             <div key={item.title} className={cn(publicSubtleSurfaceClass, "p-6")}>
