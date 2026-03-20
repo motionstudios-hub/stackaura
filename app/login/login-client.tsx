@@ -159,10 +159,11 @@ export default function LoginClient({
             Stackaura provides payment orchestration and infrastructure software. Licensed payment
             providers process and settle payments.
           </p>
-          <p className="mt-3 text-sm leading-6 text-[#6b7c93]">
-            Local development credentials are prefilled here for convenience. You can replace them
-            with any merchant account before signing in.
-          </p>
+          {process.env.NODE_ENV === "development" ? (
+            <p className="mt-3 text-sm leading-6 text-[#6b7c93]">
+            
+            </p>
+          ) : null}
         </div>
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
