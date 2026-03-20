@@ -203,9 +203,10 @@ export default function Home() {
               )}
             >
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_18%,rgba(255,255,255,0.52),transparent_26%),radial-gradient(circle_at_74%_18%,rgba(125,211,252,0.28),transparent_24%),radial-gradient(circle_at_84%_70%,rgba(168,85,247,0.16),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.16),rgba(219,232,238,0.02))]" />
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-[220px] bg-[radial-gradient(circle_at_84%_18%,rgba(125,211,252,0.20),transparent_26%),radial-gradient(circle_at_72%_14%,rgba(122,115,255,0.12),transparent_22%),linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0))] lg:hidden" />
 
               <div className="relative grid gap-8 lg:grid-cols-[1.03fr_0.97fr] lg:items-center">
-                <div className="relative z-10 max-w-3xl pr-4 sm:pr-24 lg:pr-0">
+                <div className="relative z-10 max-w-3xl pr-0">
                   <div className={cn(publicPillClass, "max-w-max px-3 py-1.5 text-xs sm:text-sm")}>
                     Payment orchestration and infrastructure for African commerce
                   </div>
@@ -233,7 +234,7 @@ export default function Home() {
                     One integration. Multiple gateways. Smart routing and fallback.
                   </div>
 
-                  <div className="mt-8 grid gap-3 sm:grid-cols-3">
+                  <div className="mt-10 grid gap-3 sm:mt-8 sm:grid-cols-3">
                     <div className={cn("p-4", publicSubtleSurfaceClass)}>
                       <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6b7c93]">
                         Routing layer
@@ -264,7 +265,7 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[540px] overflow-hidden lg:pointer-events-auto lg:relative lg:inset-auto lg:min-h-[560px] lg:h-auto lg:overflow-visible">
+                <div className="hidden pointer-events-none absolute inset-x-0 top-0 z-0 h-[540px] overflow-hidden lg:pointer-events-auto lg:relative lg:block lg:min-h-[560px] lg:h-auto lg:overflow-visible">
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_18%,rgba(204,227,242,0.34),transparent_22%),linear-gradient(180deg,rgba(255,255,255,0.12),rgba(255,255,255,0))]" />
 
                   <div className="absolute right-[-54px] top-[34px] h-[360px] w-[360px] scale-[0.74] opacity-95 sm:right-[-18px] sm:top-[54px] sm:scale-[0.84] lg:right-[-10px] lg:top-[-12px] lg:h-[620px] lg:w-[620px] lg:scale-100 lg:opacity-100">

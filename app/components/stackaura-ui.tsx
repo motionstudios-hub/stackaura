@@ -1,9 +1,23 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
 export function cn(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
+}
+
+export function Card({
+  className,
+  ...props
+}: ComponentPropsWithoutRef<"div">) {
+  return <div className={cn(lightProductPanelClass, className)} {...props} />;
+}
+
+export function CardContent({
+  className,
+  ...props
+}: ComponentPropsWithoutRef<"div">) {
+  return <div className={cn("space-y-4", className)} {...props} />;
 }
 
 export const publicSurfaceClass =
