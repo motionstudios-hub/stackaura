@@ -19,6 +19,9 @@ function forwardHeaders(req: NextRequest) {
   const ct = req.headers.get("content-type");
   if (ct) h.set("content-type", ct);
 
+  const cookie = req.headers.get("cookie");
+  if (cookie) h.set("cookie", cookie);
+
   if (API_KEY) h.set("authorization", `Bearer ${API_KEY}`);
   return h;
 }
