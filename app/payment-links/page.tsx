@@ -130,7 +130,6 @@ export default function PaymentLinksPage() {
   const [currency, setCurrency] = useState("ZAR");
   const [customerEmail, setCustomerEmail] = useState("");
   const [description, setDescription] = useState("Stackaura payment link");
-  const [gateway, setGateway] = useState<ConnectedGatewayValue | "">("");
   const [activeMerchantId, setActiveMerchantId] = useState<string | null>(null);
   const [loadingMerchantContext, setLoadingMerchantContext] = useState(true);
   const [connectedGateways, setConnectedGateways] = useState<GatewayOption[]>([]);
@@ -167,13 +166,30 @@ export default function PaymentLinksPage() {
   }, [description, result, shareMessage]);
 
   const usingMerchantApiKey = Boolean(apiKey.trim());
+  const hasConnectedOzow = connectedGateways.some((option) => option.value === "OZOW");
+  const hasConnectedYoco = connectedGateways.some((option) => option.value === "YOCO");
+  const hasConnectedPaystack = connectedGateways.some((option) => option.value === "PAYSTACK");
+  const autoRoutingPreference = hasConnectedOzow ? "BANK_EFT" : undefined;
+  const autoRoutingOrder = useMemo(() => {
+    if (hasConnectedOzow) {
+      return [
+        "Ozow",
+        ...(hasConnectedYoco ? ["Yoco"] : []),
+        ...(hasConnectedPaystack ? ["Paystack"] : []),
+      ];
+    }
+
+    return [
+      ...(hasConnectedPaystack ? ["Paystack"] : []),
+      ...(hasConnectedYoco ? ["Yoco"] : []),
+    ];
+  }, [hasConnectedOzow, hasConnectedPaystack, hasConnectedYoco]);
   const canCreate =
     loading || loadingMerchantContext || loadingGateways
       ? false
       : amountCents > 0 &&
         Boolean(activeMerchantId) &&
-        connectedGateways.length > 0 &&
-        Boolean(gateway);
+        connectedGateways.length > 0;
 
   useEffect(() => {
     let cancelled = false;
@@ -226,7 +242,6 @@ export default function PaymentLinksPage() {
     async function loadConnectedGateways() {
       if (!activeMerchantId) {
         setConnectedGateways([]);
-        setGateway("");
         setLoadingGateways(false);
         return;
       }
@@ -260,13 +275,9 @@ export default function PaymentLinksPage() {
         );
 
         setConnectedGateways(next);
-        setGateway((current) =>
-          next.some((option) => option.value === current) ? current : next[0]?.value ?? ""
-        );
       } catch {
         if (cancelled) return;
         setConnectedGateways([]);
-        setGateway("");
       } finally {
         if (!cancelled) {
           setLoadingGateways(false);
@@ -299,7 +310,7 @@ export default function PaymentLinksPage() {
       return;
     }
 
-    if (!gateway) {
+    if (connectedGateways.length === 0) {
       setError("Connect a gateway first");
       return;
     }
@@ -326,7 +337,8 @@ export default function PaymentLinksPage() {
           currency,
           customerEmail: customerEmail || undefined,
           description,
-          gateway,
+          gateway: "AUTO",
+          paymentMethodPreference: autoRoutingPreference,
         }),
       });
 
@@ -380,9 +392,7 @@ export default function PaymentLinksPage() {
 
   const resolutionSource = activeMerchantId
     ? "Selected merchant workspace"
-    : usingMerchantApiKey
-      ? "Provided API key"
-      : "Unavailable";
+    : "Unavailable";
 
   return (
     <SoftProductBackground>
@@ -403,7 +413,8 @@ export default function PaymentLinksPage() {
               <p className="mt-5 max-w-3xl text-base leading-7 text-[#425466] sm:text-lg">
                 Generate a shareable Stackaura checkout link tied to the merchant workspace
                 selected in your dashboard, then send it across the channels where your customers
-                already buy.
+                already buy. Stackaura will route automatically across the merchant's connected
+                payment rails.
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
@@ -561,35 +572,27 @@ export default function PaymentLinksPage() {
                   />
                 </label>
 
-                <label className="grid gap-1.5">
+                <div className="grid gap-1.5">
                   <span className="text-xs font-medium uppercase tracking-[0.18em] text-[#6b7c93]">
-                    Preferred gateway
+                    Routing strategy
                   </span>
-                  <select
-                    className={lightProductInputClass}
-                    value={gateway}
-                    onChange={(e) =>
-                      setGateway((e.target.value as ConnectedGatewayValue | "") ?? "")
-                    }
-                    disabled={loadingGateways || connectedGateways.length === 0}
-                  >
-                    <option value="" disabled>
-                      {loadingGateways ? "Checking connected gateways..." : "Connect a gateway first"}
-                    </option>
-                    {connectedGateways.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
+                  <div className={cn(lightProductInputClass, "flex min-h-[64px] items-center")}>
+                    {loadingGateways
+                      ? "Checking connected gateways..."
+                      : connectedGateways.length > 0
+                        ? `Auto routing: ${autoRoutingOrder.join(" -> ")}`
+                        : "Connect a gateway first"}
+                  </div>
                   <span className="text-xs text-[#6b7c93]">
                     {loadingGateways
                       ? "Checking connected gateways for the selected merchant..."
                       : connectedGateways.length > 0
-                        ? "Only gateways actively connected for this merchant are shown."
+                        ? hasConnectedOzow
+                          ? "Automatic routing will start with Ozow and fall back to Yoco before Paystack when available."
+                          : "Automatic routing will use the connected rails in Stackaura priority order."
                         : "Connect a gateway first"}
                   </span>
-                </label>
+                </div>
               </div>
 
               <label className="grid gap-1.5">
