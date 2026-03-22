@@ -15,6 +15,7 @@ import {
   publicSectionLabelClass,
   publicSubtleSurfaceClass,
 } from "./components/stackaura-ui";
+import PricingSection from "./components/pricing-section";
 
 const valueProps = [
   {
@@ -113,20 +114,35 @@ const pricingTiers = [
   {
     name: "Starter",
     audience: "For merchants launching with unified checkout and auto routing.",
+    price: "1.5%",
+    priceSuffix: "per transaction",
     bullets: ["Auto routing", "Hosted checkout", "Unified API access"],
     featured: false,
+    badge: null,
+    ctaHref: "/signup",
+    ctaLabel: "Start accepting payments",
   },
   {
     name: "Growth",
     audience: "For growing teams that need fallback and manual gateway control.",
+    price: "2.5% + R1",
+    priceSuffix: "per transaction",
     bullets: ["Manual gateway selection", "Fallback routing", "Multi-gateway orchestration"],
     featured: true,
+    badge: "Most popular",
+    ctaHref: "/signup",
+    ctaLabel: "Choose Growth",
   },
   {
     name: "Scale",
     audience: "For larger merchants that need custom routing and optimization support.",
+    price: "Custom",
+    priceSuffix: "pricing",
     bullets: ["Custom routing support", "Custom optimization", "Priority support"],
     featured: false,
+    badge: "Enterprise",
+    ctaHref: "/contact",
+    ctaLabel: "Talk to sales",
   },
 ] as const;
 
@@ -670,57 +686,7 @@ export default function Home() {
             </div>
           </section>
 
-          <section className={cn(sectionClass, "py-6 sm:py-8 lg:py-10")}>
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-              <div className="max-w-3xl">
-                <div className={publicSectionLabelClass}>Pricing</div>
-                <h2 className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-[#0a2540] sm:text-5xl">
-                  Plans that grow with your payment volume
-                </h2>
-              </div>
-              <Link href="/pricing" className={publicSecondaryButtonClass}>
-                View pricing
-              </Link>
-            </div>
-
-            <div className="mt-8 grid gap-4 lg:grid-cols-3">
-              {pricingTiers.map((tier) => (
-                <div
-                  key={tier.name}
-                  className={cn(
-                    "p-6 sm:p-7",
-                    tier.featured
-                      ? "rounded-[28px] border border-white/55 bg-[linear-gradient(180deg,rgba(122,115,255,0.18),rgba(255,255,255,0.28))] shadow-[0_18px_42px_rgba(122,146,168,0.14)] backdrop-blur-2xl"
-                      : lightProductPanelClass
-                  )}
-                >
-                  <div className="flex items-center justify-between gap-4">
-                    <h3 className="text-2xl font-semibold tracking-[-0.03em] text-[#0a2540]">
-                      {tier.name}
-                    </h3>
-                    {tier.featured ? (
-                      <span className="rounded-full border border-[#b8b2ff]/70 bg-[#eeedff]/82 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#5146df]">
-                        Popular
-                      </span>
-                    ) : null}
-                  </div>
-                  <p className="mt-3 text-base leading-7 text-[#425466]">
-                    {tier.audience}
-                  </p>
-                  <div className="mt-5 space-y-3">
-                    {tier.bullets.map((bullet) => (
-                      <div
-                        key={bullet}
-                        className="rounded-2xl border border-white/50 bg-white/42 px-4 py-3 text-sm font-medium text-[#425466] shadow-[0_10px_20px_rgba(133,156,180,0.08)]"
-                      >
-                        {bullet}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
+          <PricingSection tiers={pricingTiers} className={cn(sectionClass, "py-6 sm:py-8 lg:py-10")} />
 
           <section className={cn(sectionClass, "pt-6 sm:pt-8 lg:pt-10")}>
             <div
