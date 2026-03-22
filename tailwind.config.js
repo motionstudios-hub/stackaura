@@ -14,7 +14,7 @@ module.exports = {
   theme: {
     extend: {
       animation: {
-        aurora: "aurora 60s linear infinite",
+        aurora: "aurora var(--aurora-duration, 60s) linear infinite",
       },
       keyframes: {
         aurora: {

@@ -209,7 +209,7 @@ export default function Home() {
                 showRadialGradient={false}
                 className="pointer-events-none absolute inset-0 h-auto min-h-0 justify-start bg-transparent text-inherit [--transparent:transparent] [&>div]:bg-transparent [&>div]:text-inherit"
               >
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_24%,rgba(255,255,255,0.38),transparent_28%),radial-gradient(circle_at_82%_16%,rgba(125,211,252,0.18),transparent_24%),radial-gradient(circle_at_60%_74%,rgba(122,115,255,0.10),transparent_34%)] opacity-95 sm:opacity-80 lg:opacity-60" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_16%_22%,rgba(255,255,255,0.42),transparent_30%),radial-gradient(circle_at_78%_14%,rgba(125,211,252,0.24),transparent_28%),radial-gradient(circle_at_58%_72%,rgba(122,115,255,0.14),transparent_38%)] opacity-100 sm:opacity-84 lg:opacity-62" />
               </AuroraBackground>
 
               <div className="relative grid gap-8 lg:grid-cols-[1.03fr_0.97fr] lg:items-center">
