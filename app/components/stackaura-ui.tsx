@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import SiteFooter from "./site-footer";
 
 export function cn(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -172,16 +173,6 @@ const navItems = [
   { href: "/pricing", label: "Pricing" },
 ];
 
-const footerItems = [
-  { href: "/about", label: "About" },
-  { href: "/integrations", label: "Integrations" },
-  { href: "/docs", label: "Docs" },
-  { href: "/pricing", label: "Pricing" },
-  { href: "/contact", label: "Contact" },
-  { href: "/privacy", label: "Privacy" },
-  { href: "/terms", label: "Terms" },
-];
-
 export function BrandLockup({
   compact = false,
   showTagline = true,
@@ -326,33 +317,7 @@ export function PublicHeader() {
 }
 
 export function PublicFooter() {
-  return (
-    <footer className="relative z-10 border-t border-white/35 bg-white/18 backdrop-blur-2xl">
-      <div className="mx-auto max-w-[1440px] px-6 py-8 lg:px-10">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <div className="max-w-xl">
-            <BrandLockup compact />
-            <p className="mt-3 text-sm leading-6 text-[#425466]">
-              Payment orchestration, smart routing, fallback, and unified infrastructure for
-              modern African commerce teams.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            {footerItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="rounded-full border border-white/40 bg-white/20 px-4 py-2 text-sm font-medium text-[#425466] shadow-[0_8px_24px_rgba(133,156,180,0.10)] backdrop-blur-2xl transition hover:bg-white/30 hover:text-[#0a2540]"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
+  return <SiteFooter />;
 }
 
 export function PublicPageShell({

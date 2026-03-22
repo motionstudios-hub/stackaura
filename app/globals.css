@@ -3,6 +3,8 @@
 :root {
   --background: #dbe8ee;
   --foreground: #0a2540;
+  --selection-background: rgba(99, 91, 255, 0.24);
+  --selection-foreground: #071b32;
 }
 
 @theme inline {
@@ -28,6 +30,11 @@ body {
 }
 
 ::selection {
-  background: rgba(99, 91, 255, 0.18);
-  color: #0a2540;
+  background: var(--selection-background);
+  color: var(--selection-foreground);
+}
+
+::-moz-selection {
+  background: var(--selection-background);
+  color: var(--selection-foreground);
 }
