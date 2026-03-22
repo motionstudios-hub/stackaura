@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AuroraBackground } from "@/components/ui/aurora-background";
 import {
   cn,
   lightProductHeroClass,
@@ -204,6 +205,12 @@ export default function Home() {
             >
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_18%,rgba(255,255,255,0.52),transparent_26%),radial-gradient(circle_at_74%_18%,rgba(125,211,252,0.28),transparent_24%),radial-gradient(circle_at_84%_70%,rgba(168,85,247,0.16),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.16),rgba(219,232,238,0.02))]" />
               <div className="pointer-events-none absolute inset-x-0 top-0 h-[220px] bg-[radial-gradient(circle_at_84%_18%,rgba(125,211,252,0.20),transparent_26%),radial-gradient(circle_at_72%_14%,rgba(122,115,255,0.12),transparent_22%),linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0))] lg:hidden" />
+              <AuroraBackground
+                showRadialGradient={false}
+                className="pointer-events-none absolute inset-0 h-auto min-h-0 justify-start bg-transparent text-inherit [--transparent:transparent] [&>div]:bg-transparent [&>div]:text-inherit"
+              >
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_24%,rgba(255,255,255,0.38),transparent_28%),radial-gradient(circle_at_82%_16%,rgba(125,211,252,0.18),transparent_24%),radial-gradient(circle_at_60%_74%,rgba(122,115,255,0.10),transparent_34%)] opacity-95 sm:opacity-80 lg:opacity-60" />
+              </AuroraBackground>
 
               <div className="relative grid gap-8 lg:grid-cols-[1.03fr_0.97fr] lg:items-center">
                 <div className="relative z-10 max-w-3xl pr-0">
@@ -211,11 +218,11 @@ export default function Home() {
                     Payment orchestration and infrastructure for African commerce
                   </div>
 
-                  <h1 className="mt-5 max-w-4xl text-5xl font-semibold leading-[1.01] tracking-[-0.05em] text-[#0a2540] sm:text-6xl lg:text-[78px]">
+                  <h1 className="mt-5 max-w-4xl text-[42px] font-semibold leading-[0.98] tracking-[-0.06em] text-[#0a2540] sm:text-6xl lg:text-[78px]">
                     Payments that never fail.
                   </h1>
 
-                  <p className="mt-5 max-w-2xl text-lg leading-8 text-[#425466] sm:text-[21px]">
+                  <p className="mt-5 max-w-2xl text-base leading-7 text-[#425466] sm:text-[21px] sm:leading-8">
                     Route every transaction across multiple gateways
                     automatically. Increase success rates, reduce downtime, and
                     scale faster with Stackaura.
@@ -230,11 +237,11 @@ export default function Home() {
                     </Link>
                   </div>
 
-                  <div className="mt-6 inline-flex max-w-full rounded-full border border-white/48 bg-white/28 px-4 py-2 text-sm font-medium text-[#425466] shadow-[0_10px_24px_rgba(133,156,180,0.10)] backdrop-blur-2xl">
+                  <div className="mt-6 inline-flex max-w-full rounded-full border border-white/48 bg-white/32 px-4 py-2 text-sm font-medium text-[#425466] shadow-[0_10px_24px_rgba(133,156,180,0.10)] backdrop-blur-2xl">
                     One integration. Multiple gateways. Smart routing and fallback.
                   </div>
 
-                  <div className="mt-10 grid gap-3 sm:mt-8 sm:grid-cols-3">
+                  <div className="mt-8 grid gap-3 sm:mt-8 sm:grid-cols-3">
                     <div className={cn("p-4", publicSubtleSurfaceClass)}>
                       <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6b7c93]">
                         Routing layer
