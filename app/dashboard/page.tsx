@@ -206,6 +206,7 @@ export default async function DashboardPage() {
   ];
 
   const quickActions = [
+    { href: "/dashboard/support", label: "Open support AI", tone: "primary" as const },
     { href: "/dashboard/gateways", label: "Open gateway connections", tone: "primary" as const },
     { href: "/dashboard/api-keys", label: "Open developer keys", tone: "primary" as const },
     { href: "/payment-links", label: "Launch payment links", tone: "secondary" as const },

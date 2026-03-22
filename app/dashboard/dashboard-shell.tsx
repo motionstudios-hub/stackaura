@@ -20,6 +20,7 @@ const navItems = [
   { href: "/dashboard", label: "Overview" },
   { href: "/dashboard/gateways", label: "Gateways" },
   { href: "/dashboard/api-keys", label: "API Keys" },
+  { href: "/dashboard/support", label: "Support" },
   { href: "/docs", label: "Docs" },
   { href: "/", label: "Website" },
 ];
