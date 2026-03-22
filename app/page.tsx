@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AuroraBackground } from "@/components/ui/aurora-background";
+import LogoCloud from "@/components/ui/logo-cloud";
 import {
   cn,
   lightProductHeroClass,
@@ -40,27 +41,29 @@ const valueProps = [
   },
 ] as const;
 
-const gatewayRails = [
+const connectedRails = [
   {
     name: "Paystack",
-    mark: "paystack",
-    status: "Current rail",
-    description:
-      "A live rail in the Stackaura orchestration layer for unified checkout and payment recovery.",
+    src: "/providers/paystack.svg",
+    width: 29,
+    height: 28,
+    pillClassName:
+      "min-w-[156px] px-7 sm:min-w-[170px] sm:px-8 bg-[linear-gradient(180deg,rgba(255,255,255,0.48),rgba(229,245,251,0.28))]",
   },
   {
     name: "Yoco",
-    mark: "YOCO",
-    status: "Current rail",
-    description:
-      "A live rail in the same unified infrastructure layer for merchant checkout and routing control.",
+    src: "/providers/yoco.svg",
+    width: 110,
+    height: 42,
+    pillClassName: "min-w-[194px] sm:min-w-[216px]",
   },
   {
     name: "Ozow",
-    mark: "OZOW",
-    status: "Current rail",
-    description:
-      "A live bank-payment rail connected through the same orchestration and recovery path.",
+    src: "/providers/ozow.png",
+    width: 150,
+    height: 49,
+    pillClassName: "min-w-[182px] sm:min-w-[200px]",
+    imageClassName: "max-h-[26px] sm:max-h-[28px]",
   },
 ] as const;
 
@@ -145,21 +148,6 @@ const pricingTiers = [
     ctaLabel: "Talk to sales",
   },
 ] as const;
-
-function GatewayMark({ name, mark }: { name: string; mark: string }) {
-  return (
-    <span
-      className={cn(
-        "text-center font-semibold tracking-[-0.04em] text-[#0a2540]",
-        name === "Paystack" && "text-[22px] lowercase",
-        name === "Yoco" && "text-[24px] tracking-[0.18em]",
-        name === "Ozow" && "text-[22px] tracking-[0.22em]"
-      )}
-    >
-      {mark}
-    </span>
-  );
-}
 
 export default function Home() {
   const organizationJsonLd = {
@@ -471,32 +459,20 @@ export default function Home() {
               <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
                 <div className="max-w-xl">
                   <div className={publicSectionLabelClass}>
-                    Gateway infrastructure
+                    Connected payment rails
                   </div>
                   <h2 className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-[#0a2540] sm:text-5xl">
                     Connect Africa&apos;s leading payment rails
                   </h2>
                   <p className="mt-5 text-lg leading-8 text-[#425466]">
-                    Stackaura sits above licensed payment providers, routing,
-                    optimizing, and recovering payments through one integration.
+                    Current live payment rails available through Stackaura&apos;s
+                    orchestration layer. One merchant-ready integration for
+                    routing, fallback, and payment recovery across supported
+                    providers.
                   </p>
                 </div>
 
-                <div className="grid gap-4 sm:grid-cols-3">
-                  {gatewayRails.map((gateway) => (
-                    <div key={gateway.name} className={cn("p-5", lightProductInsetPanelClass)}>
-                      <div className="flex items-center justify-between gap-3">
-                        <GatewayMark name={gateway.name} mark={gateway.mark} />
-                        <span className="rounded-full border border-white/52 bg-white/54 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#425466]">
-                          {gateway.status}
-                        </span>
-                      </div>
-                      <p className="mt-4 text-sm leading-6 text-[#425466]">
-                        {gateway.description}
-                      </p>
-                    </div>
-                  ))}
-                </div>
+                <LogoCloud items={connectedRails} />
               </div>
 
               <div className="mt-8 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
