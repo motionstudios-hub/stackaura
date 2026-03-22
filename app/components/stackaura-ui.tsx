@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import PublicHeaderNav from "./public-header-nav";
 import SiteFooter from "./site-footer";
 
 export function cn(...classes: Array<string | false | null | undefined>) {
@@ -244,10 +245,10 @@ export function SoftProductBackground({
 
 export function PublicHeader() {
   return (
-    <header className="relative z-20 border-b border-white/35 bg-white/18 backdrop-blur-2xl shadow-[0_10px_30px_rgba(122,146,168,0.10)] supports-[backdrop-filter]:bg-white/14">
+    <header className="public-header-shell relative z-20 border-b border-white/35 bg-white/18 backdrop-blur-2xl shadow-[0_10px_30px_rgba(122,146,168,0.10)] supports-[backdrop-filter]:bg-white/14">
       <div className="mx-auto max-w-[1440px] px-4 py-4 sm:px-6 sm:py-5 lg:px-10">
         <div className="flex items-center justify-between gap-4 lg:gap-6">
-          <div className="flex min-w-0 items-center gap-10">
+          <div className="public-header-block min-w-0 flex items-center gap-10">
             <div className="min-w-0 lg:hidden">
               <BrandLockup compact showTagline={false} />
             </div>
@@ -255,35 +256,42 @@ export function PublicHeader() {
               <BrandLockup />
             </div>
 
-            <nav className="hidden items-center gap-3 lg:flex">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="rounded-full border border-white/40 bg-white/20 px-4 py-2 text-sm font-medium text-[#425466] shadow-[0_8px_24px_rgba(133,156,180,0.10)] backdrop-blur-2xl transition hover:bg-white/30 hover:text-[#0a2540]"
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
+            <PublicHeaderNav items={navItems} className="public-header-block public-header-block-delay-1" />
           </div>
 
-          <div className="hidden items-center gap-3 lg:flex">
-            <Link href="/login" className={cn(publicSecondaryButtonClass, "px-5 py-2.5")}>
-              Sign in
+          <div className="public-header-block public-header-block-delay-2 hidden items-center gap-3 lg:flex">
+            <Link
+              href="/login"
+              className={cn(
+                publicSecondaryButtonClass,
+                "group relative overflow-hidden px-5 py-2.5 transition duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-white/60 hover:bg-white/32 hover:shadow-[0_16px_30px_rgba(133,156,180,0.14)] focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7a73ff]/16 motion-reduce:transform-none motion-reduce:transition-none",
+              )}
+            >
+              <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.20),rgba(255,255,255,0))] opacity-0 transition duration-300 group-hover:opacity-100 motion-reduce:transition-none" />
+              <span className="pointer-events-none absolute inset-x-5 top-0 h-px bg-[linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,0.84),rgba(255,255,255,0))] opacity-70" />
+              <span className="relative z-10">Sign in</span>
             </Link>
-            <Link href="/contact" className={cn(publicPrimaryButtonClass, "px-5 py-2.5")}>
-              Contact sales
+            <Link
+              href="/contact"
+              className={cn(
+                publicPrimaryButtonClass,
+                "group relative overflow-hidden px-5 py-2.5 transition duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:scale-[1.015] hover:shadow-[0_22px_38px_rgba(99,91,255,0.30)] focus-visible:-translate-y-0.5 focus-visible:scale-[1.015] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7a73ff]/24 motion-reduce:transform-none motion-reduce:transition-none",
+              )}
+            >
+              <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.20),rgba(255,255,255,0)_38%,rgba(160,233,255,0.18)_100%)] opacity-80 transition duration-500 group-hover:opacity-100 motion-reduce:transition-none" />
+              <span className="pointer-events-none absolute inset-x-6 top-0 h-px bg-[linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,0.92),rgba(255,255,255,0))]" />
+              <span className="pointer-events-none absolute inset-y-0 left-[-28%] w-[42%] -skew-x-12 bg-[linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,0.34),rgba(255,255,255,0))] opacity-0 transition-[left,opacity] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:left-[108%] group-hover:opacity-100 motion-reduce:hidden" />
+              <span className="relative z-10">Contact sales</span>
             </Link>
           </div>
 
-          <details className="relative lg:hidden">
-            <summary className="flex min-h-[44px] list-none items-center justify-center gap-2 rounded-2xl border border-white/45 bg-white/24 px-4 py-2 text-sm font-semibold text-[#425466] shadow-[0_8px_24px_rgba(133,156,180,0.10)] backdrop-blur-2xl transition hover:bg-white/30 [&::-webkit-details-marker]:hidden">
+          <details className="public-header-block public-header-block-delay-1 relative lg:hidden">
+            <summary className="group flex min-h-[44px] list-none items-center justify-center gap-2 rounded-2xl border border-white/45 bg-white/24 px-4 py-2 text-sm font-semibold text-[#425466] shadow-[0_8px_24px_rgba(133,156,180,0.10)] backdrop-blur-2xl transition duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:bg-white/30 hover:shadow-[0_14px_28px_rgba(133,156,180,0.14)] focus-visible:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none [&::-webkit-details-marker]:hidden">
               <span>Menu</span>
-              <span className="flex flex-col gap-1">
-                <span className="block h-[2px] w-4 rounded-full bg-[#4f46e5]" />
-                <span className="block h-[2px] w-4 rounded-full bg-[#4f46e5]" />
-                <span className="block h-[2px] w-4 rounded-full bg-[#4f46e5]" />
+              <span className="flex flex-col gap-1 transition duration-300 group-hover:translate-x-0.5 motion-reduce:transform-none motion-reduce:transition-none">
+                <span className="block h-[2px] w-4 rounded-full bg-[#4f46e5] transition duration-300 group-hover:w-[18px] motion-reduce:transition-none" />
+                <span className="block h-[2px] w-4 rounded-full bg-[#4f46e5] transition duration-300 group-hover:w-[14px] motion-reduce:transition-none" />
+                <span className="block h-[2px] w-4 rounded-full bg-[#4f46e5] transition duration-300 group-hover:w-[18px] motion-reduce:transition-none" />
               </span>
             </summary>
 
@@ -293,7 +301,7 @@ export function PublicHeader() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="rounded-2xl border border-white/42 bg-white/20 px-4 py-3 text-sm font-medium text-[#425466] shadow-[0_8px_20px_rgba(133,156,180,0.08)] backdrop-blur-2xl transition hover:bg-white/28 hover:text-[#0a2540]"
+                    className="rounded-2xl border border-white/42 bg-white/20 px-4 py-3 text-sm font-medium text-[#425466] shadow-[0_8px_20px_rgba(133,156,180,0.08)] backdrop-blur-2xl transition duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:bg-white/28 hover:text-[#0a2540] motion-reduce:transform-none motion-reduce:transition-none"
                   >
                     {item.label}
                   </Link>
@@ -301,11 +309,25 @@ export function PublicHeader() {
               </nav>
 
               <div className="mt-3 grid gap-2">
-                <Link href="/login" className={cn(publicSecondaryButtonClass, "w-full px-4 py-3")}>
-                  Sign in
+                <Link
+                  href="/login"
+                  className={cn(
+                    publicSecondaryButtonClass,
+                    "group relative w-full overflow-hidden px-4 py-3 transition duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none",
+                  )}
+                >
+                  <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.18),rgba(255,255,255,0))] opacity-0 transition duration-300 group-hover:opacity-100 motion-reduce:transition-none" />
+                  <span className="relative z-10">Sign in</span>
                 </Link>
-                <Link href="/contact" className={cn(publicPrimaryButtonClass, "w-full px-4 py-3")}>
-                  Contact sales
+                <Link
+                  href="/contact"
+                  className={cn(
+                    publicPrimaryButtonClass,
+                    "group relative w-full overflow-hidden px-4 py-3 transition duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:shadow-[0_22px_38px_rgba(99,91,255,0.30)] motion-reduce:transform-none motion-reduce:transition-none",
+                  )}
+                >
+                  <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.20),rgba(255,255,255,0)_38%,rgba(160,233,255,0.18)_100%)] opacity-80 transition duration-500 group-hover:opacity-100 motion-reduce:transition-none" />
+                  <span className="relative z-10">Contact sales</span>
                 </Link>
               </div>
             </div>
