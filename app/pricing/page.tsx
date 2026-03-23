@@ -14,66 +14,7 @@ import {
   publicSectionLabelClass,
   publicSubtleSurfaceClass,
 } from "../components/stackaura-ui";
-
-const plans = [
-  {
-    name: "Starter",
-    audience: "Best for getting started",
-    price: "1.5%",
-    priceSuffix: "per transaction",
-    description:
-      "A clean starting point for merchants who want unified checkout, auto routing, and one integration into multiple gateways.",
-    features: [
-      { label: "Auto routing", included: true },
-      { label: "Hosted checkout", included: true },
-      { label: "API access", included: true },
-      { label: "Manual gateway selection", included: false },
-      { label: "Fallback", included: false },
-    ],
-    badge: null,
-    featured: false,
-    ctaLabel: "Start accepting payments",
-    ctaHref: "/signup",
-  },
-  {
-    name: "Growth",
-    audience: "Best for growing businesses",
-    price: "2.5% + R1",
-    priceSuffix: "per transaction",
-    description:
-      "Built for teams that need smarter routing, explicit gateway control, and payment recovery as volume grows.",
-    features: [
-      { label: "Auto routing", included: true },
-      { label: "Manual gateway selection", included: true },
-      { label: "Fallback routing", included: true },
-      { label: "Multi-gateway orchestration", included: true },
-      { label: "Operational visibility", included: true },
-    ],
-    badge: "Most popular",
-    featured: true,
-    ctaLabel: "Choose Growth",
-    ctaHref: "/signup",
-  },
-  {
-    name: "Scale",
-    audience: "Best for larger or high-volume merchants",
-    price: "Custom",
-    priceSuffix: "pricing",
-    description:
-      "For platforms and larger merchants that want custom routing support, optimization guidance, and commercial flexibility.",
-    features: [
-      { label: "Everything in Growth", included: true },
-      { label: "Custom routing support", included: "Coming / enterprise" },
-      { label: "Priority support", included: "Coming / enterprise" },
-      { label: "Custom optimization", included: "Coming / enterprise" },
-      { label: "Volume-based commercial model", included: true },
-    ],
-    badge: "Enterprise",
-    featured: false,
-    ctaLabel: "Talk to sales",
-    ctaHref: "/contact",
-  },
-] as const;
+import { buildPricingPagePlans, getServerPricing } from "../lib/pricing";
 
 const comparisonRows = [
   {
@@ -142,7 +83,7 @@ const faqs = [
   {
     question: "Do gateway or provider fees still apply?",
     answer:
-      "Yes. Gateway fees still apply separately through the connected payment provider. Stackaura pricing covers orchestration, routing intelligence, and payment infrastructure on top of those provider relationships.",
+      "Yes. Gateway fees are charged separately through the connected payment rail. Stackaura pricing covers orchestration, routing intelligence, and payment infrastructure on top of those provider relationships.",
   },
   {
     question: "What does Stackaura charge for?",
@@ -226,7 +167,13 @@ function PlanFeature({
   );
 }
 
-export default function PricingPage() {
+export default async function PricingPage() {
+  const pricing = await getServerPricing();
+  const plans = buildPricingPagePlans(pricing);
+  const plansByName = new Map(plans.map((plan) => [plan.name, plan] as const));
+  const starterPlan = plansByName.get("Starter")!;
+  const growthPlan = plansByName.get("Growth")!;
+  const scalePlan = plansByName.get("Scale")!;
   const sectionClass = "mx-auto max-w-[1440px] px-5 sm:px-6 lg:px-10";
 
   return (
@@ -281,8 +228,13 @@ export default function PricingPage() {
                           Growth plan
                         </div>
                         <div className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-[#0a2540]">
-                          2.5% + R1
+                          {growthPlan.price}
                         </div>
+                        {growthPlan.priceSuffix ? (
+                          <div className="mt-1 text-xs font-medium text-[#6b7c93]">
+                            {growthPlan.priceSuffix}
+                          </div>
+                        ) : null}
                       </div>
                       <span className={lightProductStatusPillClass("violet")}>
                         Most popular
@@ -337,11 +289,10 @@ export default function PricingPage() {
                       Starter
                     </div>
                     <div className="mt-2 text-lg font-semibold tracking-[-0.03em] text-[#0a2540]">
-                      Unified checkout
+                      {starterPlan.price}
                     </div>
                     <p className="mt-2 text-sm leading-6 text-[#425466]">
-                      Launch quickly with hosted checkout, API access, and auto
-                      routing.
+                      {starterPlan.description}
                     </p>
                   </div>
 
@@ -350,11 +301,10 @@ export default function PricingPage() {
                       Scale
                     </div>
                     <div className="mt-2 text-lg font-semibold tracking-[-0.03em] text-[#0a2540]">
-                      Custom pricing
+                      {scalePlan.price}
                     </div>
                     <p className="mt-2 text-sm leading-6 text-[#425466]">
-                      For higher-volume merchants and teams that need custom
-                      commercial structure.
+                      {scalePlan.priceSupportingLine ?? scalePlan.description}
                     </p>
                   </div>
                 </div>
@@ -415,10 +365,17 @@ export default function PricingPage() {
                     <div className="text-4xl font-semibold tracking-[-0.05em] text-[#0a2540] sm:text-5xl">
                       {plan.price}
                     </div>
-                    <div className="pb-1 text-sm font-medium text-[#6b7c93]">
-                      {plan.priceSuffix}
-                    </div>
+                    {plan.priceSuffix ? (
+                      <div className="pb-1 text-sm font-medium text-[#6b7c93]">
+                        {plan.priceSuffix}
+                      </div>
+                    ) : null}
                   </div>
+                  {plan.priceSupportingLine ? (
+                    <div className="mt-2 text-sm font-medium text-[#516173]">
+                      {plan.priceSupportingLine}
+                    </div>
+                  ) : null}
 
                   <p className="mt-4 text-base leading-7 text-[#425466]">
                     {plan.description}
@@ -527,7 +484,7 @@ export default function PricingPage() {
 
               <div className="mt-6 space-y-3">
                 {[
-                  "Gateway fees still apply separately through the connected provider.",
+                  pricing.notes.gatewayFees,
                   "Stackaura charges for orchestration, routing intelligence, and payment recovery infrastructure.",
                   "One integration gives you access to multiple rails.",
                 ].map((item) => (

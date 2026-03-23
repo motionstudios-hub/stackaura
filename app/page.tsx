@@ -18,6 +18,7 @@ import {
   publicSubtleSurfaceClass,
 } from "./components/stackaura-ui";
 import PricingSection from "./components/pricing-section";
+import { buildHomepagePricingTiers, getServerPricing } from "./lib/pricing";
 
 const valueProps = [
   {
@@ -114,43 +115,9 @@ const merchantBenefits = [
   },
 ] as const;
 
-const pricingTiers = [
-  {
-    name: "Starter",
-    audience: "For merchants launching with unified checkout and auto routing.",
-    price: "1.5%",
-    priceSuffix: "per transaction",
-    bullets: ["Auto routing", "Hosted checkout", "Unified API access"],
-    featured: false,
-    badge: null,
-    ctaHref: "/signup",
-    ctaLabel: "Start accepting payments",
-  },
-  {
-    name: "Growth",
-    audience: "For growing teams that need fallback and manual gateway control.",
-    price: "2.5% + R1",
-    priceSuffix: "per transaction",
-    bullets: ["Manual gateway selection", "Fallback routing", "Multi-gateway orchestration"],
-    featured: true,
-    badge: "Most popular",
-    ctaHref: "/signup",
-    ctaLabel: "Choose Growth",
-  },
-  {
-    name: "Scale",
-    audience: "For larger merchants that need custom routing and optimization support.",
-    price: "Custom",
-    priceSuffix: "pricing",
-    bullets: ["Custom routing support", "Custom optimization", "Priority support"],
-    featured: false,
-    badge: "Enterprise",
-    ctaHref: "/contact",
-    ctaLabel: "Talk to sales",
-  },
-] as const;
-
-export default function Home() {
+export default async function Home() {
+  const pricing = await getServerPricing();
+  const pricingTiers = buildHomepagePricingTiers(pricing);
   const organizationJsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",

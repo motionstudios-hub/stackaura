@@ -17,6 +17,15 @@ import {
 import { initiateOzowSignupPayment } from "../lib/ozow";
 
 const DEFAULT_COUNTRY = "South Africa";
+type PlanCode = "starter" | "growth" | "scale";
+type SignupPlanOption = {
+  code: PlanCode;
+  name: string;
+  price: string;
+  suffix: string;
+  description: string;
+  featured: boolean;
+};
 
 const featureCards = [
   {
@@ -39,34 +48,6 @@ const featureCards = [
   },
 ] as const;
 
-const plans = [
-  {
-    code: "starter",
-    name: "Starter",
-    price: "1.5%",
-    suffix: "per transaction",
-    description: "Unified checkout and auto routing for getting started.",
-    featured: false,
-  },
-  {
-    code: "growth",
-    name: "Growth",
-    price: "2.5% + R1",
-    suffix: "per transaction",
-    description: "Smart routing, fallback, and multi-gateway orchestration.",
-    featured: true,
-  },
-  {
-    code: "scale",
-    name: "Scale",
-    price: "Custom",
-    suffix: "pricing",
-    description: "Custom routing support and optimization for larger teams.",
-    featured: false,
-  },
-] as const;
-
-type PlanCode = (typeof plans)[number]["code"];
 type SubmissionMode = "account" | "ozow" | null;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -89,13 +70,17 @@ function extractSignupError(payload: unknown) {
   return typeof payload.error === "string" ? payload.error : null;
 }
 
-export default function SignupClient() {
+export default function SignupClient({
+  plans,
+}: {
+  plans: readonly SignupPlanOption[];
+}) {
   const router = useRouter();
 
   const [businessName, setBusinessName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [selectedPlan, setSelectedPlan] = useState<PlanCode>("growth");
+  const [selectedPlan, setSelectedPlan] = useState<PlanCode | null>(null);
   const [submissionMode, setSubmissionMode] = useState<SubmissionMode>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -198,9 +183,9 @@ export default function SignupClient() {
   }
 
   const planNote =
-    selectedPlan === "growth"
-      ? "Growth is the recommended starting plan and the default setup during signup today."
-      : "Growth is the default starting setup during signup today. Starter and Scale preferences can be aligned as your routing needs evolve.";
+    selectedPlan === null
+      ? "Choose the plan preference that best fits your routing and support needs. You can adjust plan alignment as your payment stack grows."
+      : `${plans.find((plan) => plan.code === selectedPlan)?.name ?? "Your selected"} plan preference can be refined as your routing needs evolve.`;
 
   return (
     <AuthShell
@@ -213,8 +198,8 @@ export default function SignupClient() {
         eyebrow="Create account"
         title="Open your merchant workspace"
         description="Create your account, step into the dashboard, and start building on a payment orchestration layer designed for routing, fallback, and merchant growth."
-        status="Growth recommended"
-        statusTone="violet"
+        status="Choose your plan"
+        statusTone="muted"
       >
         <form onSubmit={handleSignup} className="space-y-4">
           <label className="block">
@@ -266,11 +251,8 @@ export default function SignupClient() {
           </label>
 
           <div>
-            <div className="flex items-center justify-between gap-3">
-              <div className="text-xs font-medium uppercase tracking-[0.18em] text-[#6b7c93]">
-                Starting plan
-              </div>
-              <span className={lightProductStatusPillClass("muted")}>Growth default</span>
+            <div className="text-xs font-medium uppercase tracking-[0.18em] text-[#6b7c93]">
+              Starting plan
             </div>
 
             <div className="mt-3 grid gap-3 sm:grid-cols-3">
@@ -297,7 +279,7 @@ export default function SignupClient() {
                         <div className="mt-2 text-lg font-semibold tracking-tight text-[#0a2540]">
                           {plan.price}
                         </div>
-                        <div className="text-[11px] uppercase tracking-[0.18em] text-[#6b7c93]">
+                        <div className="text-[11px] tracking-[0.12em] text-[#6b7c93]">
                           {plan.suffix}
                         </div>
                       </div>

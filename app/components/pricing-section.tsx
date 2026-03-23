@@ -15,6 +15,7 @@ export type HomepagePricingTier = {
   audience: string;
   price: string;
   priceSuffix: string;
+  priceSupportingLine?: string | null;
   bullets: readonly string[];
   featured: boolean;
   badge?: string | null;
@@ -56,8 +57,8 @@ export default function PricingSection({
             Plans that grow with your payment volume
           </h2>
           <p className={cn(lightProductMutedTextClass, "mt-4 max-w-2xl text-base sm:text-lg")}>
-            Transaction-based pricing for Stackaura&apos;s orchestration layer. Gateway and provider
-            fees still apply separately through the connected payment rail.
+            Transaction-based pricing for Stackaura&apos;s orchestration layer. Gateway fees charged
+            separately through the connected payment rail.
           </p>
         </div>
         <Link href="/pricing" className={publicSecondaryButtonClass}>
@@ -107,10 +108,17 @@ export default function PricingSection({
                     <div className="text-4xl font-semibold tracking-[-0.05em] text-[#0a2540] sm:text-[2.85rem]">
                       {tier.price}
                     </div>
-                    <div className="pb-1 text-sm font-medium uppercase tracking-[0.18em] text-[#6b7c93]">
-                      {tier.priceSuffix}
-                    </div>
+                    {tier.priceSuffix ? (
+                      <div className="pb-1 text-sm font-medium text-[#6b7c93]">
+                        {tier.priceSuffix}
+                      </div>
+                    ) : null}
                   </div>
+                  {tier.priceSupportingLine ? (
+                    <div className="mt-2 text-sm font-medium text-[#516173]">
+                      {tier.priceSupportingLine}
+                    </div>
+                  ) : null}
                   <p className="mt-3 text-sm leading-6 text-[#425466]">
                     {tier.featured
                       ? "Recommended for merchants that want routing control, fallback, and clearer payment operations."
