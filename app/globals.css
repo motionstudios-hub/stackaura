@@ -103,13 +103,91 @@ body {
   animation-play-state: paused;
 }
 
+@keyframes africa-network-route-shift {
+  from {
+    stroke-dashoffset: 0;
+  }
+
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+
+@keyframes africa-network-route-shift-reverse {
+  from {
+    stroke-dashoffset: 100;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes africa-network-node-pulse {
+  0%,
+  100% {
+    opacity: 0.14;
+    transform: scale(0.92);
+  }
+
+  50% {
+    opacity: 0.34;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes africa-network-node-core {
+  0%,
+  100% {
+    opacity: 0.72;
+  }
+
+  50% {
+    opacity: 0.96;
+  }
+}
+
+.africa-network-route {
+  animation: africa-network-route-shift 12.8s linear infinite;
+}
+
+.africa-network-route-slow {
+  animation-duration: 17.2s;
+}
+
+.africa-network-route-reverse {
+  animation-name: africa-network-route-shift-reverse;
+}
+
+.africa-network-node {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.africa-network-node-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: africa-network-node-pulse 7.2s ease-in-out infinite;
+  animation-delay: var(--africa-node-delay, 0s);
+}
+
+.africa-network-node-core {
+  animation: africa-network-node-core 7.2s ease-in-out infinite;
+  animation-delay: var(--africa-node-delay, 0s);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .public-header-shell,
   .public-header-block,
   .public-header-block-delay-1,
   .public-header-block-delay-2,
   .infinite-slider-track,
-  .infinite-slider-track--reverse {
+  .infinite-slider-track--reverse,
+  .africa-network-route,
+  .africa-network-route-slow,
+  .africa-network-route-reverse,
+  .africa-network-node-pulse,
+  .africa-network-node-core {
     animation: none;
   }
 }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 import LogoCloud from "@/components/ui/logo-cloud";
+import AfricaNetworkHero from "./components/africa-network-hero";
 import {
   cn,
   lightProductHeroClass,
@@ -276,146 +277,7 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="hidden pointer-events-none absolute inset-x-0 top-0 z-0 h-[540px] overflow-hidden lg:pointer-events-auto lg:relative lg:block lg:min-h-[560px] lg:h-auto lg:overflow-visible">
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_18%,rgba(204,227,242,0.34),transparent_22%),linear-gradient(180deg,rgba(255,255,255,0.12),rgba(255,255,255,0))]" />
-
-                  <div className="absolute right-[-54px] top-[34px] h-[360px] w-[360px] scale-[0.74] opacity-95 sm:right-[-18px] sm:top-[54px] sm:scale-[0.84] lg:right-[-10px] lg:top-[-12px] lg:h-[620px] lg:w-[620px] lg:scale-100 lg:opacity-100">
-                    <div className="absolute left-[128px] top-[98px] h-[338px] w-[352px] rotate-[-10deg] rounded-[34px] border border-white/55 bg-[linear-gradient(180deg,rgba(255,255,255,0.46)_0%,rgba(234,244,248,0.30)_100%)] p-5 shadow-[0_28px_80px_rgba(122,146,168,0.18)] backdrop-blur-2xl">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6b7c93]">
-                            Routing engine
-                          </div>
-                          <div className="mt-2 text-lg font-semibold tracking-[-0.03em] text-[#0a2540]">
-                            Intelligent path selection
-                          </div>
-                        </div>
-                        <div className="rounded-full border border-emerald-300/70 bg-emerald-50/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-700">
-                          Live routing
-                        </div>
-                      </div>
-
-                      <div className="mt-5 rounded-[26px] border border-white/65 bg-white/46 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.62)]">
-                        <div className="flex items-start justify-between gap-4">
-                          <div>
-                            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6b7c93]">
-                              Transaction
-                            </div>
-                            <div className="mt-2 text-xl font-semibold tracking-[-0.03em] text-[#0a2540]">
-                              INV-2048
-                            </div>
-                            <p className="mt-1 text-sm text-[#425466]">
-                              Checkout request received and evaluated in real
-                              time.
-                            </p>
-                          </div>
-                          <div className="rounded-2xl border border-white/60 bg-white/54 px-3 py-2 text-right shadow-[0_12px_24px_rgba(133,156,180,0.10)]">
-                            <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#6b7c93]">
-                              Amount
-                            </div>
-                            <div className="mt-1 text-lg font-semibold text-[#0a2540]">
-                              R1 250.00
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="mt-5 space-y-3">
-                        <div className="flex items-center justify-between rounded-[22px] border border-white/55 bg-[linear-gradient(180deg,rgba(122,115,255,0.16),rgba(160,233,255,0.14))] px-4 py-3">
-                          <div>
-                            <div className="text-sm font-semibold text-[#0a2540]">
-                              Paystack
-                            </div>
-                            <div className="text-xs text-[#425466]">
-                              Primary route selected
-                            </div>
-                          </div>
-                          <div className="rounded-full border border-emerald-300/70 bg-emerald-50/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-700">
-                            Healthy
-                          </div>
-                        </div>
-                        <div className="flex items-center justify-between rounded-[22px] border border-white/55 bg-white/38 px-4 py-3">
-                          <div>
-                            <div className="text-sm font-semibold text-[#0a2540]">
-                              Yoco
-                            </div>
-                            <div className="text-xs text-[#425466]">
-                              Ready as fallback
-                            </div>
-                          </div>
-                          <div className="rounded-full border border-white/55 bg-white/60 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#425466]">
-                            Standby
-                          </div>
-                        </div>
-                        <div className="flex items-center justify-between rounded-[22px] border border-white/55 bg-white/38 px-4 py-3">
-                          <div>
-                            <div className="text-sm font-semibold text-[#0a2540]">
-                              Ozow
-                            </div>
-                            <div className="text-xs text-[#425466]">
-                              Available for bank-driven flows
-                            </div>
-                          </div>
-                          <div className="rounded-full border border-sky-300/70 bg-sky-50/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-sky-700">
-                            Ready
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="absolute left-[24px] top-[212px] w-[228px] rotate-[-7deg] rounded-[26px] border border-white/55 bg-[linear-gradient(180deg,rgba(255,255,255,0.52),rgba(235,244,248,0.28))] p-4 shadow-[0_20px_48px_rgba(122,146,168,0.14)] backdrop-blur-2xl">
-                      <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6b7c93]">
-                        Fallback logic
-                      </div>
-                      <div className="mt-2 text-lg font-semibold tracking-[-0.03em] text-[#0a2540]">
-                        Recover failed attempts
-                      </div>
-                      <p className="mt-2 text-sm leading-6 text-[#425466]">
-                        If the primary provider times out, Stackaura shifts the
-                        payment to the next eligible rail.
-                      </p>
-                    </div>
-
-                    <div className="absolute left-[336px] top-[24px] w-[232px] rotate-[8deg] rounded-[26px] border border-white/55 bg-[linear-gradient(180deg,rgba(255,255,255,0.54),rgba(238,246,250,0.30))] p-4 shadow-[0_20px_48px_rgba(122,146,168,0.14)] backdrop-blur-2xl">
-                      <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6b7c93]">
-                        Gateway health
-                      </div>
-                      <div className="mt-3 space-y-2">
-                        <div className="flex items-center justify-between text-sm text-[#425466]">
-                          <span>Paystack</span>
-                          <span className="font-semibold text-emerald-700">
-                            Stable
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between text-sm text-[#425466]">
-                          <span>Yoco</span>
-                          <span className="font-semibold text-[#0a2540]">
-                            Warm standby
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between text-sm text-[#425466]">
-                          <span>Ozow</span>
-                          <span className="font-semibold text-sky-700">
-                            Bank rail ready
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="absolute left-[286px] top-[454px] w-[248px] rotate-[6deg] rounded-[24px] border border-white/55 bg-[linear-gradient(180deg,rgba(255,255,255,0.52),rgba(238,246,250,0.30))] p-4 shadow-[0_18px_44px_rgba(122,146,168,0.13)] backdrop-blur-2xl">
-                      <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6b7c93]">
-                        Trust layer
-                      </div>
-                      <p className="mt-2 text-sm leading-6 text-[#425466]">
-                        Licensed payment providers handle processing and
-                        settlement while Stackaura handles orchestration.
-                      </p>
-                    </div>
-
-                    <div className="absolute left-[214px] top-[180px] h-[2px] w-[172px] rotate-[6deg] bg-[linear-gradient(90deg,rgba(122,115,255,0.16),rgba(125,211,252,0.70),rgba(255,255,255,0))]" />
-                    <div className="absolute left-[162px] top-[420px] h-[2px] w-[182px] rotate-[-8deg] bg-[linear-gradient(90deg,rgba(122,115,255,0.10),rgba(168,85,247,0.58),rgba(255,255,255,0))]" />
-                  </div>
-                </div>
+                <AfricaNetworkHero />
               </div>
             </div>
           </section>
