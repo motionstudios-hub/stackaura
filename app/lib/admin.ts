@@ -3,7 +3,6 @@ import "server-only";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getServerMe } from "./auth";
-import { isPlatformAdminEmail } from "./admin-access";
 import { fetchServerApi, isBackendUnavailableError } from "./server-api";
 
 export async function requireAdminSession() {
@@ -11,10 +10,6 @@ export async function requireAdminSession() {
 
   if (!me) {
     redirect("/login");
-  }
-
-  if (!isPlatformAdminEmail(me.user.email)) {
-    redirect("/dashboard");
   }
 
   return me;
