@@ -79,6 +79,109 @@ export type AdminOverviewResponse = {
       routeSummary: string;
     }>;
   };
+  revenue: {
+    grossProcessedVolumeCents: number;
+    stackauraFeeEarnedCents: number;
+    providerFeesObservedCents: number | null;
+    netVolumeAfterProviderFeesCents: number | null;
+    averageFeePerPaymentCents: number;
+    revenueOverTime: Array<{
+      date: string;
+      grossVolumeCents: number;
+      stackauraFeeCents: number;
+      merchantReceivableCents: number;
+      providerFeeObservedCents: number | null;
+      netVolumeAfterProviderFeesCents: number | null;
+    }>;
+    revenueByGateway: Array<{
+      gateway: string;
+      label: string;
+      paymentCount: number;
+      grossVolumeCents: number;
+      stackauraFeeCents: number;
+      providerFeeObservedCents: number | null;
+      merchantReceivableCents: number;
+    }>;
+    revenueByMerchant: Array<{
+      merchantId: string;
+      merchantName: string;
+      paymentCount: number;
+      grossVolumeCents: number;
+      stackauraFeeCents: number;
+      providerFeeObservedCents: number | null;
+      merchantReceivableCents: number;
+    }>;
+    recentFeeBearingPayments: Array<{
+      reference: string;
+      merchantId: string;
+      merchantName: string;
+      gateway: string | null;
+      gatewayLabel: string;
+      baseAmountCents: number;
+      amountCents: number;
+      platformFeeCents: number;
+      merchantNetCents: number;
+      createdAt: string;
+    }>;
+    providerFeesAvailable: boolean;
+  };
+  funnel: {
+    counts: {
+      created: number;
+      pending: number;
+      paid: number;
+      failed: number;
+      cancelled: number;
+      expired: number;
+    };
+    conversion: {
+      createdToPendingPct: number;
+      pendingToPaidPct: number;
+      createdToPaidPct: number;
+      pendingToTerminalPct: number;
+    };
+    overTime: Array<{
+      date: string;
+      created: number;
+      pending: number;
+      paid: number;
+      failed: number;
+      cancelled: number;
+      expired: number;
+    }>;
+  };
+  gatewayHealth: {
+    byGateway: Array<{
+      gateway: string;
+      label: string;
+      totalPayments: number;
+      successRate: number;
+      failureRate: number;
+      cancelRate: number;
+      failoverCount: number;
+      webhookIssueCount: number | null;
+      avgResolutionMinutes: number | null;
+      latestFailingReferences: Array<{
+        reference: string;
+        status: string;
+        createdAt: string;
+      }>;
+    }>;
+    recentIncidents: Array<{
+      reference: string;
+      merchantId: string;
+      merchantName: string;
+      gateway: string | null;
+      gatewayLabel: string;
+      status: string;
+      routeSummary: string;
+      createdAt: string;
+    }>;
+    dataNotes: {
+      webhookIssuesByGateway: string;
+      avgResolutionTime: string;
+    };
+  };
   operations: {
     webhookIssues: {
       totalIssues: number;
