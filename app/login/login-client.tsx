@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AuthFormFrame, AuthShell } from "../components/stackaura-auth";
+import { trackMetaEvent } from "../lib/meta-pixel";
 import {
   cn,
   lightProductInputClass,
@@ -76,6 +77,11 @@ export default function LoginClient({
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!accountCreated) return;
+    trackMetaEvent("CompleteRegistration");
+  }, [accountCreated]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();

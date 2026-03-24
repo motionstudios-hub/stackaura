@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import MetaPixel from "./components/meta-pixel";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://stackaura.co.za"),
@@ -50,7 +51,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <MetaPixel />
+        {children}
+      </body>
     </html>
   );
 }
