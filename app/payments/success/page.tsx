@@ -1,4 +1,5 @@
 import PaymentStatePage from "../../components/PaymentStatePage";
+import MetaPixelEvent from "../../components/meta-pixel-event";
 import { resolvePaymentSuccessContent } from "../../lib/payment-success";
 import { getPayment } from "@/lib/api";
 
@@ -34,17 +35,32 @@ export default async function PaymentsSuccessPage({
   const content = resolvePaymentSuccessContent(payment);
 
   return (
-    <PaymentStatePage
-      eyebrow={content.eyebrow}
-      title={content.title}
-      description={content.description}
-      tone="success"
-      detail={content.detail}
-      primaryHref={content.primaryHref}
-      primaryLabel={content.primaryLabel}
-      secondaryHref={content.secondaryHref}
-      secondaryLabel={content.secondaryLabel}
-      reference={reference}
-    />
+    <>
+      {payment && reference ? (
+        <MetaPixelEvent
+          eventName="Purchase"
+          params={{
+            value: payment.amountCents / 100,
+            currency: payment.currency || "ZAR",
+            content_name: "Stackaura Payment",
+            content_ids: [reference],
+            content_type: "product",
+            num_items: 1,
+          }}
+        />
+      ) : null}
+      <PaymentStatePage
+        eyebrow={content.eyebrow}
+        title={content.title}
+        description={content.description}
+        tone="success"
+        detail={content.detail}
+        primaryHref={content.primaryHref}
+        primaryLabel={content.primaryLabel}
+        secondaryHref={content.secondaryHref}
+        secondaryLabel={content.secondaryLabel}
+        reference={reference}
+      />
+    </>
   );
 }
