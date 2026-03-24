@@ -1,3 +1,4 @@
+import { unstable_rethrow } from "next/navigation";
 import {
   cn,
   lightProductHeroClass,
@@ -8,6 +9,7 @@ import {
   lightProductStatusPillClass,
 } from "../../components/stackaura-ui";
 import {
+  AdminOverviewFetchError,
   getAdminOverview,
   type AdminOverviewResponse,
 } from "../../lib/admin";
@@ -287,10 +289,15 @@ function IssueList({
 export default async function AdminOverviewPage() {
   let overview: AdminOverviewResponse | null = null;
   let unavailable = false;
+  let failureStatus: number | null = null;
 
   try {
     overview = await getAdminOverview();
-  } catch {
+  } catch (error) {
+    unstable_rethrow(error);
+    if (error instanceof AdminOverviewFetchError) {
+      failureStatus = error.status;
+    }
     unavailable = true;
   }
 
@@ -306,6 +313,11 @@ export default async function AdminOverviewPage() {
             Stackaura could not load the internal analytics feed just now. The admin route remains
             protected, but the summary data needs the backend admin endpoint to respond.
           </p>
+          {failureStatus ? (
+            <p className="mt-4 text-sm font-medium uppercase tracking-[0.16em] text-[#6b7c93]">
+              Backend status: {failureStatus}
+            </p>
+          ) : null}
         </section>
       </div>
     );

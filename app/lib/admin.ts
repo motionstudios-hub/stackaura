@@ -5,6 +5,16 @@ import { redirect } from "next/navigation";
 import { getServerMe } from "./auth";
 import { fetchServerApi, isBackendUnavailableError } from "./server-api";
 
+export class AdminOverviewFetchError extends Error {
+  status: number | null;
+
+  constructor(message: string, status?: number | null) {
+    super(message);
+    this.name = "AdminOverviewFetchError";
+    this.status = status ?? null;
+  }
+}
+
 export async function requireAdminSession() {
   const me = await getServerMe().catch(() => null);
 
@@ -131,7 +141,7 @@ export async function getAdminOverview() {
     });
   } catch (error) {
     if (isBackendUnavailableError(error)) {
-      throw new Error("admin analytics unavailable");
+      throw new AdminOverviewFetchError("admin analytics unavailable");
     }
     throw error;
   }
@@ -145,7 +155,7 @@ export async function getAdminOverview() {
   }
 
   if (!res.ok) {
-    throw new Error(`admin overview failed: ${res.status}`);
+    throw new AdminOverviewFetchError(`admin overview failed: ${res.status}`, res.status);
   }
 
   return (await res.json()) as AdminOverviewResponse;
