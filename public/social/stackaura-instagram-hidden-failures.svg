@@ -1,0 +1,143 @@
+<svg width="1080" height="1080" viewBox="0 0 1080 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="120" y1="32" x2="920" y2="1070" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#08172D" />
+      <stop offset="0.5" stop-color="#0B1F3A" />
+      <stop offset="1" stop-color="#112E52" />
+    </linearGradient>
+    <radialGradient id="blueGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(828 256) rotate(90) scale(282 334)">
+      <stop stop-color="#3B82F6" stop-opacity="0.32" />
+      <stop offset="1" stop-color="#3B82F6" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="blueGlowSoft" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(206 884) rotate(90) scale(232 286)">
+      <stop stop-color="#60A5FA" stop-opacity="0.16" />
+      <stop offset="1" stop-color="#60A5FA" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="ghostPanel" x1="0" y1="0" x2="420" y2="150" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#132946" stop-opacity="0.72" />
+      <stop offset="1" stop-color="#0D1F37" stop-opacity="0.34" />
+    </linearGradient>
+    <linearGradient id="ghostLine" x1="0" y1="0" x2="280" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8FC5FF" stop-opacity="0.42" />
+      <stop offset="1" stop-color="#8FC5FF" stop-opacity="0" />
+    </linearGradient>
+    <linearGradient id="errorGlow" x1="0" y1="0" x2="160" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F97316" stop-opacity="0.92" />
+      <stop offset="1" stop-color="#FB7185" stop-opacity="0.72" />
+    </linearGradient>
+    <filter id="blurLarge" x="0" y="0" width="1080" height="1080" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="58" />
+    </filter>
+    <filter id="ghostBlur" x="-80" y="-80" width="1240" height="1240" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="14" />
+    </filter>
+    <filter id="softShadow" x="-80" y="-80" width="1240" height="1240" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="18" stdDeviation="28" flood-color="#030C18" flood-opacity="0.44" />
+    </filter>
+    <mask id="stackauraMarkMask" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100">
+      <rect width="100" height="100" fill="black" />
+      <g transform="translate(50 50) rotate(36) translate(-50 -50)">
+        <rect x="7" y="35" width="86" height="27" rx="13.5" fill="white" />
+        <rect x="40" y="11" width="57" height="19" rx="9.5" fill="white" />
+        <rect x="10" y="74" width="58" height="19" rx="9.5" fill="white" />
+        <ellipse cx="61" cy="40" rx="18.5" ry="8.4" fill="black" />
+        <ellipse cx="40" cy="63" rx="18.5" ry="8.4" fill="black" />
+      </g>
+    </mask>
+    <style>
+      .label { font-family: Inter, "SF Pro Display", "Helvetica Neue", Arial, sans-serif; }
+      .eyebrow { fill: #7EAEDB; font-size: 16px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; }
+      .headline { fill: #F7FBFF; font-size: 84px; font-weight: 720; letter-spacing: -0.065em; }
+      .body { fill: #B6CAE0; font-size: 32px; font-weight: 520; letter-spacing: -0.02em; }
+      .ghost { fill: #D7E8F7; font-size: 27px; font-weight: 620; letter-spacing: -0.03em; }
+      .ghost-small { fill: #98B6D4; font-size: 17px; font-weight: 500; }
+    </style>
+  </defs>
+
+  <rect width="1080" height="1080" fill="url(#bg)" />
+
+  <g opacity="0.94">
+    <ellipse cx="826" cy="250" rx="252" ry="188" fill="url(#blueGlow)" />
+    <ellipse cx="212" cy="892" rx="226" ry="178" fill="url(#blueGlowSoft)" />
+  </g>
+
+  <g opacity="0.11">
+    <path d="M76 174C216 102 392 94 563 144" stroke="#8CB9E7" stroke-width="1.2" stroke-linecap="round" />
+    <path d="M534 117C730 116 902 194 990 344" stroke="#8CB9E7" stroke-width="1.2" stroke-linecap="round" />
+    <path d="M94 814C232 900 410 938 628 922" stroke="#8CB9E7" stroke-width="1.2" stroke-linecap="round" />
+    <path d="M670 954C822 920 934 838 992 724" stroke="#8CB9E7" stroke-width="1.2" stroke-linecap="round" />
+    <circle cx="144" cy="256" r="2.5" fill="#AACEEF" />
+    <circle cx="944" cy="300" r="2.5" fill="#AACEEF" />
+    <circle cx="202" cy="842" r="2.5" fill="#AACEEF" />
+    <circle cx="896" cy="826" r="2.5" fill="#AACEEF" />
+  </g>
+
+  <g opacity="0.12">
+    <image href="../hero/africa-map.svg" x="548" y="300" width="430" height="442" preserveAspectRatio="xMidYMid meet" />
+  </g>
+
+  <g class="label">
+    <rect x="82" y="76" width="272" height="58" rx="29" fill="rgba(255,255,255,0.05)" stroke="rgba(157,197,235,0.16)" />
+    <circle cx="116" cy="105" r="15" fill="#163457" stroke="rgba(125,193,243,0.46)" />
+    <g transform="translate(108 97) scale(0.16)">
+      <rect width="100" height="100" fill="#F6FBFF" mask="url(#stackauraMarkMask)" />
+    </g>
+    <text x="143" y="112" fill="#F7FBFF" font-size="25" font-weight="700" letter-spacing="-0.04em">STACKAURA</text>
+    <text class="eyebrow" x="84" y="196">Hidden payment loss</text>
+    <text class="headline" x="84" y="322">Payments fail.</text>
+    <text class="headline" x="84" y="402">Revenue drops.</text>
+    <text class="body" x="86" y="490">You just don’t see it.</text>
+  </g>
+
+  <g filter="url(#blurLarge)" opacity="0.16">
+    <rect x="596" y="210" width="272" height="86" rx="28" fill="url(#errorGlow)" />
+  </g>
+
+  <g filter="url(#softShadow)" opacity="0.88">
+    <rect x="604" y="212" width="290" height="94" rx="30" fill="url(#ghostPanel)" stroke="rgba(161,198,233,0.10)" />
+    <circle cx="640" cy="259" r="10" fill="#FB7185" fill-opacity="0.9" />
+    <path d="M635 259H645" stroke="#FFF4F2" stroke-width="2.4" stroke-linecap="round" />
+    <text class="ghost" x="666" y="257">Transaction Failed</text>
+    <text class="ghost-small" x="666" y="282">Payment could not be completed</text>
+  </g>
+
+  <g filter="url(#ghostBlur)" opacity="0.38">
+    <rect x="694" y="354" width="232" height="76" rx="26" fill="rgba(19,41,70,0.72)" stroke="rgba(162,202,241,0.08)" />
+    <circle cx="726" cy="392" r="7" fill="#F97316" fill-opacity="0.86" />
+    <text class="ghost" x="745" y="398" fill="#ECF4FB">Declined</text>
+  </g>
+
+  <g filter="url(#ghostBlur)" opacity="0.26">
+    <rect x="774" y="468" width="166" height="62" rx="22" fill="rgba(19,41,70,0.62)" stroke="rgba(162,202,241,0.07)" />
+    <circle cx="804" cy="499" r="6" fill="#FB7185" fill-opacity="0.82" />
+    <text class="ghost" x="821" y="504" fill="#ECF4FB">Timeout</text>
+  </g>
+
+  <g opacity="0.34">
+    <rect x="558" y="626" width="370" height="212" rx="34" fill="rgba(255,255,255,0.02)" stroke="rgba(161,198,233,0.08)" />
+    <rect x="592" y="668" width="132" height="12" rx="6" fill="url(#ghostLine)" />
+    <rect x="592" y="704" width="274" height="10" rx="5" fill="url(#ghostLine)" opacity="0.84" />
+    <rect x="592" y="738" width="248" height="10" rx="5" fill="url(#ghostLine)" opacity="0.72" />
+    <rect x="592" y="772" width="224" height="10" rx="5" fill="url(#ghostLine)" opacity="0.6" />
+    <rect x="592" y="806" width="186" height="10" rx="5" fill="url(#ghostLine)" opacity="0.42" />
+    <rect x="784" y="665" width="102" height="24" rx="12" fill="rgba(249,115,22,0.10)" stroke="rgba(251,146,60,0.18)" />
+    <text x="798" y="682" fill="#FEC5A0" font-size="12" font-weight="600" font-family="Inter, SF Pro Display, Arial">FAILED</text>
+    <rect x="774" y="734" width="88" height="24" rx="12" fill="rgba(244,114,182,0.10)" stroke="rgba(251,113,133,0.18)" />
+    <text x="790" y="751" fill="#FFC2CF" font-size="12" font-weight="600" font-family="Inter, SF Pro Display, Arial">DECLINED</text>
+    <rect x="744" y="800" width="96" height="24" rx="12" fill="rgba(59,130,246,0.08)" stroke="rgba(96,165,250,0.12)" />
+    <text x="758" y="817" fill="#CDE2FA" font-size="12" font-weight="600" font-family="Inter, SF Pro Display, Arial">TIMEOUT</text>
+  </g>
+
+  <g opacity="0.24">
+    <line x1="560" y1="590" x2="938" y2="590" stroke="rgba(143,197,255,0.15)" />
+    <line x1="560" y1="860" x2="938" y2="860" stroke="rgba(143,197,255,0.08)" />
+    <circle cx="918" cy="210" r="4.5" fill="#FB7185" fill-opacity="0.55" />
+    <circle cx="968" cy="424" r="4.5" fill="#F97316" fill-opacity="0.48" />
+    <circle cx="904" cy="618" r="4.5" fill="#FB7185" fill-opacity="0.36" />
+    <circle cx="856" cy="900" r="4.5" fill="#F97316" fill-opacity="0.34" />
+  </g>
+
+  <g opacity="0.22" filter="url(#ghostBlur)">
+    <text x="610" y="920" fill="#C1D8EF" font-size="34" font-weight="650" font-family="Inter, SF Pro Display, Arial">Something is failing in the background.</text>
+  </g>
+</svg>

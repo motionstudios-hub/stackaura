@@ -4,8 +4,7 @@ import {
   ACTIVE_MERCHANT_HEADER_NAME,
   resolvePaymentProxyContext,
 } from "@/app/lib/payment-context";
-
-const API_BASE = process.env.CHECKOUT_API_URL ?? "http://127.0.0.1:3001";
+import { fetchServerApi } from "@/app/lib/server-api";
 
 function buildResponseHeaders(res: Response) {
   const headers = new Headers();
@@ -47,11 +46,19 @@ export async function POST(req: NextRequest) {
 
   const body = await req.text();
 
-  const res = await fetch(`${API_BASE}${backendPath}`, {
-    method: "POST",
-    headers,
-    body,
-  });
+  let res: Response;
+  try {
+    res = await fetchServerApi(backendPath, {
+      method: "POST",
+      headers,
+      body,
+    });
+  } catch {
+    return NextResponse.json(
+      { message: "Payment service unavailable. Please try again shortly." },
+      { status: 503 }
+    );
+  }
 
   const responseBody = await res.arrayBuffer();
   return new NextResponse(responseBody, {

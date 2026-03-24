@@ -49,14 +49,6 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
 
-function getApiBase() {
-  const value = process.env.NEXT_PUBLIC_API_BASE;
-  if (!value) {
-    throw new Error("Payment API base is not configured.");
-  }
-  return value.replace(/\/+$/, "");
-}
-
 async function parseJsonSafe(res: Response) {
   const text = await res.text();
   if (!text) return null;
@@ -83,7 +75,7 @@ function extractErrorMessage(payload: unknown) {
 }
 
 export async function initiateOzowSignupPayment(payload: OzowInitiateRequest) {
-  const res = await fetch(`${getApiBase()}/payments/ozow/initiate`, {
+  const res = await fetch("/api/payments/ozow/initiate", {
     method: "POST",
     credentials: "include",
     headers: {

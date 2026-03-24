@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://127.0.0.1:3001";
+import { fetchServerApi } from "@/app/lib/server-api";
 const SESSION_COOKIE_NAME = process.env.SESSION_COOKIE_NAME || "stackaura_session";
 
 function parseBooleanEnv(value: string | undefined) {
@@ -36,12 +35,16 @@ function resolveSessionCookieSecure(sameSite: "lax" | "strict" | "none") {
 export async function POST(req: NextRequest) {
   const cookie = req.headers.get("cookie") || "";
 
-  await fetch(`${API_BASE}/v1/auth/logout`, {
-    method: "POST",
-    headers: {
-      Cookie: cookie,
-    },
-  });
+  try {
+    await fetchServerApi("/v1/auth/logout", {
+      method: "POST",
+      headers: {
+        Cookie: cookie,
+      },
+    });
+  } catch {
+    // Always clear the browser cookie locally even if the backend is unavailable.
+  }
 
   const out = NextResponse.json({ ok: true });
   const sameSite = resolveSessionCookieSameSite();

@@ -1,9 +1,6 @@
-const {
-  default: flattenColorPalette,
-} = require("tailwindcss/lib/util/flattenColorPalette");
+import flattenColorPalette from "tailwindcss/lib/util/flattenColorPalette";
 
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+const config = {
   content: [
     "./app/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
@@ -30,6 +27,8 @@ module.exports = {
   },
   plugins: [addVariablesForColors],
 };
+
+export default config;
 
 function addVariablesForColors({ addBase, theme }) {
   const allColors = flattenColorPalette(theme("colors"));

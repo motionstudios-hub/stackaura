@@ -2,8 +2,7 @@ import "server-only";
 
 import { cache } from "react";
 import type { HomepagePricingTier } from "../components/pricing-section";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://127.0.0.1:3001";
+import { fetchServerApi } from "./server-api";
 const PER_TRANSACTION_SUFFIX = " / transaction";
 
 const LOCAL_FALLBACK_DEFAULTS = {
@@ -428,7 +427,7 @@ function buildLocalPricingSnapshot(): PricingSnapshotResponse {
 
 export const getServerPricing = cache(async (): Promise<PricingSnapshotResponse> => {
   try {
-    const res = await fetch(`${API_BASE}/v1/pricing`, {
+    const res = await fetchServerApi("/v1/pricing", {
       method: "GET",
       cache: "no-store",
     });

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-
-const API_BASE = process.env.CHECKOUT_API_URL ?? "http://127.0.0.1:3001";
+import { fetchServerApi } from "@/app/lib/server-api";
 
 type Ctx = {
   params: Promise<{ token: string }> | { token: string };
@@ -14,14 +13,20 @@ async function getToken(ctx: Ctx) {
 export async function GET(req: NextRequest, ctx: Ctx) {
   const token = await getToken(ctx);
   const url = new URL(req.url);
-  const target = `${API_BASE}/v1/checkout/${encodeURIComponent(token)}${url.search}`;
-
-  const res = await fetch(target, {
-    headers: {
-      accept: "application/json",
-    },
-    cache: "no-store",
-  });
+  let res: Response;
+  try {
+    res = await fetchServerApi(`/v1/checkout/${encodeURIComponent(token)}${url.search}`, {
+      headers: {
+        accept: "application/json",
+      },
+      cache: "no-store",
+    });
+  } catch {
+    return NextResponse.json(
+      { message: "Checkout service unavailable. Please try again shortly." },
+      { status: 503 }
+    );
+  }
 
   const body = await res.arrayBuffer();
   return new NextResponse(body, {

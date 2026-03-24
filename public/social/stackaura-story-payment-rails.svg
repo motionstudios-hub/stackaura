@@ -1,0 +1,166 @@
+<svg width="1080" height="1920" viewBox="0 0 1080 1920" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="112" y1="32" x2="948" y2="1888" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#07152A" />
+      <stop offset="0.5" stop-color="#0B1F3A" />
+      <stop offset="1" stop-color="#103057" />
+    </linearGradient>
+    <radialGradient id="glowTop" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(804 302) rotate(90) scale(368 420)">
+      <stop stop-color="#3B82F6" stop-opacity="0.34" />
+      <stop offset="1" stop-color="#3B82F6" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="glowCore" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(540 1000) rotate(90) scale(316)">
+      <stop stop-color="#60A5FA" stop-opacity="0.2" />
+      <stop offset="1" stop-color="#60A5FA" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="glowBottom" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(254 1576) rotate(90) scale(324 360)">
+      <stop stop-color="#8B5CF6" stop-opacity="0.16" />
+      <stop offset="1" stop-color="#8B5CF6" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="core" x1="398" y1="844" x2="686" y2="1148" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#12345F" />
+      <stop offset="1" stop-color="#0A213D" />
+    </linearGradient>
+    <linearGradient id="line" x1="450" y1="930" x2="936" y2="824" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2D609A" stop-opacity="0.18" />
+      <stop offset="0.54" stop-color="#9DDAFF" />
+      <stop offset="1" stop-color="#2D609A" stop-opacity="0.18" />
+    </linearGradient>
+    <linearGradient id="pill" x1="0" y1="0" x2="240" y2="92" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#132947" stop-opacity="0.86" />
+      <stop offset="1" stop-color="#0D2038" stop-opacity="0.74" />
+    </linearGradient>
+    <filter id="blurLarge" x="0" y="0" width="1080" height="1920" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="70" />
+    </filter>
+    <filter id="softShadow" x="-180" y="-180" width="1440" height="2280" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="24" stdDeviation="38" flood-color="#020E1A" flood-opacity="0.46" />
+    </filter>
+    <filter id="pillShadow" x="-140" y="-140" width="1360" height="2200" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#04111D" flood-opacity="0.3" />
+    </filter>
+    <mask id="stackauraMarkMask" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100">
+      <rect width="100" height="100" fill="black" />
+      <g transform="translate(50 50) rotate(36) translate(-50 -50)">
+        <rect x="7" y="35" width="86" height="27" rx="13.5" fill="white" />
+        <rect x="40" y="11" width="57" height="19" rx="9.5" fill="white" />
+        <rect x="10" y="74" width="58" height="19" rx="9.5" fill="white" />
+        <ellipse cx="61" cy="40" rx="18.5" ry="8.4" fill="black" />
+        <ellipse cx="40" cy="63" rx="18.5" ry="8.4" fill="black" />
+      </g>
+    </mask>
+    <style>
+      .label { font-family: Inter, "SF Pro Display", "Helvetica Neue", Arial, sans-serif; }
+      .headline { fill: #F7FBFF; font-size: 106px; font-weight: 720; letter-spacing: -0.072em; }
+      .wordmark { fill: #F7FBFF; font-size: 34px; font-weight: 700; letter-spacing: -0.05em; }
+      .core { fill: #F7FBFF; font-size: 34px; font-weight: 700; letter-spacing: -0.05em; }
+      .core-copy { fill: #AFC6E3; font-size: 18px; font-weight: 500; letter-spacing: -0.01em; }
+      .provider { fill: #F7FBFF; font-size: 25px; font-weight: 660; letter-spacing: -0.03em; }
+      .meta { fill: #96B6D4; font-size: 15px; font-weight: 520; }
+      .route-label { fill: #EAF5FF; font-size: 14px; font-weight: 620; letter-spacing: -0.02em; }
+    </style>
+  </defs>
+
+  <rect width="1080" height="1920" fill="url(#bg)" />
+
+  <g opacity="0.94">
+    <ellipse cx="804" cy="302" rx="324" ry="260" fill="url(#glowTop)" />
+    <ellipse cx="540" cy="998" rx="276" ry="224" fill="url(#glowCore)" />
+    <ellipse cx="254" cy="1576" rx="286" ry="226" fill="url(#glowBottom)" />
+  </g>
+
+  <g opacity="0.11">
+    <path d="M74 244C230 136 410 106 610 156" stroke="#8EBBE8" stroke-width="1.3" stroke-linecap="round" />
+    <path d="M640 126C828 140 962 244 1018 430" stroke="#8EBBE8" stroke-width="1.3" stroke-linecap="round" />
+    <path d="M92 1456C264 1566 450 1604 656 1560" stroke="#8EBBE8" stroke-width="1.3" stroke-linecap="round" />
+    <path d="M668 1708C858 1670 974 1568 1020 1400" stroke="#8EBBE8" stroke-width="1.3" stroke-linecap="round" />
+    <circle cx="110" cy="468" r="3" fill="#A9CEEF" />
+    <circle cx="962" cy="560" r="3" fill="#A9CEEF" />
+    <circle cx="182" cy="1582" r="3" fill="#A9CEEF" />
+    <circle cx="936" cy="1494" r="3" fill="#A9CEEF" />
+  </g>
+
+  <g class="label">
+    <rect x="390" y="76" width="300" height="62" rx="31" fill="rgba(255,255,255,0.05)" stroke="rgba(159,197,235,0.15)" />
+    <circle cx="424" cy="107" r="17" fill="#143456" stroke="rgba(125,193,243,0.46)" />
+    <g transform="translate(414.5 97.5) scale(0.19)">
+      <rect width="100" height="100" fill="#F6FBFF" mask="url(#stackauraMarkMask)" />
+    </g>
+    <text class="wordmark" x="454" y="115">STACKAURA</text>
+    <text class="headline" x="540" y="336" text-anchor="middle">One integration.</text>
+    <text class="headline" x="540" y="438" text-anchor="middle">Multiple payment rails.</text>
+  </g>
+
+  <g opacity="0.1">
+    <circle cx="540" cy="1000" r="254" stroke="#8FD4FF" stroke-width="1.2" />
+    <circle cx="540" cy="1000" r="304" stroke="#8FD4FF" stroke-width="1" />
+    <circle cx="540" cy="1000" r="354" stroke="#8FD4FF" stroke-width="0.9" />
+  </g>
+
+  <g filter="url(#blurLarge)" opacity="0.18">
+    <circle cx="540" cy="1000" r="194" fill="#67BAFF" />
+  </g>
+
+  <g filter="url(#softShadow)">
+    <circle cx="540" cy="1000" r="148" fill="url(#core)" stroke="rgba(167,219,255,0.24)" stroke-width="1.4" />
+    <circle cx="540" cy="1000" r="184" stroke="rgba(143,209,255,0.16)" stroke-width="1.2" />
+    <circle cx="540" cy="1000" r="222" stroke="rgba(143,209,255,0.08)" stroke-width="1" />
+    <circle cx="540" cy="938" r="44" fill="rgba(96,191,255,0.14)" stroke="rgba(157,225,255,0.3)" />
+    <g transform="translate(514 912) scale(0.52)">
+      <rect width="100" height="100" fill="#F8FCFF" mask="url(#stackauraMarkMask)" />
+    </g>
+    <text class="core" x="540" y="1102" text-anchor="middle">Stackaura</text>
+    <text class="core-copy" x="540" y="1134" text-anchor="middle">Orchestration across payment rails</text>
+  </g>
+
+  <g>
+    <path d="M640 914C700 874 754 842 824 814" stroke="url(#line)" stroke-width="9" stroke-linecap="round" opacity="0.16" />
+    <path d="M662 1004C726 994 780 990 846 992" stroke="url(#line)" stroke-width="9" stroke-linecap="round" opacity="0.16" />
+    <path d="M640 1088C704 1130 756 1178 820 1234" stroke="url(#line)" stroke-width="9" stroke-linecap="round" opacity="0.16" />
+
+    <path d="M640 914C700 874 754 842 824 814" stroke="url(#line)" stroke-width="3.2" stroke-linecap="round" />
+    <path d="M662 1004C726 994 780 990 846 992" stroke="url(#line)" stroke-width="3.2" stroke-linecap="round" />
+    <path d="M640 1088C704 1130 756 1178 820 1234" stroke="url(#line)" stroke-width="3.2" stroke-linecap="round" />
+
+    <circle cx="700" cy="874" r="4.8" fill="#98DBFF" />
+    <circle cx="760" cy="842" r="6" fill="#C4EDFF" />
+    <circle cx="742" cy="994" r="4.8" fill="#98DBFF" />
+    <circle cx="794" cy="992" r="6" fill="#C4EDFF" />
+    <circle cx="704" cy="1130" r="4.8" fill="#98DBFF" />
+    <circle cx="764" cy="1186" r="6" fill="#C4EDFF" />
+  </g>
+
+  <g filter="url(#pillShadow)" class="label">
+    <rect x="742" y="760" width="234" height="92" rx="30" fill="url(#pill)" stroke="rgba(162,202,241,0.14)" />
+    <rect x="772" y="796" width="28" height="10" rx="5" fill="#15A9DB" />
+    <rect x="772" y="811" width="28" height="10" rx="5" fill="#15A9DB" opacity="0.82" />
+    <rect x="772" y="826" width="18" height="10" rx="5" fill="#15A9DB" opacity="0.72" />
+    <text class="provider" x="820" y="820">Paystack</text>
+    <text class="meta" x="820" y="842">Connected rail</text>
+
+    <rect x="734" y="946" width="222" height="92" rx="30" fill="url(#pill)" stroke="rgba(162,202,241,0.14)" />
+    <circle cx="770" cy="992" r="15" fill="rgba(96,191,255,0.12)" stroke="rgba(157,225,255,0.24)" />
+    <g transform="translate(761 983) scale(0.18)">
+      <rect width="100" height="100" fill="#F8FCFF" mask="url(#stackauraMarkMask)" />
+    </g>
+    <text class="provider" x="802" y="998">Ozow</text>
+    <text class="meta" x="802" y="1020">Instant bank rail</text>
+
+    <rect x="716" y="1188" width="246" height="92" rx="30" fill="url(#pill)" stroke="rgba(162,202,241,0.14)" />
+    <circle cx="754" cy="1234" r="15" fill="rgba(255,255,255,0.05)" stroke="rgba(157,225,255,0.22)" />
+    <path d="M746 1234L751 1239L762 1228" stroke="#DDF4FF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+    <text class="provider" x="786" y="1240">Yoco</text>
+    <text class="meta" x="786" y="1262">Merchant acceptance rail</text>
+  </g>
+
+  <g filter="url(#pillShadow)" class="label">
+    <rect x="640" y="850" width="126" height="44" rx="22" fill="url(#pill)" stroke="rgba(162,202,241,0.14)" />
+    <text class="route-label" x="703" y="878" text-anchor="middle">Auto route</text>
+
+    <rect x="672" y="954" width="120" height="44" rx="22" fill="url(#pill)" stroke="rgba(162,202,241,0.14)" />
+    <text class="route-label" x="732" y="982" text-anchor="middle">Recover</text>
+
+    <rect x="662" y="1082" width="118" height="44" rx="22" fill="url(#pill)" stroke="rgba(162,202,241,0.14)" />
+    <text class="route-label" x="721" y="1110" text-anchor="middle">Fallback</text>
+  </g>
+</svg>

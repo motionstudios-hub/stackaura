@@ -1,7 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
+import { buildServerApiUrl } from "@/app/lib/server-api";
 
-const API_BASE = process.env.CHECKOUT_API_URL ?? "http://127.0.0.1:3001";
-const API_KEY = process.env.DASHBOARD_API_KEY ?? "";
+const ALLOWED_PROXY_ROUTES = [
+  { method: "GET", pattern: /^v1\/merchants\/[^/]+\/api-keys$/ },
+  { method: "POST", pattern: /^v1\/merchants\/[^/]+\/api-keys$/ },
+  { method: "POST", pattern: /^v1\/merchants\/[^/]+\/api-keys\/[^/]+\/revoke$/ },
+  { method: "GET", pattern: /^v1\/merchants\/[^/]+\/gateways\/(?:ozow|yoco|paystack)$/ },
+  { method: "POST", pattern: /^v1\/merchants\/[^/]+\/gateways\/(?:ozow|yoco|paystack)$/ },
+  { method: "GET", pattern: /^v1\/support\/conversations$/ },
+  { method: "GET", pattern: /^v1\/support\/conversations\/[^/]+$/ },
+  { method: "POST", pattern: /^v1\/support\/chat$/ },
+  { method: "POST", pattern: /^v1\/support\/conversations\/[^/]+\/escalate$/ },
+] as const;
 
 type Ctx = {
   params: Promise<{ path?: string[] }> | { path?: string[] };
@@ -21,21 +31,41 @@ function forwardHeaders(req: NextRequest) {
 
   const cookie = req.headers.get("cookie");
   if (cookie) h.set("cookie", cookie);
-
-  if (API_KEY) h.set("authorization", `Bearer ${API_KEY}`);
   return h;
 }
 
-async function proxy(req: NextRequest, ctx: Ctx, method: string) {
-  const path = await getPath(ctx);
-  const url = new URL(req.url);
-  const target = `${API_BASE}/${path}${url.search}`;
+function normalizeProxyPath(path: string) {
+  return path.replace(/^\/+|\/+$/g, "");
+}
 
-  const res = await fetch(target, {
-    method,
-    headers: forwardHeaders(req),
-    body: method === "GET" || method === "HEAD" ? undefined : await req.arrayBuffer(),
-  });
+function isAllowedProxyRoute(method: string, path: string) {
+  return ALLOWED_PROXY_ROUTES.some(
+    (route) => route.method === method && route.pattern.test(path)
+  );
+}
+
+async function proxy(req: NextRequest, ctx: Ctx, method: string) {
+  const path = normalizeProxyPath(await getPath(ctx));
+  if (!isAllowedProxyRoute(method, path)) {
+    return NextResponse.json({ message: "Not found" }, { status: 404 });
+  }
+
+  const url = new URL(req.url);
+  const target = `${buildServerApiUrl(path)}${url.search}`;
+  let res: Response;
+  try {
+    res = await fetch(target, {
+      method,
+      headers: forwardHeaders(req),
+      body: method === "GET" || method === "HEAD" ? undefined : await req.arrayBuffer(),
+      signal: AbortSignal.timeout(8000),
+    });
+  } catch {
+    return NextResponse.json(
+      { message: "Service unavailable. Please try again shortly." },
+      { status: 503 }
+    );
+  }
 
   const body = await res.arrayBuffer();
   const outHeaders = new Headers();
@@ -49,13 +79,4 @@ export async function GET(req: NextRequest, ctx: Ctx) {
 }
 export async function POST(req: NextRequest, ctx: Ctx) {
   return proxy(req, ctx, "POST");
-}
-export async function PATCH(req: NextRequest, ctx: Ctx) {
-  return proxy(req, ctx, "PATCH");
-}
-export async function PUT(req: NextRequest, ctx: Ctx) {
-  return proxy(req, ctx, "PUT");
-}
-export async function DELETE(req: NextRequest, ctx: Ctx) {
-  return proxy(req, ctx, "DELETE");
 }

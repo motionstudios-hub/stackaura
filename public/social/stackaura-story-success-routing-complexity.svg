@@ -1,0 +1,123 @@
+<svg width="1080" height="1920" viewBox="0 0 1080 1920" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="120" y1="40" x2="942" y2="1888" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#07152A" />
+      <stop offset="0.52" stop-color="#0B1F3A" />
+      <stop offset="1" stop-color="#10315A" />
+    </linearGradient>
+    <radialGradient id="glowTop" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(798 278) rotate(90) scale(352 406)">
+      <stop stop-color="#3B82F6" stop-opacity="0.32" />
+      <stop offset="1" stop-color="#3B82F6" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="glowMid" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(360 974) rotate(90) scale(330 392)">
+      <stop stop-color="#60A5FA" stop-opacity="0.14" />
+      <stop offset="1" stop-color="#60A5FA" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="glowBottom" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(760 1570) rotate(90) scale(330 388)">
+      <stop stop-color="#8B5CF6" stop-opacity="0.14" />
+      <stop offset="1" stop-color="#8B5CF6" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="520" y2="168" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#132947" stop-opacity="0.88" />
+      <stop offset="1" stop-color="#0D2038" stop-opacity="0.76" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="76" y2="76" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A7E3FF" />
+      <stop offset="1" stop-color="#55B0FF" />
+    </linearGradient>
+    <filter id="blurLarge" x="0" y="0" width="1080" height="1920" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="72" />
+    </filter>
+    <filter id="cardShadow" x="-180" y="-180" width="1440" height="2280" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="18" stdDeviation="28" flood-color="#020E1A" flood-opacity="0.4" />
+    </filter>
+    <mask id="stackauraMarkMask" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100">
+      <rect width="100" height="100" fill="black" />
+      <g transform="translate(50 50) rotate(36) translate(-50 -50)">
+        <rect x="7" y="35" width="86" height="27" rx="13.5" fill="white" />
+        <rect x="40" y="11" width="57" height="19" rx="9.5" fill="white" />
+        <rect x="10" y="74" width="58" height="19" rx="9.5" fill="white" />
+        <ellipse cx="61" cy="40" rx="18.5" ry="8.4" fill="black" />
+        <ellipse cx="40" cy="63" rx="18.5" ry="8.4" fill="black" />
+      </g>
+    </mask>
+    <style>
+      .label { font-family: Inter, "SF Pro Display", "Helvetica Neue", Arial, sans-serif; }
+      .eyebrow { fill: #86B5E2; font-size: 16px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; }
+      .headline { fill: #F7FBFF; font-size: 102px; font-weight: 720; letter-spacing: -0.072em; }
+      .cardTitle { fill: #F7FBFF; font-size: 42px; font-weight: 700; letter-spacing: -0.05em; }
+      .wordmark { fill: #F7FBFF; font-size: 34px; font-weight: 700; letter-spacing: -0.05em; }
+    </style>
+  </defs>
+
+  <rect width="1080" height="1920" fill="url(#bg)" />
+
+  <g opacity="0.94">
+    <ellipse cx="798" cy="278" rx="318" ry="248" fill="url(#glowTop)" />
+    <ellipse cx="360" cy="974" rx="280" ry="224" fill="url(#glowMid)" />
+    <ellipse cx="760" cy="1570" rx="286" ry="224" fill="url(#glowBottom)" />
+  </g>
+
+  <g opacity="0.11">
+    <path d="M70 242C232 136 416 108 618 154" stroke="#8EBBE8" stroke-width="1.3" stroke-linecap="round" />
+    <path d="M640 126C828 144 964 244 1018 432" stroke="#8EBBE8" stroke-width="1.3" stroke-linecap="round" />
+    <path d="M94 1458C266 1566 450 1604 656 1560" stroke="#8EBBE8" stroke-width="1.3" stroke-linecap="round" />
+    <path d="M670 1708C860 1668 974 1568 1020 1400" stroke="#8EBBE8" stroke-width="1.3" stroke-linecap="round" />
+    <circle cx="110" cy="468" r="3" fill="#A9CEEF" />
+    <circle cx="962" cy="562" r="3" fill="#A9CEEF" />
+    <circle cx="182" cy="1582" r="3" fill="#A9CEEF" />
+    <circle cx="934" cy="1494" r="3" fill="#A9CEEF" />
+  </g>
+
+  <g class="label">
+    <rect x="390" y="76" width="300" height="62" rx="31" fill="rgba(255,255,255,0.05)" stroke="rgba(159,197,235,0.15)" />
+    <circle cx="424" cy="107" r="17" fill="#143456" stroke="rgba(125,193,243,0.46)" />
+    <g transform="translate(414.5 97.5) scale(0.19)">
+      <rect width="100" height="100" fill="#F6FBFF" mask="url(#stackauraMarkMask)" />
+    </g>
+    <text class="wordmark" x="454" y="115">STACKAURA</text>
+    <text class="headline" x="540" y="298" text-anchor="middle">Higher success rates.</text>
+    <text class="headline" x="540" y="398" text-anchor="middle">Smarter routing.</text>
+    <text class="headline" x="540" y="498" text-anchor="middle">Less complexity.</text>
+  </g>
+
+  <g opacity="0.16">
+    <path d="M540 630V1338" stroke="rgba(141,209,255,0.18)" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="2 18" />
+    <circle cx="540" cy="784" r="4.5" fill="#A9E4FF" />
+    <circle cx="540" cy="1018" r="4.5" fill="#A9E4FF" />
+    <circle cx="540" cy="1252" r="4.5" fill="#A9E4FF" />
+  </g>
+
+  <g filter="url(#blurLarge)" opacity="0.14">
+    <rect x="248" y="678" width="584" height="208" rx="56" fill="#63BCFF" />
+    <rect x="272" y="910" width="536" height="208" rx="56" fill="#63BCFF" />
+    <rect x="248" y="1142" width="584" height="208" rx="56" fill="#63BCFF" />
+  </g>
+
+  <g filter="url(#cardShadow)" class="label">
+    <rect x="244" y="670" width="592" height="204" rx="48" fill="url(#card)" stroke="rgba(163,206,242,0.16)" />
+    <circle cx="336" cy="772" r="46" fill="rgba(96,191,255,0.12)" stroke="rgba(157,225,255,0.28)" />
+    <path d="M316 792L352 756" stroke="url(#accent)" stroke-width="10" stroke-linecap="round" />
+    <path d="M332 756H352V776" stroke="url(#accent)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+    <text class="cardTitle" x="416" y="786">Higher success rates</text>
+  </g>
+
+  <g filter="url(#cardShadow)" class="label">
+    <rect x="272" y="902" width="536" height="204" rx="48" fill="url(#card)" stroke="rgba(163,206,242,0.16)" />
+    <circle cx="356" cy="1004" r="46" fill="rgba(96,191,255,0.12)" stroke="rgba(157,225,255,0.28)" />
+    <circle cx="336" cy="1004" r="8" fill="#A7E3FF" />
+    <circle cx="374" cy="982" r="8" fill="#A7E3FF" />
+    <circle cx="388" cy="1022" r="8" fill="#A7E3FF" />
+    <path d="M336 1004L374 982L388 1022" stroke="url(#accent)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+    <text class="cardTitle" x="438" y="1018">Smarter routing</text>
+  </g>
+
+  <g filter="url(#cardShadow)" class="label">
+    <rect x="244" y="1134" width="592" height="204" rx="48" fill="url(#card)" stroke="rgba(163,206,242,0.16)" />
+    <circle cx="336" cy="1236" r="46" fill="rgba(96,191,255,0.12)" stroke="rgba(157,225,255,0.28)" />
+    <rect x="312" y="1210" width="48" height="10" rx="5" fill="url(#accent)" />
+    <rect x="312" y="1228" width="36" height="10" rx="5" fill="url(#accent)" opacity="0.84" />
+    <rect x="312" y="1246" width="42" height="10" rx="5" fill="url(#accent)" opacity="0.68" />
+    <text class="cardTitle" x="416" y="1250">Less complexity</text>
+  </g>
+</svg>

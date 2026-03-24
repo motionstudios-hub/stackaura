@@ -1,0 +1,188 @@
+<svg width="1080" height="1080" viewBox="0 0 1080 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="108" y1="24" x2="958" y2="1080" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#08172D" />
+      <stop offset="0.54" stop-color="#0B1F3A" />
+      <stop offset="1" stop-color="#0F2A4A" />
+    </linearGradient>
+    <radialGradient id="glowTop" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(792 210) rotate(90) scale(284 346)">
+      <stop stop-color="#3B82F6" stop-opacity="0.3" />
+      <stop offset="1" stop-color="#3B82F6" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="glowCenter" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(538 650) rotate(90) scale(252)">
+      <stop stop-color="#60A5FA" stop-opacity="0.2" />
+      <stop offset="1" stop-color="#60A5FA" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="glowBottom" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(248 892) rotate(90) scale(238 292)">
+      <stop stop-color="#3B82F6" stop-opacity="0.16" />
+      <stop offset="1" stop-color="#3B82F6" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="260" y2="128" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#112947" stop-opacity="0.88" />
+      <stop offset="1" stop-color="#0C1F37" stop-opacity="0.74" />
+    </linearGradient>
+    <linearGradient id="core" x1="418" y1="536" x2="658" y2="794" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#133560" />
+      <stop offset="1" stop-color="#0B213D" />
+    </linearGradient>
+    <linearGradient id="line" x1="300" y1="642" x2="880" y2="642" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2B609B" stop-opacity="0.42" />
+      <stop offset="0.5" stop-color="#99D7FF" />
+      <stop offset="1" stop-color="#2B609B" stop-opacity="0.42" />
+    </linearGradient>
+    <filter id="blurLarge" x="0" y="0" width="1080" height="1080" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="56" />
+    </filter>
+    <filter id="softShadow" x="-120" y="-120" width="1320" height="1320" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="16" stdDeviation="30" flood-color="#02111E" flood-opacity="0.45" />
+    </filter>
+    <filter id="panelShadow" x="-80" y="-80" width="1240" height="1240" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="14" stdDeviation="22" flood-color="#04111D" flood-opacity="0.32" />
+    </filter>
+    <mask id="stackauraMarkMask" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100">
+      <rect width="100" height="100" fill="black" />
+      <g transform="translate(50 50) rotate(36) translate(-50 -50)">
+        <rect x="7" y="35" width="86" height="27" rx="13.5" fill="white" />
+        <rect x="40" y="11" width="57" height="19" rx="9.5" fill="white" />
+        <rect x="10" y="74" width="58" height="19" rx="9.5" fill="white" />
+        <ellipse cx="61" cy="40" rx="18.5" ry="8.4" fill="black" />
+        <ellipse cx="40" cy="63" rx="18.5" ry="8.4" fill="black" />
+      </g>
+    </mask>
+    <style>
+      .label { font-family: Inter, "SF Pro Display", "Helvetica Neue", Arial, sans-serif; }
+      .eyebrow { fill: #86B5E2; font-size: 16px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; }
+      .headline { fill: #F7FBFF; font-size: 68px; font-weight: 720; letter-spacing: -0.062em; }
+      .body { fill: #B6CAE0; font-size: 24px; font-weight: 510; letter-spacing: -0.02em; }
+      .panel-title { fill: #F7FBFF; font-size: 19px; font-weight: 640; letter-spacing: -0.03em; }
+      .panel-copy { fill: #96B6D4; font-size: 14px; font-weight: 500; }
+      .core-title { fill: #F7FBFF; font-size: 34px; font-weight: 700; letter-spacing: -0.05em; }
+      .core-copy { fill: #AFC5DF; font-size: 17px; font-weight: 500; letter-spacing: -0.01em; }
+      .cta { fill: #EAF4FF; font-size: 26px; font-weight: 650; letter-spacing: -0.03em; }
+    </style>
+  </defs>
+
+  <rect width="1080" height="1080" fill="url(#bg)" />
+
+  <g opacity="0.92">
+    <ellipse cx="792" cy="212" rx="256" ry="190" fill="url(#glowTop)" />
+    <ellipse cx="540" cy="646" rx="226" ry="178" fill="url(#glowCenter)" />
+    <ellipse cx="248" cy="892" rx="228" ry="180" fill="url(#glowBottom)" />
+  </g>
+
+  <g opacity="0.12">
+    <path d="M74 176C198 108 350 93 526 136" stroke="#8CB9E7" stroke-width="1.2" stroke-linecap="round" />
+    <path d="M566 124C740 124 902 196 990 352" stroke="#8CB9E7" stroke-width="1.2" stroke-linecap="round" />
+    <path d="M104 872C256 944 428 958 612 928" stroke="#8CB9E7" stroke-width="1.2" stroke-linecap="round" />
+    <path d="M670 952C834 924 938 840 990 728" stroke="#8CB9E7" stroke-width="1.2" stroke-linecap="round" />
+    <circle cx="116" cy="252" r="2.5" fill="#A7CAEB" />
+    <circle cx="944" cy="266" r="2.5" fill="#A7CAEB" />
+    <circle cx="218" cy="902" r="2.5" fill="#A7CAEB" />
+    <circle cx="912" cy="826" r="2.5" fill="#A7CAEB" />
+  </g>
+
+  <g class="label">
+    <rect x="390" y="74" width="300" height="62" rx="31" fill="rgba(255,255,255,0.05)" stroke="rgba(159,197,235,0.15)" />
+    <circle cx="424" cy="105" r="17" fill="#143456" stroke="rgba(125,193,243,0.46)" />
+    <g transform="translate(414.5 95.5) scale(0.19)">
+      <rect width="100" height="100" fill="#F6FBFF" mask="url(#stackauraMarkMask)" />
+    </g>
+    <text x="454" y="113" fill="#F7FBFF" font-size="26" font-weight="700" letter-spacing="-0.04em">STACKAURA</text>
+
+    <text class="eyebrow" x="540" y="204" text-anchor="middle">Merchant workspace signup</text>
+    <text class="headline" x="540" y="298" text-anchor="middle">Secure access to the</text>
+    <text class="headline" x="540" y="370" text-anchor="middle">Stackaura merchant console.</text>
+    <text class="body" x="540" y="438" text-anchor="middle">Sign up to manage unified checkout, gateway routing,</text>
+    <text class="body" x="540" y="471" text-anchor="middle">merchant workspaces, AI support agents, and the infrastructure that keeps payments moving.</text>
+  </g>
+
+  <g filter="url(#blurLarge)" opacity="0.18">
+    <circle cx="540" cy="664" r="138" fill="#61BFFF" />
+  </g>
+
+  <g opacity="0.18">
+    <path d="M485 554C505 536 522 526 540 524C558 526 575 536 595 554V730C571 758 552 776 540 786C528 776 509 758 485 730V554Z" stroke="#8BD2FF" stroke-width="1.4" />
+  </g>
+
+  <g filter="url(#softShadow)">
+    <circle cx="540" cy="664" r="124" fill="url(#core)" stroke="rgba(167,219,255,0.25)" stroke-width="1.4" />
+    <circle cx="540" cy="664" r="146" stroke="rgba(125,193,243,0.15)" stroke-width="1.2" />
+    <circle cx="540" cy="664" r="168" stroke="rgba(125,193,243,0.08)" stroke-width="1" />
+    <circle cx="540" cy="622" r="34" fill="rgba(96,191,255,0.14)" stroke="rgba(157,225,255,0.30)" />
+    <g transform="translate(520 602) scale(0.4)">
+      <rect width="100" height="100" fill="#F8FCFF" mask="url(#stackauraMarkMask)" />
+    </g>
+    <text class="core-title" x="540" y="720" text-anchor="middle">Stackaura core</text>
+    <text class="core-copy" x="540" y="748" text-anchor="middle">Secure infrastructure access</text>
+  </g>
+
+  <g>
+    <path d="M312 586C372 596 395 604 416 616" stroke="url(#line)" stroke-width="3" stroke-linecap="round" />
+    <path d="M300 722C372 706 398 696 418 684" stroke="url(#line)" stroke-width="3" stroke-linecap="round" />
+    <path d="M664 624C720 604 756 590 804 584" stroke="url(#line)" stroke-width="3" stroke-linecap="round" />
+    <path d="M662 706C724 730 760 756 802 786" stroke="url(#line)" stroke-width="3" stroke-linecap="round" />
+    <circle cx="346" cy="592" r="4.2" fill="#98DBFF" />
+    <circle cx="380" cy="604" r="5.5" fill="#C4EDFF" />
+    <circle cx="344" cy="712" r="4.2" fill="#98DBFF" />
+    <circle cx="380" cy="702" r="5.5" fill="#C4EDFF" />
+    <circle cx="714" cy="608" r="4.2" fill="#98DBFF" />
+    <circle cx="746" cy="598" r="5.5" fill="#C4EDFF" />
+    <circle cx="720" cy="740" r="4.2" fill="#98DBFF" />
+    <circle cx="756" cy="762" r="5.5" fill="#C4EDFF" />
+  </g>
+
+  <g filter="url(#panelShadow)" class="label">
+    <rect x="96" y="520" width="226" height="116" rx="30" fill="url(#panel)" stroke="rgba(162,202,241,0.14)" />
+    <circle cx="130" cy="560" r="12" fill="rgba(96,191,255,0.10)" stroke="rgba(143,216,255,0.24)" />
+    <path d="M124 557H136C138 557 139.5 558.5 139.5 560.5C139.5 562.5 138 564 136 564H127.5L121 570.5V564H124" stroke="#DDF4FF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+    <text class="panel-title" x="156" y="565">AI support agent</text>
+    <text class="panel-copy" x="156" y="587">Merchant assistance across workflows</text>
+    <rect x="122" y="606" width="138" height="10" rx="5" fill="rgba(143,197,255,0.14)" />
+    <rect x="122" y="624" width="108" height="10" rx="5" fill="rgba(143,197,255,0.10)" />
+    <circle cx="276" cy="612" r="6" fill="#C4EDFF" opacity="0.76" />
+  </g>
+
+  <g filter="url(#panelShadow)" class="label">
+    <rect x="748" y="520" width="232" height="126" rx="30" fill="url(#panel)" stroke="rgba(162,202,241,0.14)" />
+    <circle cx="782" cy="560" r="12" fill="rgba(96,191,255,0.10)" stroke="rgba(143,216,255,0.24)" />
+    <path d="M776 560H788" stroke="#DDF4FF" stroke-width="2.4" stroke-linecap="round" />
+    <text class="panel-title" x="808" y="565">Gateway routing</text>
+    <text class="panel-copy" x="808" y="587">Visibility across route decisions</text>
+    <circle cx="796" cy="612" r="5" fill="#99D7FF" />
+    <circle cx="858" cy="594" r="5" fill="#99D7FF" />
+    <circle cx="908" cy="620" r="5" fill="#99D7FF" />
+    <path d="M796 612L858 594L908 620" stroke="#8FD4FF" stroke-width="2" stroke-linecap="round" />
+    <path d="M858 594L930 578" stroke="#8FD4FF" stroke-width="2" stroke-linecap="round" opacity="0.7" />
+    <circle cx="930" cy="578" r="5" fill="#C4EDFF" />
+  </g>
+
+  <g filter="url(#panelShadow)" class="label">
+    <rect x="82" y="676" width="214" height="122" rx="30" fill="url(#panel)" stroke="rgba(162,202,241,0.14)" />
+    <circle cx="116" cy="716" r="12" fill="rgba(96,191,255,0.10)" stroke="rgba(143,216,255,0.24)" />
+    <path d="M111 717L117 711L123 717" stroke="#DDF4FF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M111 723H123" stroke="#DDF4FF" stroke-width="2.4" stroke-linecap="round" />
+    <text class="panel-title" x="142" y="721">API keys</text>
+    <text class="panel-copy" x="142" y="743">Restricted credential management</text>
+    <rect x="108" y="762" width="122" height="10" rx="5" fill="rgba(143,197,255,0.14)" />
+    <rect x="108" y="780" width="98" height="10" rx="5" fill="rgba(143,197,255,0.10)" />
+    <rect x="238" y="762" width="34" height="20" rx="10" fill="rgba(59,130,246,0.14)" stroke="rgba(96,165,250,0.18)" />
+    <text x="248" y="776" fill="#D7ECFF" font-size="11" font-weight="600">LIVE</text>
+  </g>
+
+  <g filter="url(#panelShadow)" class="label">
+    <rect x="706" y="716" width="250" height="132" rx="30" fill="url(#panel)" stroke="rgba(162,202,241,0.14)" />
+    <circle cx="740" cy="756" r="12" fill="rgba(96,191,255,0.10)" stroke="rgba(143,216,255,0.24)" />
+    <path d="M734 757C736 751 744 751 746 757" stroke="#DDF4FF" stroke-width="2.3" stroke-linecap="round" />
+    <circle cx="740" cy="752" r="2.4" fill="#DDF4FF" />
+    <text class="panel-title" x="766" y="761">Merchant workspaces</text>
+    <text class="panel-copy" x="766" y="783">Controlled access and operations</text>
+    <rect x="736" y="802" width="162" height="10" rx="5" fill="rgba(143,197,255,0.14)" />
+    <rect x="736" y="820" width="138" height="10" rx="5" fill="rgba(143,197,255,0.10)" />
+    <rect x="736" y="838" width="114" height="10" rx="5" fill="rgba(143,197,255,0.08)" />
+  </g>
+
+  <g class="label">
+    <text class="cta" x="540" y="968" text-anchor="middle">Access your infrastructure</text>
+    <text x="540" y="1002" fill="#84A8CB" font-size="19" font-weight="500" text-anchor="middle">stackaura.co.za</text>
+  </g>
+</svg>

@@ -8,6 +8,10 @@ import {
   publicSubtleSurfaceClass,
   publicSurfaceClass,
 } from "../components/stackaura-ui";
+import {
+  gatewayCapabilityDisclosures,
+  gatewayCapabilityMatrix,
+} from "../lib/gateway-capabilities";
 
 const paymentProviderIntegrations = [
   {
@@ -32,7 +36,7 @@ const paymentProviderIntegrations = [
     name: "Additional rails",
     status: "Roadmap",
     description:
-      "Additional provider coverage, including PayFast and Stripe, is introduced carefully as Stackaura expands its multi-rail orchestration layer.",
+      "Additional provider coverage is introduced carefully as Stackaura expands its multi-rail orchestration layer.",
   },
 ] as const;
 
@@ -176,6 +180,32 @@ export default function IntegrationsPage() {
               <p className="mt-3 text-sm leading-7 text-[#425466]">{item.description}</p>
             </div>
           ))}
+        </div>
+
+        <div className="mt-8 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+          <div className={cn(publicSubtleSurfaceClass, "p-6")}>
+            <div className="text-lg font-semibold tracking-tight text-[#0a2540]">
+              Current merchant-facing capability summary
+            </div>
+            <div className="mt-4 space-y-3 text-sm leading-7 text-[#425466]">
+              {gatewayCapabilityMatrix.map((gateway) => (
+                <div key={gateway.gateway} className="flex items-start justify-between gap-4 border-b border-white/35 pb-3 last:border-b-0 last:pb-0">
+                  <span className="font-medium text-[#0a2540]">{gateway.gateway}</span>
+                  <span className="text-right">
+                    {gateway.hostedCheckout}, {gateway.statusHandling}, {gateway.refunds}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid gap-4">
+            {gatewayCapabilityDisclosures.map((item) => (
+              <div key={item} className={cn(publicSubtleSurfaceClass, "p-5 text-sm leading-7 text-[#425466]")}>
+                {item}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

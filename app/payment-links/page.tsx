@@ -413,7 +413,7 @@ export default function PaymentLinksPage() {
               <p className="mt-5 max-w-3xl text-base leading-7 text-[#425466] sm:text-lg">
                 Generate a shareable Stackaura checkout link tied to the merchant workspace
                 selected in your dashboard, then send it across the channels where your customers
-                already buy. Stackaura will route automatically across the merchant's connected
+                already buy. Stackaura will route automatically across the merchant&apos;s connected
                 payment rails.
               </p>
 

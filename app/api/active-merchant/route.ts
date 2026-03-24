@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { fetchServerApi } from "@/app/lib/server-api";
 
 export async function GET(req: NextRequest) {
   const cookieMerchantId = req.cookies.get("active_merchant_id")?.value || null;
@@ -6,11 +7,10 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ merchantId: cookieMerchantId });
   }
 
-  const apiBase = process.env.NEXT_PUBLIC_API_BASE || "http://127.0.0.1:3001";
   const cookieHeader = req.headers.get("cookie") || "";
 
   try {
-    const res = await fetch(`${apiBase}/v1/auth/me`, {
+    const res = await fetchServerApi("/v1/auth/me", {
       method: "GET",
       headers: {
         Cookie: cookieHeader,

@@ -84,7 +84,6 @@ export default function SignupClient({
   const [submissionMode, setSubmissionMode] = useState<SubmissionMode>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const backend = process.env.NEXT_PUBLIC_CHECKOUT_API_BASE_URL || "http://localhost:3001";
   const isLoading = submissionMode !== null;
 
   function buildReturnUrls() {
@@ -112,7 +111,7 @@ export default function SignupClient({
   }
 
   async function createMerchantAccount() {
-    const res = await fetch(`${backend}/v1/merchants/signup`, {
+    const res = await fetch("/api/auth/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

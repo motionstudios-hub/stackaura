@@ -9,7 +9,6 @@ test("active merchant context stays authoritative over an API key override", () 
   const resolved = resolvePaymentProxyContext({
     activeMerchantId: "merch_active",
     incomingAuthorization: "Bearer ck_test_merchant_key",
-    dashboardApiKey: "svc_dashboard_key",
   });
 
   assert.deepEqual(resolved, {
@@ -24,7 +23,6 @@ test("dashboard merchant context injects the active merchant when no merchant AP
   const resolved = resolvePaymentProxyContext({
     activeMerchantId: "merch_dashboard",
     incomingAuthorization: null,
-    dashboardApiKey: "svc_dashboard_key",
   });
 
   assert.deepEqual(resolved, {
@@ -58,7 +56,6 @@ test("payment creation requires either a merchant API key or an active merchant"
   const resolved = resolvePaymentProxyContext({
     activeMerchantId: null,
     incomingAuthorization: null,
-    dashboardApiKey: "svc_dashboard_key",
   });
 
   assert.deepEqual(resolved, {

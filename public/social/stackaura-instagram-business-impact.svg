@@ -1,0 +1,181 @@
+<svg width="1080" height="1080" viewBox="0 0 1080 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="104" y1="30" x2="958" y2="1068" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#08172D" />
+      <stop offset="0.52" stop-color="#0B1F3A" />
+      <stop offset="1" stop-color="#102C4D" />
+    </linearGradient>
+    <radialGradient id="glowTop" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(802 212) rotate(90) scale(286 346)">
+      <stop stop-color="#3B82F6" stop-opacity="0.28" />
+      <stop offset="1" stop-color="#3B82F6" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="glowMid" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(558 688) rotate(90) scale(240)">
+      <stop stop-color="#60A5FA" stop-opacity="0.18" />
+      <stop offset="1" stop-color="#60A5FA" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="glowBottom" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(222 892) rotate(90) scale(228 286)">
+      <stop stop-color="#3B82F6" stop-opacity="0.14" />
+      <stop offset="1" stop-color="#3B82F6" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="core" x1="426" y1="566" x2="662" y2="806" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#13365F" />
+      <stop offset="1" stop-color="#0B213D" />
+    </linearGradient>
+    <linearGradient id="lineA" x1="258" y1="796" x2="878" y2="546" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#295C96" stop-opacity="0.24" />
+      <stop offset="0.48" stop-color="#9AD9FF" />
+      <stop offset="1" stop-color="#295C96" stop-opacity="0.2" />
+    </linearGradient>
+    <linearGradient id="lineB" x1="246" y1="852" x2="886" y2="646" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#295C96" stop-opacity="0.18" />
+      <stop offset="0.46" stop-color="#89D0FF" />
+      <stop offset="1" stop-color="#295C96" stop-opacity="0.18" />
+    </linearGradient>
+    <linearGradient id="lineC" x1="240" y1="912" x2="892" y2="742" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#295C96" stop-opacity="0.14" />
+      <stop offset="0.44" stop-color="#7FC7FF" />
+      <stop offset="1" stop-color="#295C96" stop-opacity="0.14" />
+    </linearGradient>
+    <linearGradient id="chip" x1="0" y1="0" x2="226" y2="96" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#112948" stop-opacity="0.84" />
+      <stop offset="1" stop-color="#0C1F37" stop-opacity="0.74" />
+    </linearGradient>
+    <filter id="blurLarge" x="0" y="0" width="1080" height="1080" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="58" />
+    </filter>
+    <filter id="softShadow" x="-120" y="-120" width="1320" height="1320" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="18" stdDeviation="30" flood-color="#02111E" flood-opacity="0.45" />
+    </filter>
+    <filter id="chipShadow" x="-80" y="-80" width="1240" height="1240" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="14" stdDeviation="22" flood-color="#04111D" flood-opacity="0.32" />
+    </filter>
+    <mask id="stackauraMarkMask" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100">
+      <rect width="100" height="100" fill="black" />
+      <g transform="translate(50 50) rotate(36) translate(-50 -50)">
+        <rect x="7" y="35" width="86" height="27" rx="13.5" fill="white" />
+        <rect x="40" y="11" width="57" height="19" rx="9.5" fill="white" />
+        <rect x="10" y="74" width="58" height="19" rx="9.5" fill="white" />
+        <ellipse cx="61" cy="40" rx="18.5" ry="8.4" fill="black" />
+        <ellipse cx="40" cy="63" rx="18.5" ry="8.4" fill="black" />
+      </g>
+    </mask>
+    <style>
+      .label { font-family: Inter, "SF Pro Display", "Helvetica Neue", Arial, sans-serif; }
+      .eyebrow { fill: #86B5E2; font-size: 16px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; }
+      .headline { fill: #F7FBFF; font-size: 74px; font-weight: 720; letter-spacing: -0.065em; }
+      .body { fill: #B6CAE0; font-size: 26px; font-weight: 510; letter-spacing: -0.02em; }
+      .chip-title { fill: #F7FBFF; font-size: 18px; font-weight: 640; letter-spacing: -0.03em; }
+      .chip-copy { fill: #96B6D4; font-size: 14px; font-weight: 500; }
+      .core-title { fill: #F7FBFF; font-size: 34px; font-weight: 700; letter-spacing: -0.05em; }
+      .core-copy { fill: #AFC5DF; font-size: 17px; font-weight: 500; letter-spacing: -0.01em; }
+      .bottom { fill: #EAF4FF; font-size: 24px; font-weight: 620; letter-spacing: -0.02em; }
+    </style>
+  </defs>
+
+  <rect width="1080" height="1080" fill="url(#bg)" />
+
+  <g opacity="0.92">
+    <ellipse cx="802" cy="212" rx="256" ry="190" fill="url(#glowTop)" />
+    <ellipse cx="558" cy="690" rx="232" ry="182" fill="url(#glowMid)" />
+    <ellipse cx="222" cy="892" rx="228" ry="182" fill="url(#glowBottom)" />
+  </g>
+
+  <g opacity="0.12">
+    <path d="M70 170C198 104 358 92 540 136" stroke="#8CB9E7" stroke-width="1.2" stroke-linecap="round" />
+    <path d="M566 122C742 122 910 196 992 352" stroke="#8CB9E7" stroke-width="1.2" stroke-linecap="round" />
+    <path d="M94 870C254 944 430 960 620 928" stroke="#8CB9E7" stroke-width="1.2" stroke-linecap="round" />
+    <path d="M674 954C832 924 938 840 992 726" stroke="#8CB9E7" stroke-width="1.2" stroke-linecap="round" />
+    <circle cx="118" cy="252" r="2.5" fill="#A7CAEB" />
+    <circle cx="944" cy="266" r="2.5" fill="#A7CAEB" />
+    <circle cx="214" cy="902" r="2.5" fill="#A7CAEB" />
+    <circle cx="918" cy="822" r="2.5" fill="#A7CAEB" />
+  </g>
+
+  <g class="label">
+    <rect x="390" y="74" width="300" height="62" rx="31" fill="rgba(255,255,255,0.05)" stroke="rgba(159,197,235,0.15)" />
+    <circle cx="424" cy="105" r="17" fill="#143456" stroke="rgba(125,193,243,0.46)" />
+    <g transform="translate(414.5 95.5) scale(0.19)">
+      <rect width="100" height="100" fill="#F6FBFF" mask="url(#stackauraMarkMask)" />
+    </g>
+    <text x="454" y="113" fill="#F7FBFF" font-size="26" font-weight="700" letter-spacing="-0.04em">STACKAURA</text>
+
+    <text class="eyebrow" x="540" y="204" text-anchor="middle">Business impact</text>
+    <text class="headline" x="540" y="298" text-anchor="middle">Higher success rates.</text>
+    <text class="headline" x="540" y="370" text-anchor="middle">Fewer failed checkouts.</text>
+    <text class="body" x="540" y="438" text-anchor="middle">Stackaura simplifies your payment stack while improving conversion</text>
+    <text class="body" x="540" y="472" text-anchor="middle">across multiple gateways.</text>
+  </g>
+
+  <g filter="url(#blurLarge)" opacity="0.18">
+    <circle cx="540" cy="692" r="146" fill="#5CB5FF" />
+  </g>
+
+  <g opacity="0.16">
+    <path d="M258 790C372 750 446 718 538 678C630 638 740 602 876 548" stroke="url(#lineA)" stroke-width="1.2" stroke-linecap="round" />
+    <path d="M246 850C360 822 444 790 540 750C636 710 748 680 884 646" stroke="url(#lineB)" stroke-width="1.2" stroke-linecap="round" />
+    <path d="M240 910C364 894 452 870 548 838C644 806 754 782 890 742" stroke="url(#lineC)" stroke-width="1.2" stroke-linecap="round" />
+  </g>
+
+  <g filter="url(#softShadow)">
+    <circle cx="540" cy="694" r="124" fill="url(#core)" stroke="rgba(167,219,255,0.24)" stroke-width="1.4" />
+    <circle cx="540" cy="694" r="146" stroke="rgba(125,193,243,0.15)" stroke-width="1.2" />
+    <circle cx="540" cy="694" r="168" stroke="rgba(125,193,243,0.08)" stroke-width="1" />
+    <circle cx="540" cy="650" r="34" fill="rgba(96,191,255,0.14)" stroke="rgba(157,225,255,0.30)" />
+    <g transform="translate(520 630) scale(0.4)">
+      <rect width="100" height="100" fill="#F8FCFF" mask="url(#stackauraMarkMask)" />
+    </g>
+    <text class="core-title" x="540" y="752" text-anchor="middle">Stackaura</text>
+    <text class="core-copy" x="540" y="780" text-anchor="middle">Performance across rails</text>
+  </g>
+
+  <g>
+    <path d="M260 786C372 748 446 716 538 676C630 636 740 602 872 552" stroke="url(#lineA)" stroke-width="3.2" stroke-linecap="round" />
+    <path d="M248 846C360 820 442 788 538 748C634 708 746 680 880 650" stroke="url(#lineB)" stroke-width="2.8" stroke-linecap="round" />
+    <path d="M242 906C364 892 450 868 546 836C642 804 752 780 886 746" stroke="url(#lineC)" stroke-width="2.4" stroke-linecap="round" />
+
+    <circle cx="334" cy="760" r="4.5" fill="#98DBFF" />
+    <circle cx="398" cy="734" r="6" fill="#C4EDFF" />
+    <circle cx="636" cy="634" r="5" fill="#98DBFF" />
+    <circle cx="756" cy="592" r="6.5" fill="#C4EDFF" />
+    <circle cx="802" cy="574" r="4.5" fill="#98DBFF" />
+
+    <circle cx="334" cy="820" r="4.2" fill="#98DBFF" />
+    <circle cx="416" cy="794" r="5.8" fill="#C4EDFF" />
+    <circle cx="650" cy="712" r="4.8" fill="#98DBFF" />
+    <circle cx="776" cy="676" r="6" fill="#C4EDFF" />
+
+    <circle cx="340" cy="884" r="4" fill="#98DBFF" />
+    <circle cx="442" cy="860" r="5.2" fill="#C4EDFF" />
+    <circle cx="690" cy="792" r="4.5" fill="#98DBFF" />
+    <circle cx="814" cy="760" r="5.8" fill="#C4EDFF" />
+  </g>
+
+  <g filter="url(#chipShadow)" class="label">
+    <rect x="748" y="520" width="216" height="94" rx="28" fill="url(#chip)" stroke="rgba(162,202,241,0.14)" />
+    <circle cx="782" cy="566" r="12" fill="rgba(96,191,255,0.10)" stroke="rgba(143,216,255,0.24)" />
+    <path d="M776 566L780 570L788 562" stroke="#DDF4FF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+    <text class="chip-title" x="806" y="571">Higher completion</text>
+    <text class="chip-copy" x="806" y="593">Multi-gateway resilience</text>
+  </g>
+
+  <g filter="url(#chipShadow)" class="label">
+    <rect x="744" y="646" width="202" height="92" rx="28" fill="url(#chip)" stroke="rgba(162,202,241,0.14)" />
+    <circle cx="778" cy="692" r="12" fill="rgba(96,191,255,0.10)" stroke="rgba(143,216,255,0.24)" />
+    <path d="M772 692H784" stroke="#DDF4FF" stroke-width="2.4" stroke-linecap="round" />
+    <text class="chip-title" x="802" y="697">Stable routing</text>
+    <text class="chip-copy" x="802" y="719">Infrastructure without drag</text>
+  </g>
+
+  <g filter="url(#chipShadow)" class="label">
+    <rect x="726" y="752" width="216" height="94" rx="28" fill="url(#chip)" stroke="rgba(162,202,241,0.14)" />
+    <circle cx="760" cy="798" r="12" fill="rgba(96,191,255,0.10)" stroke="rgba(143,216,255,0.24)" />
+    <path d="M754 798L758 802L766 794" stroke="#DDF4FF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+    <text class="chip-title" x="784" y="803">Recovered checkouts</text>
+    <text class="chip-copy" x="784" y="825">Less revenue left behind</text>
+  </g>
+
+  <g class="label">
+    <text class="bottom" x="540" y="964" text-anchor="middle">Built for growth teams that care about performance, not complexity.</text>
+    <text x="540" y="998" fill="#84A8CB" font-size="19" font-weight="500" text-anchor="middle">stackaura.co.za</text>
+  </g>
+</svg>

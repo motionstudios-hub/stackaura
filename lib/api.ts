@@ -1,14 +1,14 @@
 import type { JsonValue } from "@/app/lib/types";
 
 const baseUrl =
+  process.env.CHECKOUT_API_URL ||
   process.env.CHECKOUT_API_BASE_URL ||
+  process.env.NEXT_PUBLIC_API_BASE ||
   process.env.NEXT_PUBLIC_CHECKOUT_API_BASE_URL ||
   "http://localhost:3001";
 
 const apiKey =
-  process.env.CHECKOUT_API_KEY ||
-  process.env.NEXT_PUBLIC_CHECKOUT_API_KEY ||
-  "";
+  process.env.CHECKOUT_API_KEY || "";
 
 export type Payment = {
   id: string;

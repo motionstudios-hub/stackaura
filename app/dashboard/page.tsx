@@ -167,8 +167,43 @@ function gatewayBarClass(gateway: string) {
 }
 
 export default async function DashboardPage() {
-  const me = await getServerMe();
-  if (!me) redirect("/login");
+  let me: Awaited<ReturnType<typeof getServerMe>> = null;
+  let authUnavailable = false;
+
+  try {
+    me = await getServerMe();
+  } catch {
+    authUnavailable = true;
+  }
+
+  if (!me) {
+    if (authUnavailable) {
+      return (
+        <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 sm:py-8">
+          <section className={cn(lightProductHeroClass, "p-6 lg:p-8")}>
+            <div className={lightProductSectionEyebrowClass}>Merchant dashboard</div>
+            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-[#0a2540] sm:text-4xl">
+              The dashboard is temporarily unavailable.
+            </h1>
+            <p className={cn(lightProductMutedTextClass, "mt-4 max-w-2xl")}>
+              Stackaura could not reach the authentication service just now, so your merchant
+              workspace could not be loaded. Please try again in a moment.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link href="/login" className={cn(publicPrimaryButtonClass, "px-5 py-3")}>
+                Return to sign in
+              </Link>
+              <Link href="/" className={cn(publicSecondaryButtonClass, "px-5 py-3")}>
+                Back to homepage
+              </Link>
+            </div>
+          </section>
+        </div>
+      );
+    }
+
+    redirect("/login");
+  }
 
   const activeMerchantId = (await cookies()).get("active_merchant_id")?.value;
   const memberships = me.memberships ?? [];
@@ -182,9 +217,15 @@ export default async function DashboardPage() {
   const selectedMerchantEmail =
     selectedMembership?.merchant.email || "Select a workspace to view merchant details";
   const isMerchantActive = selectedMembership?.merchant.isActive ?? false;
-  const analytics =
-    (await getServerMerchantAnalytics(selectedMerchantId)) ??
-    emptyAnalytics(selectedMerchantId);
+  let analytics = emptyAnalytics(selectedMerchantId);
+  let analyticsUnavailable = false;
+
+  try {
+    analytics = (await getServerMerchantAnalytics(selectedMerchantId)) ?? emptyAnalytics(selectedMerchantId);
+  } catch {
+    analyticsUnavailable = true;
+  }
+
   const hasPayments = analytics.totalPayments > 0;
 
   const routingFeatureItems = [
@@ -296,7 +337,17 @@ export default async function DashboardPage() {
               <span className={lightProductStatusPillClass(hasPayments ? "success" : "muted")}>
                 {hasPayments ? "Live analytics" : "Onboarding state"}
               </span>
+              {analyticsUnavailable ? (
+                <span className={lightProductStatusPillClass("warning")}>Analytics unavailable</span>
+              ) : null}
             </div>
+
+            {analyticsUnavailable ? (
+              <div className="mt-5 rounded-[24px] border border-amber-200/80 bg-amber-50/82 px-4 py-3 text-sm text-amber-900">
+                Live merchant analytics could not be refreshed right now. The rest of the dashboard
+                is still available while the analytics service recovers.
+              </div>
+            ) : null}
 
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <Link href="/dashboard/gateways" className={publicPrimaryButtonClass}>

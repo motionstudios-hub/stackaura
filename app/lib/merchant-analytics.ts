@@ -1,8 +1,7 @@
 import "server-only";
 
 import { cookies } from "next/headers";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://127.0.0.1:3001";
+import { fetchServerApi, isBackendUnavailableError } from "./server-api";
 
 export type MerchantAnalyticsResponse = {
   merchantId: string;
@@ -64,13 +63,21 @@ export async function getServerMerchantAnalytics(merchantId: string | null | und
   }
 
   const cookieHeader = (await cookies()).toString();
-  const res = await fetch(`${API_BASE}/v1/merchants/${merchantId}/analytics`, {
-    method: "GET",
-    headers: {
-      Cookie: cookieHeader,
-    },
-    cache: "no-store",
-  });
+  let res: Response;
+  try {
+    res = await fetchServerApi(`/v1/merchants/${merchantId}/analytics`, {
+      method: "GET",
+      headers: {
+        Cookie: cookieHeader,
+      },
+      cache: "no-store",
+    });
+  } catch (error) {
+    if (isBackendUnavailableError(error)) {
+      throw new Error("merchant analytics service unavailable");
+    }
+    throw error;
+  }
 
   if (res.status === 401 || res.status === 404) {
     return null;

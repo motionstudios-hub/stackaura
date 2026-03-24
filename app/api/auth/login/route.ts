@@ -1,16 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://127.0.0.1:3001";
+import { fetchServerApi } from "@/app/lib/server-api";
 
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}));
 
-  const res = await fetch(`${API_BASE}/v1/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-    cache: "no-store",
-  });
+  let res: Response;
+  try {
+    res = await fetchServerApi("/v1/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      cache: "no-store",
+    });
+  } catch {
+    return NextResponse.json(
+      { message: "Authentication service unavailable. Please try again shortly." },
+      { status: 503 }
+    );
+  }
 
   const text = await res.text();
 

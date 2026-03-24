@@ -33,11 +33,9 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 export function resolvePaymentProxyContext({
   activeMerchantId,
   incomingAuthorization,
-  dashboardApiKey: _dashboardApiKey,
 }: {
   activeMerchantId?: string | null;
   incomingAuthorization?: string | null;
-  dashboardApiKey?: string | null;
 }): PaymentProxyContext {
   const merchantId = trimToNull(activeMerchantId);
   if (merchantId) {
