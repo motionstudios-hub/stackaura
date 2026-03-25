@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useMemo, useTransition } from "react";
+import { useTransition } from "react";
 import {
   cn,
   lightProductHeroClass,
@@ -9,33 +9,25 @@ import {
 import { resolveDashboardTitle } from "./dashboard-nav";
 import DashboardNotifications from "./DashboardNotifications";
 import DashboardSearch from "./DashboardSearch";
-import { Avatar, AvatarFallback } from "../../components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar";
 import { Button } from "../../components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../../components/ui/popover";
 import { Separator } from "../../components/ui/separator";
+import { useProfileAvatar } from "./use-profile-avatar";
 
 export default function Header({
+  userId,
   userEmail,
   onMenuToggle,
 }: {
+  userId: string;
   userEmail: string;
   onMenuToggle: () => void;
 }) {
   const pathname = usePathname();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-
-  const initials = useMemo(
-    () =>
-      userEmail
-        .split("@")[0]
-        .split(/[._-]/)
-        .filter(Boolean)
-        .slice(0, 2)
-        .map((part) => part[0]?.toUpperCase())
-        .join("") || "S",
-    [userEmail],
-  );
+  const { avatarSrc, initials } = useProfileAvatar(userId, userEmail);
 
   function logout() {
     startTransition(async () => {
@@ -89,6 +81,7 @@ export default function Header({
                     className="inline-flex min-h-[48px] items-center gap-3 rounded-2xl px-3 py-2"
                   >
                     <Avatar>
+                      <AvatarImage src={avatarSrc ?? undefined} alt={`${userEmail} profile photo`} />
                       <AvatarFallback>{initials}</AvatarFallback>
                     </Avatar>
                     <span className="hidden max-w-[220px] truncate text-left sm:block">
@@ -104,6 +97,7 @@ export default function Header({
                   <div className="rounded-[24px] border border-white/45 bg-white/88 p-2 shadow-[0_18px_34px_rgba(122,146,168,0.16)] backdrop-blur-2xl">
                     <div className="flex items-center gap-3 px-4 py-4">
                       <Avatar className="h-12 w-12">
+                        <AvatarImage src={avatarSrc ?? undefined} alt={`${userEmail} profile photo`} />
                         <AvatarFallback>{initials}</AvatarFallback>
                       </Avatar>
                       <div className="min-w-0">
@@ -122,7 +116,7 @@ export default function Header({
                         onClick={() => router.push("/dashboard/settings#profile")}
                         className="flex rounded-2xl px-4 py-3 text-left text-sm font-medium text-[#425466] transition hover:bg-white/60 hover:text-[#0a2540]"
                       >
-                        View profile
+                        Edit profile
                       </button>
                       <button
                         type="button"

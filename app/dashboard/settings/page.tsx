@@ -7,7 +7,6 @@ import {
   lightProductMutedTextClass,
   lightProductPanelClass,
   lightProductSectionEyebrowClass,
-  lightProductStatusPillClass,
   publicSecondaryButtonClass,
 } from "../../components/stackaura-ui";
 import {
@@ -17,6 +16,7 @@ import {
   getSelectedMerchantWorkspace,
 } from "../console-data";
 import { formatNumber, formatPlanLabel } from "../console-utils";
+import ProfileSettingsCard from "../profile-settings-card";
 
 export default async function DashboardSettingsPage() {
   const workspace = await getSelectedMerchantWorkspace();
@@ -94,20 +94,12 @@ export default async function DashboardSettingsPage() {
             Signed-in operator
           </div>
 
-          <div className="mt-5 grid gap-3">
-            <div className={cn(lightProductInsetPanelClass, "p-4")}>
-              <div className="text-xs uppercase tracking-[0.18em] text-[#6b7c93]">User email</div>
-              <div className="mt-2 text-sm text-[#0a2540]">{workspace.me.user.email}</div>
-            </div>
-            <div className={cn(lightProductInsetPanelClass, "p-4")}>
-              <div className="text-xs uppercase tracking-[0.18em] text-[#6b7c93]">Merchant status</div>
-              <div className="mt-2">
-                <span className={lightProductStatusPillClass(workspace.isMerchantActive ? "success" : "warning")}>
-                  {workspace.isMerchantActive ? "Active" : "Pending"}
-                </span>
-              </div>
-            </div>
-          </div>
+          <ProfileSettingsCard
+            userId={workspace.me.user.id}
+            userEmail={workspace.me.user.email}
+            role={workspace.selectedMembership?.role || "Workspace operator"}
+            isMerchantActive={workspace.isMerchantActive}
+          />
         </div>
 
         <div id="security" className={cn(lightProductPanelClass, "scroll-mt-28 p-6 lg:p-7")}>

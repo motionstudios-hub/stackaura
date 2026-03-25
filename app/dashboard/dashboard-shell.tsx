@@ -9,9 +9,11 @@ import Sidebar from "./Sidebar";
 export default function DashboardShell({
   children,
   userEmail,
+  userId,
 }: {
   children: ReactNode;
   userEmail: string;
+  userId: string;
 }) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -31,7 +33,11 @@ export default function DashboardShell({
           collapsed ? "lg:pl-[108px]" : "lg:pl-[288px]",
         )}
       >
-        <Header userEmail={userEmail} onMenuToggle={() => setMobileOpen((open) => !open)} />
+        <Header
+          userEmail={userEmail}
+          userId={userId}
+          onMenuToggle={() => setMobileOpen((open) => !open)}
+        />
         <div className="relative z-10 pb-10">{children}</div>
       </div>
     </SoftProductBackground>

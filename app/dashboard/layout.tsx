@@ -11,5 +11,9 @@ export default async function DashboardLayout({
   const me = await getServerMe();
   if (!me) redirect("/login");
 
-  return <DashboardShell userEmail={me.user.email}>{children}</DashboardShell>;
+  return (
+    <DashboardShell userEmail={me.user.email} userId={me.user.id}>
+      {children}
+    </DashboardShell>
+  );
 }
