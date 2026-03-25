@@ -131,8 +131,8 @@ export default function ProfileSettingsCard({
   return (
     <div className="mt-5 grid gap-3">
       <div className={cn(lightProductInsetPanelClass, "p-5")}>
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-4">
+        <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_220px] xl:items-start">
+          <div className="flex min-w-0 items-center gap-4">
             <Avatar className="h-20 w-20 rounded-[28px]">
               <AvatarImage src={avatarSrc ?? undefined} alt={`${userEmail} profile photo`} />
               <AvatarFallback className="rounded-[28px] text-2xl font-semibold">
@@ -141,7 +141,7 @@ export default function ProfileSettingsCard({
             </Avatar>
 
             <div className="min-w-0">
-              <div className="truncate text-lg font-semibold text-[#0a2540] dark:text-white">
+              <div className="break-words text-lg font-semibold text-[#0a2540] dark:text-white">
                 {userEmail}
               </div>
               <div className="mt-1 text-xs uppercase tracking-[0.18em] text-[#6b7c93] dark:text-[#8dd8ff]">
@@ -155,7 +155,7 @@ export default function ProfileSettingsCard({
             </div>
           </div>
 
-          <div className="flex flex-col gap-2 sm:min-w-[210px]">
+          <div className="flex w-full flex-col gap-2 xl:justify-self-end">
             <input
               ref={inputRef}
               type="file"
