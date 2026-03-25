@@ -2,7 +2,8 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { cn, lightProductInputClass, lightProductPanelClass } from "../components/stackaura-ui";
+import { cn, lightProductPanelClass } from "../components/stackaura-ui";
+import { Input } from "../../components/ui/input";
 
 type SearchResult = {
   id: string;
@@ -95,7 +96,7 @@ export default function DashboardSearch() {
   }
 
   return (
-    <div ref={containerRef} className="relative min-w-0 sm:min-w-[320px]">
+    <div ref={containerRef} className="relative w-full min-w-0 sm:w-[340px]">
       <svg
         viewBox="0 0 20 20"
         className="pointer-events-none absolute left-4 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-[#6b7c93]"
@@ -105,7 +106,7 @@ export default function DashboardSearch() {
         <path d="M13 13L17 17" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
       </svg>
 
-      <input
+      <Input
         type="search"
         value={query}
         onChange={(event) => {
@@ -120,7 +121,7 @@ export default function DashboardSearch() {
           }
         }}
         placeholder="Search payments, customers, transactions..."
-        className={cn(lightProductInputClass, "min-h-[48px] pl-11")}
+        className={cn("h-11 w-full pl-11 pr-4")}
       />
 
       {showDropdown ? (

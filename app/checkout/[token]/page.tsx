@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { use, useEffect, useMemo, useState } from "react";
 import { normalizeRedirectPayload, submitRedirect } from "../../lib/payment-redirect";
+import { trackMetaEvent } from "../../lib/meta-pixel";
 import {
   BrandLockup,
   SoftProductBackground,
@@ -21,14 +22,26 @@ import {
 type CheckoutPayload = {
   merchantName: string;
   reference: string;
+  baseAmountCents: number;
   amountCents: number;
+  chargeAmountCents?: number;
+  platformFeeCents: number;
+  providerFeeCents?: number | null;
+  merchantNetCents?: number;
   currency: string;
   status: string;
   description: string | null;
   customerEmail: string | null;
   expiresAt: string;
-  gateway: string | null;
+  gateway?: string | null;
+  currentGateway?: string | null;
   redirectUrl: string | null;
+  redirectForm?: {
+    action?: string;
+    url?: string;
+    method?: "GET" | "POST";
+    fields?: Record<string, string>;
+  } | null;
 };
 
 type PageProps = {
@@ -133,12 +146,34 @@ export default function HostedCheckoutPage({ params }: PageProps) {
     return () => window.clearInterval(timer);
   }, []);
 
-  const amount = useMemo(() => {
-    if (!payment) return null;
-    return formatMoney(payment.amountCents, payment.currency);
+  useEffect(() => {
+    if (!payment) return;
+
+    trackMetaEvent("ViewContent", {
+      value: (payment.chargeAmountCents ?? payment.amountCents) / 100,
+      currency: payment.currency || "ZAR",
+    });
   }, [payment]);
 
-  const gateway = useMemo(() => gatewayLabel(payment?.gateway), [payment?.gateway]);
+  const amount = useMemo(() => {
+    if (!payment) return null;
+    return formatMoney(payment.chargeAmountCents ?? payment.amountCents, payment.currency);
+  }, [payment]);
+
+  const baseAmount = useMemo(() => {
+    if (!payment) return null;
+    return formatMoney(payment.baseAmountCents ?? payment.amountCents, payment.currency);
+  }, [payment]);
+
+  const platformFee = useMemo(() => {
+    if (!payment) return null;
+    return formatMoney(payment.platformFeeCents ?? 0, payment.currency);
+  }, [payment]);
+
+  const gateway = useMemo(
+    () => gatewayLabel(payment?.currentGateway ?? payment?.gateway),
+    [payment?.currentGateway, payment?.gateway]
+  );
 
   const expiresIn = useMemo(() => {
     if (!payment) return "--:--";
@@ -210,7 +245,7 @@ export default function HostedCheckoutPage({ params }: PageProps) {
                     </div>
 
                     <div className="mt-8 text-xs font-medium uppercase tracking-[0.18em] text-[#6b7c93]">
-                      Payment amount
+                      Total charge
                     </div>
                     <div className="mt-3 text-5xl font-semibold tracking-[-0.05em] text-[#0a2540]">
                       {amount}
@@ -235,6 +270,26 @@ export default function HostedCheckoutPage({ params }: PageProps) {
                           </div>
                           <div className="mt-2 text-sm text-[#0a2540]">
                             {payment.customerEmail ?? "Not provided"}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mt-5 rounded-[20px] border border-white/48 bg-white/52 p-4">
+                        <div className="text-xs uppercase tracking-[0.18em] text-[#6b7c93]">
+                          Amount breakdown
+                        </div>
+                        <div className="mt-4 space-y-3 text-sm">
+                          <div className="flex items-start justify-between gap-3">
+                            <span className="text-[#6b7c93]">Base amount</span>
+                            <span className="text-right text-[#0a2540]">{baseAmount ?? "—"}</span>
+                          </div>
+                          <div className="flex items-start justify-between gap-3">
+                            <span className="text-[#6b7c93]">Stackaura fee</span>
+                            <span className="text-right text-[#0a2540]">{platformFee ?? "—"}</span>
+                          </div>
+                          <div className="flex items-start justify-between gap-3 border-t border-white/48 pt-3">
+                            <span className="font-medium text-[#425466]">Total charged</span>
+                            <span className="text-right font-semibold text-[#0a2540]">{amount ?? "—"}</span>
                           </div>
                         </div>
                       </div>
@@ -331,11 +386,26 @@ export default function HostedCheckoutPage({ params }: PageProps) {
                   </div>
 
                   <div className="flex items-start justify-between gap-3">
-                    <span className="text-[#6b7c93]">Amount</span>
+                    <span className="text-[#6b7c93]">Base amount</span>
+                    <span className="text-right text-[#0a2540]">{baseAmount ?? "—"}</span>
+                  </div>
+
+                  <div className="flex items-start justify-between gap-3">
+                    <span className="text-[#6b7c93]">Stackaura fee</span>
+                    <span className="text-right text-[#0a2540]">{platformFee ?? "—"}</span>
+                  </div>
+
+                  <div className="flex items-start justify-between gap-3">
+                    <span className="text-[#6b7c93]">Total charged</span>
                     <span className="text-right font-medium text-[#0a2540]">{amount ?? "—"}</span>
                   </div>
                 </div>
               </div>
+
+              <p className="mt-4 text-sm leading-6 text-[#6b7c93]">
+                Gateway fees are charged separately through the connected payment rail when
+                applicable.
+              </p>
             </section>
 
             <section className={cn(lightProductInsetPanelClass, "p-5 sm:p-6")}>

@@ -64,7 +64,7 @@ export default async function DashboardSettingsPage() {
       </section>
 
       <section className="mt-8 grid gap-6 lg:grid-cols-2">
-        <div className={cn(lightProductPanelClass, "p-6 lg:p-7")}>
+        <div id="workspace" className={cn(lightProductPanelClass, "scroll-mt-28 p-6 lg:p-7")}>
           <div className={lightProductSectionEyebrowClass}>Workspace</div>
           <div className="mt-2 text-2xl font-semibold tracking-tight text-[#0a2540]">
             Merchant profile
@@ -88,7 +88,7 @@ export default async function DashboardSettingsPage() {
           </div>
         </div>
 
-        <div className={cn(lightProductPanelClass, "p-6 lg:p-7")}>
+        <div id="profile" className={cn(lightProductPanelClass, "scroll-mt-28 p-6 lg:p-7")}>
           <div className={lightProductSectionEyebrowClass}>Profile</div>
           <div className="mt-2 text-2xl font-semibold tracking-tight text-[#0a2540]">
             Signed-in operator
@@ -110,7 +110,7 @@ export default async function DashboardSettingsPage() {
           </div>
         </div>
 
-        <div className={cn(lightProductPanelClass, "p-6 lg:p-7")}>
+        <div id="security" className={cn(lightProductPanelClass, "scroll-mt-28 p-6 lg:p-7")}>
           <div className={lightProductSectionEyebrowClass}>Security</div>
           <div className="mt-2 text-2xl font-semibold tracking-tight text-[#0a2540]">
             Access and credential posture
@@ -134,7 +134,7 @@ export default async function DashboardSettingsPage() {
           </div>
         </div>
 
-        <div className={cn(lightProductPanelClass, "p-6 lg:p-7")}>
+        <div id="notifications" className={cn(lightProductPanelClass, "scroll-mt-28 p-6 lg:p-7")}>
           <div className={lightProductSectionEyebrowClass}>Notifications</div>
           <div className="mt-2 text-2xl font-semibold tracking-tight text-[#0a2540]">
             Operational communication channels
