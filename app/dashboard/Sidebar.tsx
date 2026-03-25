@@ -4,31 +4,55 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { cn } from "../components/stackaura-ui";
+import {
+  cn,
+  lightProductCompactGhostButtonClass,
+  lightProductHeroClass,
+} from "../components/stackaura-ui";
 
 type SidebarItem = {
   href: string;
   label: string;
-  icon: "overview" | "payments" | "payouts" | "customers" | "routing" | "recovery" | "reports" | "settings";
+  shortLabel: string;
+  icon:
+    | "overview"
+    | "payments"
+    | "payouts"
+    | "customers"
+    | "routing"
+    | "recovery"
+    | "api"
+    | "gateways"
+    | "settings";
 };
 
 const navItems: SidebarItem[] = [
-  { href: "/dashboard", label: "Overview", icon: "overview" },
-  { href: "/dashboard#payments", label: "Payments", icon: "payments" },
-  { href: "/dashboard#payouts", label: "Payouts", icon: "payouts" },
-  { href: "/dashboard#customers", label: "Customers", icon: "customers" },
-  { href: "/dashboard#routing", label: "Routing", icon: "routing" },
-  { href: "/dashboard#recovery", label: "Recovery", icon: "recovery" },
-  { href: "/dashboard#reports", label: "Reports", icon: "reports" },
-  { href: "/dashboard#settings", label: "Settings", icon: "settings" },
+  { href: "/dashboard", label: "Overview", shortLabel: "Overview", icon: "overview" },
+  { href: "/dashboard#payments", label: "Payments", shortLabel: "Payments", icon: "payments" },
+  { href: "/dashboard#payouts", label: "Payouts", shortLabel: "Payouts", icon: "payouts" },
+  { href: "/dashboard#customers", label: "Customers", shortLabel: "Customers", icon: "customers" },
+  { href: "/dashboard#routing", label: "Routing", shortLabel: "Routing", icon: "routing" },
+  { href: "/dashboard#recovery", label: "Recovery", shortLabel: "Recovery", icon: "recovery" },
+  { href: "/dashboard/api-keys", label: "API Keys", shortLabel: "API Keys", icon: "api" },
+  { href: "/dashboard/gateways", label: "Gateways", shortLabel: "Gateways", icon: "gateways" },
+  { href: "/dashboard#settings", label: "Settings", shortLabel: "Settings", icon: "settings" },
 ];
 
-function iconClass(active: boolean) {
-  return active ? "#ffffff" : "#a5c5de";
+function isActiveLink(pathname: string, currentHash: string, href: string) {
+  const [basePath, hash = ""] = href.split("#");
+  if (pathname !== basePath) {
+    return !hash && basePath !== "/dashboard" && pathname.startsWith(`${basePath}/`);
+  }
+
+  if (!hash) {
+    return !currentHash;
+  }
+
+  return currentHash === `#${hash}`;
 }
 
-function NavIcon({ icon, active }: { icon: SidebarItem["icon"]; active: boolean }) {
-  const stroke = iconClass(active);
+function navIcon(active: boolean, icon: SidebarItem["icon"]) {
+  const stroke = active ? "#0a2540" : "#6b7c93";
 
   if (icon === "overview") {
     return (
@@ -56,7 +80,7 @@ function NavIcon({ icon, active }: { icon: SidebarItem["icon"]; active: boolean 
       <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none">
         <path d="M10 3.5V14" stroke={stroke} strokeWidth="1.6" strokeLinecap="round" />
         <path d="M6.5 10.5L10 14L13.5 10.5" stroke={stroke} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-        <rect x="3" y="14.5" width="14" height="2.5" rx="1.25" fill={stroke} fillOpacity="0.18" />
+        <path d="M4 16H16" stroke={stroke} strokeWidth="1.6" strokeLinecap="round" />
       </svg>
     );
   }
@@ -93,12 +117,22 @@ function NavIcon({ icon, active }: { icon: SidebarItem["icon"]; active: boolean 
     );
   }
 
-  if (icon === "reports") {
+  if (icon === "api") {
     return (
       <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none">
-        <path d="M4 15.5V10.5" stroke={stroke} strokeWidth="1.6" strokeLinecap="round" />
-        <path d="M10 15.5V6.5" stroke={stroke} strokeWidth="1.6" strokeLinecap="round" />
-        <path d="M16 15.5V3.5" stroke={stroke} strokeWidth="1.6" strokeLinecap="round" />
+        <path d="M6 6L3 10L6 14" stroke={stroke} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M14 6L17 10L14 14" stroke={stroke} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M11.5 4.5L8.5 15.5" stroke={stroke} strokeWidth="1.6" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  if (icon === "gateways") {
+    return (
+      <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none">
+        <rect x="3" y="5" width="14" height="10" rx="2" stroke={stroke} strokeWidth="1.6" />
+        <path d="M7 8.5H13" stroke={stroke} strokeWidth="1.6" strokeLinecap="round" />
+        <path d="M7 11.5H11" stroke={stroke} strokeWidth="1.6" strokeLinecap="round" />
       </svg>
     );
   }
@@ -110,33 +144,20 @@ function NavIcon({ icon, active }: { icon: SidebarItem["icon"]; active: boolean 
       <path d="M10 15.5V17.5" stroke={stroke} strokeWidth="1.6" strokeLinecap="round" />
       <path d="M17.5 10H15.5" stroke={stroke} strokeWidth="1.6" strokeLinecap="round" />
       <path d="M4.5 10H2.5" stroke={stroke} strokeWidth="1.6" strokeLinecap="round" />
-      <path d="M15.3 4.7L13.9 6.1" stroke={stroke} strokeWidth="1.6" strokeLinecap="round" />
-      <path d="M6.1 13.9L4.7 15.3" stroke={stroke} strokeWidth="1.6" strokeLinecap="round" />
-      <path d="M15.3 15.3L13.9 13.9" stroke={stroke} strokeWidth="1.6" strokeLinecap="round" />
-      <path d="M6.1 6.1L4.7 4.7" stroke={stroke} strokeWidth="1.6" strokeLinecap="round" />
     </svg>
   );
 }
 
-function isActiveLink(pathname: string, currentHash: string, href: string) {
-  const [basePath, hash = ""] = href.split("#");
-  if (pathname !== basePath) {
-    return false;
-  }
-
-  if (!hash) {
-    return !currentHash;
-  }
-
-  return currentHash === `#${hash}`;
-}
-
 export default function Sidebar({
-  merchantName,
-  userEmail,
+  collapsed,
+  mobileOpen,
+  onCollapseToggle,
+  onCloseMobile,
 }: {
-  merchantName: string;
-  userEmail: string;
+  collapsed: boolean;
+  mobileOpen: boolean;
+  onCollapseToggle: () => void;
+  onCloseMobile: () => void;
 }) {
   const pathname = usePathname();
   const [currentHash, setCurrentHash] = useState("");
@@ -158,58 +179,107 @@ export default function Sidebar({
   );
 
   return (
-    <aside className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-30 lg:flex lg:w-[292px] lg:flex-col lg:px-5 lg:py-5">
-      <div className="flex h-full flex-col rounded-[32px] border border-white/12 bg-[linear-gradient(180deg,rgba(13,32,60,0.96)_0%,rgba(8,21,47,0.94)_48%,rgba(18,38,72,0.94)_100%)] px-5 py-6 shadow-[0_30px_80px_rgba(0,0,0,0.34),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-2xl">
-        <Link
-          href="/dashboard"
-          className="flex items-center gap-3 rounded-[24px] border border-white/8 bg-white/5 px-4 py-3 shadow-[0_10px_26px_rgba(0,0,0,0.22)]"
-        >
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-[linear-gradient(180deg,rgba(68,176,255,0.24),rgba(87,76,240,0.12))]">
-            <Image src="/stackaura-logo.png" alt="Stackaura" width={24} height={24} className="object-contain" />
-          </div>
-          <div className="min-w-0">
-            <div className="text-lg font-semibold tracking-tight text-white">Stackaura</div>
-            <div className="text-[11px] uppercase tracking-[0.22em] text-[#8dd8ff]">Merchant Console</div>
-          </div>
-        </Link>
+    <>
+      <div
+        className={cn(
+          "fixed inset-0 z-30 bg-[#0a2540]/28 backdrop-blur-[2px] transition lg:hidden",
+          mobileOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0",
+        )}
+        onClick={onCloseMobile}
+      />
 
-        <nav className="mt-7 grid gap-2">
-          {items.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className={cn(
-                "group flex items-center gap-3 rounded-2xl border px-4 py-3 text-sm font-medium transition",
-                item.active
-                  ? "border-[#8dd8ff]/26 bg-[linear-gradient(180deg,rgba(130,226,255,0.18)_0%,rgba(76,109,255,0.18)_100%)] text-white shadow-[0_14px_32px_rgba(34,89,170,0.22)]"
-                  : "border-white/8 bg-white/[0.03] text-[#c9d8e7] hover:border-[#8dd8ff]/18 hover:bg-white/[0.06] hover:text-white",
-              )}
-            >
-              <span
-                className={cn(
-                  "flex h-10 w-10 items-center justify-center rounded-2xl border transition",
-                  item.active
-                    ? "border-white/12 bg-white/10"
-                    : "border-white/8 bg-white/[0.03] group-hover:border-[#8dd8ff]/18 group-hover:bg-white/[0.06]",
-                )}
-              >
-                <NavIcon icon={item.icon} active={item.active} />
-              </span>
-              <span>{item.label}</span>
+      <aside
+        className={cn(
+          "fixed inset-y-0 left-0 z-40 flex flex-col px-4 py-5 transition-transform duration-300 lg:translate-x-0",
+          collapsed ? "w-[108px]" : "w-[288px]",
+          mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
+        )}
+      >
+        <div className={cn(lightProductHeroClass, "flex h-full flex-col overflow-hidden px-3 py-4")}>
+          <div className="flex items-center justify-between gap-3 px-2">
+            <Link href="/dashboard" className="flex min-w-0 items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-[20px] border border-white/48 bg-[linear-gradient(180deg,rgba(255,255,255,0.34)_0%,rgba(238,246,250,0.24)_100%),radial-gradient(circle_at_30%_25%,rgba(125,211,252,0.18),transparent_52%),radial-gradient(circle_at_72%_74%,rgba(167,139,250,0.16),transparent_48%)] shadow-[0_14px_32px_rgba(122,146,168,0.14),inset_0_1px_0_rgba(255,255,255,0.58),inset_0_0_24px_rgba(122,115,255,0.08)] backdrop-blur-2xl">
+                <Image src="/stackaura-logo.png" alt="Stackaura" width={26} height={26} className="object-contain" priority />
+              </div>
+              {!collapsed ? (
+                <div className="min-w-0">
+                  <div className="truncate text-lg font-semibold tracking-tight text-[#0a2540]">
+                    Stackaura
+                  </div>
+                  <div className="text-[11px] uppercase tracking-[0.22em] text-[#635bff]">
+                    Merchant Console
+                  </div>
+                </div>
+              ) : null}
             </Link>
-          ))}
-        </nav>
 
-        <div className="mt-auto rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
-          <div className="text-[11px] uppercase tracking-[0.2em] text-[#7ea4c7]">Live workspace</div>
-          <div className="mt-3 text-lg font-semibold tracking-tight text-white">{merchantName}</div>
-          <div className="mt-1 truncate text-sm text-[#93abc5]">{userEmail}</div>
-          <div className="mt-4 flex items-center gap-2">
-            <span className="inline-flex h-2.5 w-2.5 rounded-full bg-[#8dd8ff] shadow-[0_0_18px_rgba(141,216,255,0.65)]" />
-            <span className="text-sm text-[#d3e5f5]">Workspace connected</span>
+            <button
+              type="button"
+              onClick={onCollapseToggle}
+              className={cn(lightProductCompactGhostButtonClass, "hidden h-10 w-10 rounded-2xl px-0 lg:inline-flex")}
+              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            >
+              <svg viewBox="0 0 20 20" className="h-4.5 w-4.5" fill="none">
+                <path d={collapsed ? "M7 4L13 10L7 16" : "M13 4L7 10L13 16"} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          </div>
+
+          <nav className="mt-5 grid gap-2">
+            {items.map((item) => (
+              <Link
+                key={`${item.href}-${item.label}`}
+                href={item.href}
+                onClick={() => {
+                  if (mobileOpen) onCloseMobile();
+                }}
+                className={cn(
+                  "group flex items-center gap-3 rounded-2xl border px-3 py-3 text-sm font-semibold transition",
+                  item.active
+                    ? "border-white/52 bg-[linear-gradient(180deg,rgba(122,115,255,0.22)_0%,rgba(160,233,255,0.20)_100%)] text-[#0a2540]"
+                    : "border-white/42 bg-white/18 text-[#425466] hover:border-white/55 hover:bg-white/28 hover:text-[#0a2540]",
+                  collapsed && "justify-center px-0",
+                )}
+                title={collapsed ? item.label : undefined}
+              >
+                <span
+                  className={cn(
+                    "flex h-10 w-10 items-center justify-center rounded-2xl border transition",
+                    item.active
+                      ? "border-white/48 bg-white/32"
+                      : "border-white/34 bg-white/22 group-hover:border-white/44 group-hover:bg-white/28",
+                  )}
+                >
+                  {navIcon(item.active, item.icon)}
+                </span>
+                {!collapsed ? <span className="truncate">{item.shortLabel}</span> : null}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="mt-auto px-2">
+            {!collapsed ? (
+              <div className="rounded-[24px] border border-white/42 bg-white/22 p-4 shadow-[0_10px_24px_rgba(133,156,180,0.10)] backdrop-blur-2xl">
+                <div className="text-[11px] uppercase tracking-[0.2em] text-[#6b7c93]">Workspace navigation</div>
+                <div className="mt-2 text-sm leading-6 text-[#425466]">
+                  Collapse the sidebar for more canvas space or keep it expanded for full section labels.
+                </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={onCollapseToggle}
+                className={cn(lightProductCompactGhostButtonClass, "h-10 w-10 rounded-2xl px-0")}
+                aria-label="Expand sidebar"
+              >
+                <svg viewBox="0 0 20 20" className="h-4.5 w-4.5" fill="none">
+                  <path d="M7 4L13 10L7 16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+            )}
           </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   );
 }
