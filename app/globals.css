@@ -1,10 +1,20 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:is(.dark *));
+
 :root {
   --background: #dbe8ee;
   --foreground: #0a2540;
   --selection-background: rgba(99, 91, 255, 0.24);
   --selection-foreground: #071b32;
+}
+
+.dark {
+  --background: #020817;
+  --foreground: #eaf4ff;
+  --selection-background: rgba(160, 233, 255, 0.22);
+  --selection-foreground: #f8fbff;
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -14,11 +24,8 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #dbe8ee;
-    --foreground: #0a2540;
-  }
+html {
+  background: var(--background);
 }
 
 body {
@@ -27,6 +34,9 @@ body {
   font-family: "SF Pro Display", "Segoe UI", sans-serif;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  transition:
+    background-color 200ms ease,
+    color 200ms ease;
 }
 
 ::selection {
@@ -174,6 +184,63 @@ body {
 .africa-network-node-core {
   animation: africa-network-node-core 7.2s ease-in-out infinite;
   animation-delay: var(--africa-node-delay, 0s);
+}
+
+.dark .text-\[\#0a2540\] {
+  color: #f7fbff;
+}
+
+.dark .text-\[\#425466\] {
+  color: #bfd0e4;
+}
+
+.dark .text-\[\#6b7c93\] {
+  color: #89a4bf;
+}
+
+.dark .text-\[\#4f46e5\],
+.dark .text-\[\#5146df\],
+.dark .text-\[\#635bff\] {
+  color: #9ddcff;
+}
+
+.dark .text-gray-600,
+.dark .text-gray-700 {
+  color: #bfd0e4;
+}
+
+.dark .bg-white\/88,
+.dark .bg-white\/58,
+.dark .bg-white\/54,
+.dark .bg-white\/52,
+.dark .bg-white\/50,
+.dark .bg-white\/42,
+.dark .bg-white\/40 {
+  background-color: rgba(8, 21, 47, 0.84);
+}
+
+.dark .bg-white\/34,
+.dark .bg-white\/32,
+.dark .bg-white\/30,
+.dark .bg-white\/28,
+.dark .bg-white\/24,
+.dark .bg-white\/22,
+.dark .bg-white\/20,
+.dark .bg-white\/18,
+.dark .bg-white\/16,
+.dark .bg-white\/14,
+.dark .bg-white\/6 {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.dark .from-white {
+  --tw-gradient-from: rgba(8, 21, 47, 0.92) var(--tw-gradient-from-position);
+  --tw-gradient-to: rgba(8, 21, 47, 0) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
+.dark .to-slate-100 {
+  --tw-gradient-to: rgba(2, 8, 23, 0.88) var(--tw-gradient-to-position);
 }
 
 @media (prefers-reduced-motion: reduce) {
