@@ -179,7 +179,7 @@ export default function Sidebar({
           mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
         )}
       >
-        <div className={cn(lightProductHeroClass, "flex h-full flex-col overflow-hidden px-3 py-4")}>
+        <div className={cn(lightProductHeroClass, "flex h-full min-h-0 flex-col overflow-hidden px-3 py-4")}>
           <div className="flex items-center justify-between gap-3 px-2">
             <Link href="/dashboard" className="flex min-w-0 items-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-[20px] border border-white/48 bg-[linear-gradient(180deg,rgba(255,255,255,0.34)_0%,rgba(238,246,250,0.24)_100%),radial-gradient(circle_at_30%_25%,rgba(125,211,252,0.18),transparent_52%),radial-gradient(circle_at_72%_74%,rgba(167,139,250,0.16),transparent_48%)] shadow-[0_14px_32px_rgba(122,146,168,0.14),inset_0_1px_0_rgba(255,255,255,0.58),inset_0_0_24px_rgba(122,115,255,0.08)] backdrop-blur-2xl">
@@ -209,58 +209,69 @@ export default function Sidebar({
             </button>
           </div>
 
-          <nav className="mt-5 grid gap-2">
-            {items.map((item) => (
-              <Link
-                key={`${item.href}-${item.label}`}
-                href={item.href}
-                onClick={() => {
-                  if (mobileOpen) onCloseMobile();
-                }}
-                className={cn(
-                  "group flex items-center gap-3 rounded-2xl border px-3 py-3 text-sm font-semibold transition",
-                  item.active
-                    ? "border-white/52 bg-[linear-gradient(180deg,rgba(122,115,255,0.22)_0%,rgba(160,233,255,0.20)_100%)] text-[#0a2540]"
-                    : "border-white/42 bg-white/18 text-[#425466] hover:border-white/55 hover:bg-white/28 hover:text-[#0a2540]",
-                  collapsed && "justify-center px-0",
-                )}
-                title={collapsed ? item.label : undefined}
-              >
-                <span
+          <div className="mt-5 flex min-h-0 flex-1 flex-col">
+            <nav className="flex-1 space-y-2 overflow-y-auto overscroll-contain pr-1">
+              {items.map((item) => (
+                <Link
+                  key={`${item.href}-${item.label}`}
+                  href={item.href}
+                  onClick={() => {
+                    if (mobileOpen) onCloseMobile();
+                  }}
                   className={cn(
-                    "flex h-10 w-10 items-center justify-center rounded-2xl border transition",
+                    "group flex items-center gap-3 rounded-2xl border px-3 py-3 text-sm font-semibold transition",
                     item.active
-                      ? "border-white/48 bg-white/32"
-                      : "border-white/34 bg-white/22 group-hover:border-white/44 group-hover:bg-white/28",
+                      ? "border-white/52 bg-[linear-gradient(180deg,rgba(122,115,255,0.22)_0%,rgba(160,233,255,0.20)_100%)] text-[#0a2540]"
+                      : "border-white/42 bg-white/18 text-[#425466] hover:border-white/55 hover:bg-white/28 hover:text-[#0a2540]",
+                    collapsed && "justify-center px-0",
                   )}
+                  title={collapsed ? item.label : undefined}
                 >
-                  {navIcon(item.active, item.icon)}
-                </span>
-                {!collapsed ? <span className="truncate">{item.shortLabel}</span> : null}
-              </Link>
-            ))}
-          </nav>
+                  <span
+                    className={cn(
+                      "flex h-10 w-10 items-center justify-center rounded-2xl border transition",
+                      item.active
+                        ? "border-white/48 bg-white/32"
+                        : "border-white/34 bg-white/22 group-hover:border-white/44 group-hover:bg-white/28",
+                    )}
+                  >
+                    {navIcon(item.active, item.icon)}
+                  </span>
+                  {!collapsed ? <span className="truncate">{item.shortLabel}</span> : null}
+                </Link>
+              ))}
+            </nav>
 
-          <div className="mt-auto px-2">
-            {!collapsed ? (
-              <div className="rounded-[24px] border border-white/42 bg-white/22 p-4 shadow-[0_10px_24px_rgba(133,156,180,0.10)] backdrop-blur-2xl">
-                <div className="text-[11px] uppercase tracking-[0.2em] text-[#6b7c93]">Workspace navigation</div>
-                <div className="mt-2 text-sm leading-6 text-[#425466]">
-                  Collapse the sidebar for more canvas space or keep it expanded for full section labels.
+            <div className="mt-4 px-2">
+              {!collapsed ? (
+                <div className="rounded-[24px] border border-white/42 bg-white/22 p-4 shadow-[0_10px_24px_rgba(133,156,180,0.10)] backdrop-blur-2xl">
+                  <div className="text-[11px] uppercase tracking-[0.2em] text-[#6b7c93]">
+                    Workspace navigation
+                  </div>
+                  <div className="mt-2 text-sm leading-6 text-[#425466]">
+                    Collapse the sidebar for more canvas space or keep it expanded for full section
+                    labels.
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <button
-                type="button"
-                onClick={onCollapseToggle}
-                className={cn(lightProductCompactGhostButtonClass, "h-10 w-10 rounded-2xl px-0")}
-                aria-label="Expand sidebar"
-              >
-                <svg viewBox="0 0 20 20" className="h-4.5 w-4.5" fill="none">
-                  <path d="M7 4L13 10L7 16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-            )}
+              ) : (
+                <button
+                  type="button"
+                  onClick={onCollapseToggle}
+                  className={cn(lightProductCompactGhostButtonClass, "h-10 w-10 rounded-2xl px-0")}
+                  aria-label="Expand sidebar"
+                >
+                  <svg viewBox="0 0 20 20" className="h-4.5 w-4.5" fill="none">
+                    <path
+                      d="M7 4L13 10L7 16"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </aside>
