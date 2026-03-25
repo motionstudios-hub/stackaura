@@ -47,6 +47,26 @@ function navIcon(active: boolean, icon: DashboardNavIcon) {
     );
   }
 
+  if (icon === "payment_links") {
+    return (
+      <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none">
+        <path
+          d="M8 6.5H6.5C4.84 6.5 3.5 7.84 3.5 9.5C3.5 11.16 4.84 12.5 6.5 12.5H8"
+          stroke={stroke}
+          strokeWidth="1.6"
+          strokeLinecap="round"
+        />
+        <path
+          d="M12 6.5H13.5C15.16 6.5 16.5 7.84 16.5 9.5C16.5 11.16 15.16 12.5 13.5 12.5H12"
+          stroke={stroke}
+          strokeWidth="1.6"
+          strokeLinecap="round"
+        />
+        <path d="M7.5 9.5H12.5" stroke={stroke} strokeWidth="1.6" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
   if (icon === "payouts") {
     return (
       <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none">

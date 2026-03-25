@@ -1,6 +1,7 @@
 export type DashboardNavIcon =
   | "overview"
   | "payments"
+  | "payment_links"
   | "payouts"
   | "customers"
   | "routing"
@@ -19,6 +20,12 @@ export type DashboardNavItem = {
 export const dashboardNavItems: DashboardNavItem[] = [
   { href: "/dashboard", label: "Overview", shortLabel: "Overview", icon: "overview" },
   { href: "/dashboard/payments", label: "Payments", shortLabel: "Payments", icon: "payments" },
+  {
+    href: "/dashboard/payment-links",
+    label: "Payment Links",
+    shortLabel: "Payment Links",
+    icon: "payment_links",
+  },
   { href: "/dashboard/payouts", label: "Payouts", shortLabel: "Payouts", icon: "payouts" },
   { href: "/dashboard/customers", label: "Customers", shortLabel: "Customers", icon: "customers" },
   { href: "/dashboard/routing", label: "Routing", shortLabel: "Routing", icon: "routing" },
@@ -34,6 +41,7 @@ export function resolveDashboardTitle(pathname: string) {
 
   if (pathname.startsWith("/dashboard/api-keys")) return "API Keys";
   if (pathname.startsWith("/dashboard/gateways")) return "Gateways";
+  if (pathname.startsWith("/dashboard/payment-links")) return "Payment Links";
   if (pathname.startsWith("/dashboard/support")) return "Support";
   if (pathname.startsWith("/dashboard/payments")) return "Payments";
   if (pathname.startsWith("/dashboard/payouts")) return "Payouts";
