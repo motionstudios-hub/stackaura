@@ -3,55 +3,27 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
   cn,
   lightProductCompactGhostButtonClass,
   lightProductHeroClass,
 } from "../components/stackaura-ui";
+import { dashboardNavItems, type DashboardNavIcon } from "./dashboard-nav";
 
-type SidebarItem = {
-  href: string;
-  label: string;
-  shortLabel: string;
-  icon:
-    | "overview"
-    | "payments"
-    | "payouts"
-    | "customers"
-    | "routing"
-    | "recovery"
-    | "api"
-    | "gateways"
-    | "settings";
-};
-
-const navItems: SidebarItem[] = [
-  { href: "/dashboard", label: "Overview", shortLabel: "Overview", icon: "overview" },
-  { href: "/dashboard#payments", label: "Payments", shortLabel: "Payments", icon: "payments" },
-  { href: "/dashboard#payouts", label: "Payouts", shortLabel: "Payouts", icon: "payouts" },
-  { href: "/dashboard#customers", label: "Customers", shortLabel: "Customers", icon: "customers" },
-  { href: "/dashboard#routing", label: "Routing", shortLabel: "Routing", icon: "routing" },
-  { href: "/dashboard#recovery", label: "Recovery", shortLabel: "Recovery", icon: "recovery" },
-  { href: "/dashboard/api-keys", label: "API Keys", shortLabel: "API Keys", icon: "api" },
-  { href: "/dashboard/gateways", label: "Gateways", shortLabel: "Gateways", icon: "gateways" },
-  { href: "/dashboard#settings", label: "Settings", shortLabel: "Settings", icon: "settings" },
-];
-
-function isActiveLink(pathname: string, currentHash: string, href: string) {
-  const [basePath, hash = ""] = href.split("#");
-  if (pathname !== basePath) {
-    return !hash && basePath !== "/dashboard" && pathname.startsWith(`${basePath}/`);
+function isActiveLink(pathname: string, href: string) {
+  if (pathname === href) {
+    return true;
   }
 
-  if (!hash) {
-    return !currentHash;
+  if (href === "/dashboard") {
+    return pathname === href;
   }
 
-  return currentHash === `#${hash}`;
+  return pathname.startsWith(`${href}/`);
 }
 
-function navIcon(active: boolean, icon: SidebarItem["icon"]) {
+function navIcon(active: boolean, icon: DashboardNavIcon) {
   const stroke = active ? "#0a2540" : "#6b7c93";
 
   if (icon === "overview") {
@@ -160,22 +132,14 @@ export default function Sidebar({
   onCloseMobile: () => void;
 }) {
   const pathname = usePathname();
-  const [currentHash, setCurrentHash] = useState("");
-
-  useEffect(() => {
-    const updateHash = () => setCurrentHash(window.location.hash);
-    updateHash();
-    window.addEventListener("hashchange", updateHash);
-    return () => window.removeEventListener("hashchange", updateHash);
-  }, []);
 
   const items = useMemo(
     () =>
-      navItems.map((item) => ({
+      dashboardNavItems.map((item) => ({
         ...item,
-        active: isActiveLink(pathname, currentHash, item.href),
+        active: isActiveLink(pathname, item.href),
       })),
-    [currentHash, pathname],
+    [pathname],
   );
 
   return (

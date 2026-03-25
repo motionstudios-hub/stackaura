@@ -756,7 +756,7 @@ export default function GatewayConnectionsPage() {
         </div>
       ) : null}
 
-      <section className="mt-6 grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
+      <section id="ozow" className="scroll-mt-28 mt-6 grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
         <div className={cn(lightProductPanelClass, "overflow-hidden")}>
           <div className="border-b border-white/42 px-5 py-4">
             <div className="flex items-center justify-between gap-3">
@@ -967,7 +967,7 @@ export default function GatewayConnectionsPage() {
         </div>
       ) : null}
 
-      <section className="mt-6 grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
+      <section id="yoco" className="scroll-mt-28 mt-6 grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
         <div className={cn(lightProductPanelClass, "overflow-hidden")}>
           <div className="border-b border-white/42 px-5 py-4">
             <div className="flex items-center justify-between gap-3">
@@ -1139,7 +1139,7 @@ export default function GatewayConnectionsPage() {
         </div>
       </section>
 
-      <section className="mt-6 grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
+      <section id="paystack" className="scroll-mt-28 mt-6 grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
         <div className={cn(lightProductPanelClass, "overflow-hidden")}>
           <div className="border-b border-white/42 px-5 py-4">
             <div className="flex items-center justify-between gap-3">

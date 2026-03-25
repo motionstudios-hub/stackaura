@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import {
   cn,
@@ -105,6 +106,7 @@ function Modal({
 }
 
 export default function ApiKeysPage() {
+  const searchParams = useSearchParams();
   const [merchantId, setMerchantId] = useState<string | null>(null);
   const [env, setEnv] = useState<ApiEnv>("test");
   const [rows, setRows] = useState<ApiKeyRow[]>([]);
@@ -118,7 +120,32 @@ export default function ApiKeysPage() {
   const [revealOpen, setRevealOpen] = useState(false);
   const [createdSecret, setCreatedSecret] = useState<string | null>(null);
 
-  const filteredRows = useMemo(() => rows.filter((r) => resolveEnv(r) === env), [rows, env]);
+  const searchQuery = searchParams.get("q")?.trim().toLowerCase() ?? "";
+
+  const filteredRows = useMemo(
+    () =>
+      rows.filter((row) => {
+        if (resolveEnv(row) !== env) {
+          return false;
+        }
+
+        if (!searchQuery) {
+          return true;
+        }
+
+        const searchableText = [
+          row.label,
+          row.prefix ?? "",
+          row.last4 ?? "",
+          `${row.prefix ?? ""}_${row.last4 ?? ""}`,
+        ]
+          .join(" ")
+          .toLowerCase();
+
+        return searchableText.includes(searchQuery);
+      }),
+    [env, rows, searchQuery],
+  );
 
   async function loadActiveMerchant() {
     const res = await fetch("/api/active-merchant", { credentials: "include" });
@@ -266,6 +293,11 @@ export default function ApiKeysPage() {
                 Keys below are filtered by the active environment and can only be fully revealed at
                 creation time if the backend returns the secret.
               </div>
+              {searchQuery ? (
+                <div className="mt-3">
+                  <Badge tone="blue">Search: {searchQuery}</Badge>
+                </div>
+              ) : null}
             </div>
 
             <div className={cn(lightProductInsetPanelClass, "flex flex-col gap-3 p-3 sm:flex-row sm:items-center")}>
@@ -346,8 +378,17 @@ export default function ApiKeysPage() {
               ) : filteredRows.length === 0 ? (
                 <tr>
                   <td className="px-5 py-12 text-center text-[#6b7c93]" colSpan={6}>
-                    No keys yet for <span className="font-medium text-[#0a2540]">{env}</span>. Create one to
-                    start your integration.
+                    {searchQuery ? (
+                      <>
+                        No <span className="font-medium text-[#0a2540]">{env}</span> keys match{" "}
+                        <span className="font-medium text-[#0a2540]">“{searchQuery}”</span>.
+                      </>
+                    ) : (
+                      <>
+                        No keys yet for <span className="font-medium text-[#0a2540]">{env}</span>. Create one to
+                        start your integration.
+                      </>
+                    )}
                   </td>
                 </tr>
               ) : (
