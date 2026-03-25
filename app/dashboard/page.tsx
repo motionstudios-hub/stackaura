@@ -3,19 +3,23 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
   cn,
-  lightProductHeroClass,
-  lightProductInsetPanelClass,
-  lightProductMutedTextClass,
-  lightProductPanelClass,
-  lightProductSectionEyebrowClass,
-  lightProductStatusPillClass,
-  publicPrimaryButtonClass,
-  publicSecondaryButtonClass,
+  darkCompactGhostButtonClass,
+  darkInsetPanelClass,
+  darkMutedTextClass,
+  darkRichPanelClass,
+  darkSectionEyebrowClass,
+  darkStatusPillClass,
 } from "../components/stackaura-ui";
 import { getServerMe } from "../lib/auth";
-import { getServerMerchantAnalytics, type MerchantAnalyticsResponse } from "../lib/merchant-analytics";
+import {
+  getServerMerchantAnalytics,
+  type MerchantAnalyticsResponse,
+} from "../lib/merchant-analytics";
+import ActivityTable from "./ActivityTable";
 import ApiKeyWelcome from "./api-key-welcome";
 import MerchantSwitcher from "./merchant-switcher";
+import StatCard from "./StatCard";
+import VolumeTrendCard from "./VolumeTrendCard";
 
 type MerchantPlanSummary = {
   code: string;
@@ -24,8 +28,7 @@ type MerchantPlanSummary = {
   fallback: boolean;
 };
 
-type StatusTone = "success" | "violet" | "muted" | "warning";
-type TimelineStage = "CREATED" | "INITIATED" | "FAILED" | "FALLBACK" | "SUCCEEDED";
+type RailCode = "PAYSTACK" | "OZOW" | "YOCO";
 
 function resolveMerchantPlanSummary(
   merchant:
@@ -128,82 +131,33 @@ function formatPercent(value: number) {
   return `${value.toFixed(1)}%`;
 }
 
-function formatDateTime(value: string) {
-  const date = new Date(value);
-  return new Intl.DateTimeFormat("en-ZA", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(date);
+function railLabel(code: RailCode) {
+  if (code === "PAYSTACK") return "Paystack";
+  if (code === "OZOW") return "Ozow";
+  return "Yoco";
 }
 
-function paymentStatusTone(status: string): StatusTone {
-  if (status === "PAID") return "success";
-  if (status === "FAILED" || status === "CANCELLED") return "warning";
-  if (status === "REFUNDED") return "violet";
-  return "muted";
+function railRole(code: RailCode) {
+  if (code === "PAYSTACK") return "Primary";
+  if (code === "OZOW") return "Recovery";
+  return "Fallback";
 }
 
-function timelineStageTone(stage: TimelineStage): StatusTone {
-  if (stage === "SUCCEEDED") return "success";
-  if (stage === "FAILED") return "warning";
-  if (stage === "FALLBACK" || stage === "INITIATED") return "violet";
-  return "muted";
+function railCardTone(code: RailCode) {
+  if (code === "PAYSTACK") return "border-[#8dd8ff]/18 bg-[linear-gradient(180deg,rgba(141,216,255,0.10),rgba(255,255,255,0.03))]";
+  if (code === "OZOW") return "border-[#9388ff]/18 bg-[linear-gradient(180deg,rgba(123,114,255,0.10),rgba(255,255,255,0.03))]";
+  return "border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))]";
 }
 
-function gatewayBarClass(gateway: string) {
-  if (gateway === "PAYSTACK") {
-    return "bg-[linear-gradient(90deg,rgba(108,92,255,0.95)_0%,rgba(79,70,229,0.88)_100%)]";
-  }
-
-  if (gateway === "YOCO") {
-    return "bg-[linear-gradient(90deg,rgba(59,130,246,0.92)_0%,rgba(14,165,233,0.80)_100%)]";
-  }
-
-  if (gateway === "OZOW") {
-    return "bg-[linear-gradient(90deg,rgba(16,185,129,0.88)_0%,rgba(45,212,191,0.76)_100%)]";
-  }
-
-  return "bg-[linear-gradient(90deg,rgba(148,163,184,0.92)_0%,rgba(100,116,139,0.80)_100%)]";
+function railIcon(code: RailCode) {
+  if (code === "PAYSTACK") return "≡";
+  if (code === "OZOW") return "C";
+  return "✓";
 }
 
 export default async function DashboardPage() {
-  let me: Awaited<ReturnType<typeof getServerMe>> = null;
-  let authUnavailable = false;
-
-  try {
-    me = await getServerMe();
-  } catch {
-    authUnavailable = true;
-  }
-
-  if (!me) {
-    if (authUnavailable) {
-      return (
-        <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 sm:py-8">
-          <section className={cn(lightProductHeroClass, "p-6 lg:p-8")}>
-            <div className={lightProductSectionEyebrowClass}>Merchant dashboard</div>
-            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-[#0a2540] sm:text-4xl">
-              The dashboard is temporarily unavailable.
-            </h1>
-            <p className={cn(lightProductMutedTextClass, "mt-4 max-w-2xl")}>
-              Stackaura could not reach the authentication service just now, so your merchant
-              workspace could not be loaded. Please try again in a moment.
-            </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link href="/login" className={cn(publicPrimaryButtonClass, "px-5 py-3")}>
-                Return to sign in
-              </Link>
-              <Link href="/" className={cn(publicSecondaryButtonClass, "px-5 py-3")}>
-                Back to homepage
-              </Link>
-            </div>
-          </section>
-        </div>
-      );
-    }
-
-    redirect("/login");
-  }
+  const me = await getServerMe();
+  if (!me) redirect("/login");
 
   const activeMerchantId = (await cookies()).get("active_merchant_id")?.value;
   const memberships = me.memberships ?? [];
@@ -213,193 +167,225 @@ export default async function DashboardPage() {
     (membership) => membership.merchant.id === selectedMerchantId,
   );
   const selectedPlan = resolveMerchantPlanSummary(selectedMembership?.merchant);
-  const selectedMerchantName = selectedMembership?.merchant.name || "Choose a merchant";
+  const selectedMerchantName = selectedMembership?.merchant.name || "Merchant workspace";
   const selectedMerchantEmail =
-    selectedMembership?.merchant.email || "Select a workspace to view merchant details";
+    selectedMembership?.merchant.email || "Select a workspace to continue";
   const isMerchantActive = selectedMembership?.merchant.isActive ?? false;
+
   let analytics = emptyAnalytics(selectedMerchantId);
   let analyticsUnavailable = false;
 
   try {
-    analytics = (await getServerMerchantAnalytics(selectedMerchantId)) ?? emptyAnalytics(selectedMerchantId);
+    analytics =
+      (await getServerMerchantAnalytics(selectedMerchantId)) ?? emptyAnalytics(selectedMerchantId);
   } catch {
     analyticsUnavailable = true;
   }
 
   const hasPayments = analytics.totalPayments > 0;
+  const terminalPayments = analytics.successfulPayments + analytics.failedPayments;
+  const recoveryRate =
+    analytics.failedPayments + analytics.recoveredPayments > 0
+      ? (analytics.recoveredPayments /
+          (analytics.failedPayments + analytics.recoveredPayments)) *
+        100
+      : 0;
+  const failureShare = terminalPayments > 0 ? (analytics.failedPayments / terminalPayments) * 100 : 0;
 
-  const routingFeatureItems = [
+  const rails: Array<{
+    code: RailCode;
+    label: string;
+    role: string;
+    count: number;
+    volumeCents: number;
+    share: number;
+    status: string;
+  }> = (["PAYSTACK", "OZOW", "YOCO"] as RailCode[]).map((code) => {
+    const item = analytics.gatewayDistribution.find((gateway) => gateway.gateway === code);
+    const count = item?.count ?? 0;
+    const volumeCents = item?.volumeCents ?? 0;
+    return {
+      code,
+      label: railLabel(code),
+      role: railRole(code),
+      count,
+      volumeCents,
+      share: analytics.totalPayments > 0 ? (count / analytics.totalPayments) * 100 : 0,
+      status: count > 0 ? "Online" : "Waiting",
+    };
+  });
+
+  const routingHighlights = analytics.recentRoutingHistory.slice(0, 3);
+
+  const quickActions = [
     {
-      label: "Manual gateway selection",
-      enabled: selectedPlan.manualGatewaySelection,
-      detail: "Direct checkout volume to a preferred gateway when your plan allows it.",
+      label: "Create Payment",
+      href: "/payment-links",
+      enabled: true,
+      detail: "Open hosted checkout or payment links",
     },
     {
-      label: "Auto routing",
-      enabled: selectedPlan.autoRouting,
-      detail: "Let Stackaura choose the best-fit gateway path for each payment.",
+      label: "Send Payout",
+      href: "/dashboard#payouts",
+      enabled: false,
+      detail: "Payout flow not wired yet",
     },
     {
-      label: "Fallback recovery",
-      enabled: selectedPlan.fallback,
-      detail: "Retry on another gateway when the first attempt fails.",
+      label: "View Transactions",
+      href: "/dashboard#payments",
+      enabled: true,
+      detail: "Jump to recent payment activity",
+    },
+    {
+      label: "Add Customer",
+      href: "/dashboard#customers",
+      enabled: false,
+      detail: "Customer records not wired yet",
     },
   ];
 
-  const quickActions = [
-    { href: "/dashboard/support", label: "Open support AI", tone: "primary" as const },
-    { href: "/dashboard/gateways", label: "Open gateway connections", tone: "primary" as const },
-    { href: "/dashboard/api-keys", label: "Open developer keys", tone: "primary" as const },
-    { href: "/payment-links", label: "Launch payment links", tone: "secondary" as const },
-    { href: "/docs", label: "Read API docs", tone: "secondary" as const },
-    { href: "/", label: "View public website", tone: "secondary" as const },
+  const settingsLinks = [
+    { href: "/dashboard/gateways", label: "Gateway connections" },
+    { href: "/dashboard/api-keys", label: "API keys" },
+    { href: "/dashboard/support", label: "Support assistant" },
+    { href: "/docs", label: "Developer docs" },
   ];
 
   const topMetrics = [
     {
-      label: "Total volume",
+      label: "Total Volume",
       value: formatCurrencyFromCents(analytics.totalVolumeCents),
+      indicator: hasPayments ? `${formatNumber(analytics.totalPayments)} payments` : "Awaiting volume",
       detail: hasPayments
-        ? `${formatNumber(analytics.totalPayments)} real payments recorded for this merchant.`
-        : "No real merchant payments yet. Volume will update after the first successful payment.",
-      tone: "success" as const,
+        ? "Gross processed value for the selected merchant workspace."
+        : "Volume appears here after the first real payment succeeds.",
+      tone: "cyan" as const,
     },
     {
-      label: "Success rate",
-      value: formatPercent(analytics.successRate),
-      detail: analytics.metricDefinitions.successRate,
+      label: "Successful Payments",
+      value: formatNumber(analytics.successfulPayments),
+      indicator: `${formatPercent(analytics.successRate)} success`,
+      detail: "Successful outcomes recorded from the live merchant payment feed.",
       tone: "violet" as const,
     },
     {
-      label: "Recovered payments",
-      value: formatNumber(analytics.recoveredPayments),
-      detail: analytics.metricDefinitions.recoveredPayments,
-      tone: analytics.recoveredPayments > 0 ? ("success" as const) : ("muted" as const),
+      label: "Failed Payments",
+      value: formatNumber(analytics.failedPayments),
+      indicator: terminalPayments > 0 ? `${formatPercent(failureShare)} terminal share` : "No failures yet",
+      detail: "Failed or cancelled attempts that ended without recovery.",
+      tone: analytics.failedPayments > 0 ? ("amber" as const) : ("slate" as const),
     },
     {
-      label: "Active gateways",
-      value: formatNumber(analytics.activeGatewaysUsed),
-      detail: hasPayments
-        ? "Distinct gateways used by real payments for the selected merchant."
-        : "This count stays at zero until the merchant starts processing payments.",
-      tone: "muted" as const,
-    },
-  ];
-
-  const onboardingSteps = [
-    {
-      title: "Connect at least one gateway",
-      detail: "Add real merchant gateway credentials so Stackaura can create live payment attempts.",
-      href: "/dashboard/gateways",
-      label: "Open gateways",
-    },
-    {
-      title: "Create your first payment flow",
-      detail: "Use hosted checkout or payment links to start collecting real merchant payments.",
-      href: "/payment-links",
-      label: "Create payment link",
-    },
-    {
-      title: "Watch analytics populate automatically",
-      detail: "As soon as a payment succeeds, the metrics, recent payments, and routing history update from the database.",
-      href: "/docs",
-      label: "View docs",
+      label: "Recovery Rate",
+      value: formatPercent(recoveryRate),
+      indicator:
+        analytics.recoveredPayments > 0
+          ? `${formatNumber(analytics.recoveredPayments)} recovered`
+          : "No recovery yet",
+      detail: "Recovered payments as a share of interrupted checkout attempts.",
+      tone: analytics.recoveredPayments > 0 ? ("cyan" as const) : ("slate" as const),
     },
   ];
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
-      <section className={cn(lightProductHeroClass, "relative overflow-hidden p-6 lg:p-8")}>
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_8%_16%,rgba(255,255,255,0.34),transparent_22%),radial-gradient(circle_at_86%_18%,rgba(122,115,255,0.14),transparent_24%),radial-gradient(circle_at_76%_74%,rgba(125,211,252,0.18),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.16),transparent_18%)]" />
+    <div className="mx-auto max-w-[1600px] space-y-6">
+      <section id="overview" className="grid gap-6 xl:grid-cols-[1.14fr_0.86fr]">
+        <div className={cn(darkRichPanelClass, "p-6 lg:p-7")}>
+          <div className={darkSectionEyebrowClass}>Overview</div>
+          <h1 className="mt-3 max-w-3xl text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+            A structured workspace for payments, routing, recovery, and merchant analytics.
+          </h1>
+          <p className={cn(darkMutedTextClass, "mt-4 max-w-3xl")}>
+            The selected merchant view shows live payment activity from the database, surfaces
+            routing behavior across available rails, and keeps core actions within one or two clicks.
+          </p>
 
-        <div className="relative grid gap-8 lg:grid-cols-[1.12fr_0.88fr] lg:items-start">
-          <div>
-            <div className={lightProductSectionEyebrowClass}>Merchant dashboard</div>
-            <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-[#0a2540] sm:text-5xl">
-              See real payment activity, routing, and recovery for one merchant workspace.
-            </h1>
-            <p className={cn(lightProductMutedTextClass, "mt-5 max-w-3xl")}>
-              Signed in as <span className="font-medium text-[#0a2540]">{me.user.email}</span>. The
-              dashboard now reflects real merchant payment data from the database, not illustrative
-              analytics.
-            </p>
-
-            <div className="mt-5 flex flex-wrap gap-2">
-              <span className={lightProductStatusPillClass(isMerchantActive ? "success" : "muted")}>
-                {isMerchantActive ? "Merchant active" : "Merchant inactive"}
-              </span>
-              <span className={lightProductStatusPillClass("violet")}>
-                {selectedMembership?.role || "Member"}
-              </span>
-              <span className={lightProductStatusPillClass("warning")}>
-                {formatPlanLabel(selectedPlan.code)} plan
-              </span>
-              <span className={lightProductStatusPillClass(hasPayments ? "success" : "muted")}>
-                {hasPayments ? "Live analytics" : "Onboarding state"}
-              </span>
-              {analyticsUnavailable ? (
-                <span className={lightProductStatusPillClass("warning")}>Analytics unavailable</span>
-              ) : null}
-            </div>
-
-            {analyticsUnavailable ? (
-              <div className="mt-5 rounded-[24px] border border-amber-200/80 bg-amber-50/82 px-4 py-3 text-sm text-amber-900">
-                Live merchant analytics could not be refreshed right now. The rest of the dashboard
-                is still available while the analytics service recovers.
-              </div>
-            ) : null}
-
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <Link href="/dashboard/gateways" className={publicPrimaryButtonClass}>
-                Open gateway connections
-              </Link>
-              <Link href="/payment-links" className={publicSecondaryButtonClass}>
-                Launch payment links
-              </Link>
-            </div>
+          <div className="mt-5 flex flex-wrap gap-2">
+            <span className={darkStatusPillClass(isMerchantActive ? "success" : "muted")}>
+              {isMerchantActive ? "Merchant online" : "Merchant inactive"}
+            </span>
+            <span className={darkStatusPillClass("violet")}>
+              {selectedMembership?.role || "Member"}
+            </span>
+            <span className={darkStatusPillClass("default")}>
+              {formatPlanLabel(selectedPlan.code)} plan
+            </span>
+            <span className={darkStatusPillClass(hasPayments ? "success" : "muted")}>
+              {hasPayments ? "Live analytics" : "Onboarding state"}
+            </span>
           </div>
 
-          <div className="grid gap-4">
-            <MerchantSwitcher memberships={memberships} selectedMerchantId={selectedMerchantId} />
+          {analyticsUnavailable ? (
+            <div className="mt-5 rounded-[22px] border border-[#ffc68a]/20 bg-[#ffb364]/10 px-4 py-3 text-sm text-[#ffd9b2]">
+              The analytics service is temporarily unavailable. Merchant context and navigation stay
+              available while the summary data recovers.
+            </div>
+          ) : null}
 
-            <div className={cn(lightProductInsetPanelClass, "p-5")}>
-              <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="mt-6 grid gap-4 sm:grid-cols-3">
+            <div className={cn(darkInsetPanelClass, "p-4")}>
+              <div className="text-[11px] uppercase tracking-[0.18em] text-[#7ea4c7]">Workspace</div>
+              <div className="mt-3 text-lg font-semibold text-white">{selectedMerchantName}</div>
+              <div className="mt-1 text-sm text-[#9fb4c9]">{selectedMerchantEmail}</div>
+            </div>
+            <div className={cn(darkInsetPanelClass, "p-4")}>
+              <div className="text-[11px] uppercase tracking-[0.18em] text-[#7ea4c7]">Success rate</div>
+              <div className="mt-3 text-lg font-semibold text-white">{formatPercent(analytics.successRate)}</div>
+              <div className="mt-1 text-sm text-[#9fb4c9]">{analytics.metricDefinitions.successRate}</div>
+            </div>
+            <div className={cn(darkInsetPanelClass, "p-4")}>
+              <div className="text-[11px] uppercase tracking-[0.18em] text-[#7ea4c7]">Recovery model</div>
+              <div className="mt-3 text-lg font-semibold text-white">
+                {selectedPlan.fallback ? "Fallback enabled" : "Fallback unavailable"}
+              </div>
+              <div className="mt-1 text-sm text-[#9fb4c9]">
+                {selectedPlan.autoRouting
+                  ? "Stackaura can auto-route live payment attempts."
+                  : "Manual orchestration only for this plan."}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className={cn(darkRichPanelClass, "p-6 lg:p-7")}>
+          <div className="flex flex-col gap-4">
+            <MerchantSwitcher
+              memberships={memberships}
+              selectedMerchantId={selectedMerchantId}
+              theme="dark"
+            />
+
+            <div className={cn(darkInsetPanelClass, "p-5")}>
+              <div className="flex items-start justify-between gap-4">
                 <div>
-                  <div className="text-xs uppercase tracking-[0.2em] text-[#6b7c93]">
+                  <div className="text-[11px] uppercase tracking-[0.18em] text-[#7ea4c7]">
                     Merchant snapshot
                   </div>
-                  <div className="mt-2 text-xl font-semibold tracking-tight text-[#0a2540]">
+                  <div className="mt-3 text-xl font-semibold tracking-tight text-white">
                     {selectedMerchantName}
                   </div>
                 </div>
-                <span className={lightProductStatusPillClass(hasPayments ? "success" : "muted")}>
+                <span className={darkStatusPillClass(hasPayments ? "success" : "muted")}>
                   {formatNumber(analytics.totalPayments)} payments
                 </span>
               </div>
 
-              <p className={cn(lightProductMutedTextClass, "mt-4")}>
-                Stackaura provides orchestration and routing infrastructure. Licensed providers
-                process and settle funds while this merchant view surfaces real payment activity.
-              </p>
-
-              <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                <div className="rounded-[18px] border border-white/42 bg-white/24 px-4 py-3 shadow-[0_8px_18px_rgba(133,156,180,0.08)]">
-                  <div className="text-xs uppercase tracking-[0.18em] text-[#6b7c93]">Successful</div>
-                  <div className="mt-2 text-lg font-semibold text-[#0a2540]">
-                    {formatNumber(analytics.successfulPayments)}
+              <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
+                  <div className="text-[11px] uppercase tracking-[0.18em] text-[#7ea4c7]">Gateways</div>
+                  <div className="mt-2 text-lg font-semibold text-white">
+                    {formatNumber(analytics.activeGatewaysUsed)}
                   </div>
                 </div>
-                <div className="rounded-[18px] border border-white/42 bg-white/24 px-4 py-3 shadow-[0_8px_18px_rgba(133,156,180,0.08)]">
-                  <div className="text-xs uppercase tracking-[0.18em] text-[#6b7c93]">Failed</div>
-                  <div className="mt-2 text-lg font-semibold text-[#0a2540]">
-                    {formatNumber(analytics.failedPayments)}
+                <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
+                  <div className="text-[11px] uppercase tracking-[0.18em] text-[#7ea4c7]">Recovered</div>
+                  <div className="mt-2 text-lg font-semibold text-white">
+                    {formatNumber(analytics.recoveredPayments)}
                   </div>
                 </div>
-                <div className="rounded-[18px] border border-white/42 bg-white/24 px-4 py-3 shadow-[0_8px_18px_rgba(133,156,180,0.08)]">
-                  <div className="text-xs uppercase tracking-[0.18em] text-[#6b7c93]">Latest state</div>
-                  <div className="mt-2 text-lg font-semibold text-[#0a2540]">
-                    {hasPayments ? "Live data" : "Waiting for first payment"}
-                  </div>
+                <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
+                  <div className="text-[11px] uppercase tracking-[0.18em] text-[#7ea4c7]">Memberships</div>
+                  <div className="mt-2 text-lg font-semibold text-white">{formatNumber(memberships.length)}</div>
                 </div>
               </div>
             </div>
@@ -413,442 +399,435 @@ export default async function DashboardPage() {
         merchantIsActive={selectedMembership?.merchant.isActive ?? false}
       />
 
-      <section className="mt-8">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <div className={lightProductSectionEyebrowClass}>Top metrics</div>
-            <div className="mt-2 text-2xl font-semibold tracking-tight text-[#0a2540]">
-              Real merchant analytics at a glance
+      <section className="grid gap-4 md:grid-cols-2 2xl:grid-cols-4">
+        {topMetrics.map((metric) => (
+          <StatCard
+            key={metric.label}
+            label={metric.label}
+            value={metric.value}
+            indicator={metric.indicator}
+            detail={metric.detail}
+            tone={metric.tone}
+          />
+        ))}
+      </section>
+
+      <section className="grid gap-6 2xl:grid-cols-[1.4fr_0.92fr]">
+        <section id="routing" className={cn(darkRichPanelClass, "p-6 lg:p-7")}>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <div className={darkSectionEyebrowClass}>Payment Routing</div>
+              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white">
+                Merchant → Stackaura → connected rails
+              </h2>
             </div>
-            <p className={cn(lightProductMutedTextClass, "mt-3 max-w-3xl")}>
-              These cards update from the selected merchant&apos;s real payment and attempt records.
-            </p>
+            <span className={darkStatusPillClass(hasPayments ? "success" : "muted")}>Live</span>
           </div>
 
-          <span className={lightProductStatusPillClass(hasPayments ? "success" : "muted")}>
-            {hasPayments ? "Live data from payments" : "Waiting for first payment"}
-          </span>
-        </div>
+          <p className={cn(darkMutedTextClass, "mt-4 max-w-3xl")}>
+            Keep routing, fallback, and recovery visible in one place. The engine card highlights the
+            current merchant workspace and the live rail mix underneath.
+          </p>
 
-        <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {topMetrics.map((item) => (
-            <div key={item.label} className={cn(lightProductPanelClass, "p-5")}>
-              <div className="flex items-start justify-between gap-3">
-                <div className="text-xs uppercase tracking-[0.2em] text-[#6b7c93]">{item.label}</div>
-                <span className={lightProductStatusPillClass(item.tone)}>
-                  {hasPayments ? "Live" : "Zero until activity"}
-                </span>
+          <div className="mt-8 xl:hidden">
+            <div className="grid gap-4">
+              <div className={cn(darkInsetPanelClass, "p-4")}>
+                <div className="text-[11px] uppercase tracking-[0.18em] text-[#7ea4c7]">Merchant</div>
+                <div className="mt-3 text-lg font-semibold text-white">{selectedMerchantName}</div>
+                <div className="mt-1 text-sm text-[#9fb4c9]">
+                  {isMerchantActive ? "Online workspace" : "Inactive workspace"}
+                </div>
               </div>
-              <div className="mt-4 text-3xl font-semibold tracking-tight text-[#0a2540]">
-                {item.value}
+
+              <div className="rounded-[28px] border border-white/12 bg-[linear-gradient(180deg,rgba(22,50,92,0.92),rgba(11,28,54,0.92))] p-5 text-center shadow-[0_24px_48px_rgba(0,0,0,0.24)]">
+                <div className="inline-flex h-16 w-16 items-center justify-center rounded-full border border-[#8dd8ff]/24 bg-[#8dd8ff]/10 text-2xl font-semibold text-white">
+                  S
+                </div>
+                <div className="mt-4 text-xl font-semibold text-white">Stackaura Engine</div>
+                <div className="mt-2 text-sm text-[#9fb4c9]">Live routing and recovery orchestration</div>
               </div>
-              <div className="mt-3 text-sm leading-6 text-[#425466]">{item.detail}</div>
+
+              {rails.map((rail) => (
+                <div key={rail.code} className={cn("rounded-[24px] border p-4", railCardTone(rail.code))}>
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <div className="text-lg font-semibold text-white">{rail.label}</div>
+                      <div className="mt-1 text-sm text-[#9fb4c9]">{rail.role} rail</div>
+                    </div>
+                    <span className={darkStatusPillClass(rail.count > 0 ? "success" : "muted")}>
+                      {rail.status}
+                    </span>
+                  </div>
+                  <div className="mt-4 grid gap-2 text-sm text-[#d3e5f5]">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[#7ea4c7]">Volume</span>
+                      <span>{formatCurrencyFromCents(rail.volumeCents)}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[#7ea4c7]">Payment share</span>
+                      <span>{formatPercent(rail.share)}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+
+          <div className="relative mt-8 hidden min-h-[390px] xl:block">
+            <svg className="pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 860 390" fill="none">
+              <path d="M184 196H356" stroke="url(#routingLine)" strokeWidth="3" strokeLinecap="round" />
+              <path d="M502 155C574 112 622 92 716 92" stroke="url(#routingLine)" strokeWidth="3" strokeLinecap="round" />
+              <path d="M520 196H728" stroke="url(#routingLine)" strokeWidth="3" strokeLinecap="round" />
+              <path d="M504 237C578 280 626 300 722 300" stroke="url(#routingLine)" strokeWidth="3" strokeLinecap="round" />
+              <circle cx="224" cy="196" r="6" fill="#c4edff" />
+              <circle cx="258" cy="196" r="5" fill="#8ed7ff" />
+              <circle cx="625" cy="116" r="5" fill="#8ed7ff" />
+              <circle cx="665" cy="100" r="6" fill="#c4edff" />
+              <circle cx="638" cy="196" r="5" fill="#8ed7ff" />
+              <circle cx="681" cy="196" r="6" fill="#c4edff" />
+              <circle cx="628" cy="282" r="5" fill="#8ed7ff" />
+              <circle cx="670" cy="299" r="6" fill="#c4edff" />
+              <defs>
+                <linearGradient id="routingLine" x1="184" y1="140" x2="728" y2="240" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#235c99" stopOpacity="0.52" />
+                  <stop offset="0.52" stopColor="#7ddbff" />
+                  <stop offset="1" stopColor="#2c6fb1" stopOpacity="0.52" />
+                </linearGradient>
+              </defs>
+            </svg>
+
+            <div className="absolute left-0 top-1/2 w-[190px] -translate-y-1/2 rounded-[30px] border border-white/12 bg-[linear-gradient(180deg,rgba(13,32,60,0.96)_0%,rgba(8,21,47,0.92)_100%)] p-5 shadow-[0_20px_44px_rgba(0,0,0,0.26)]">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05]">
+                <svg viewBox="0 0 20 20" className="h-7 w-7" fill="none">
+                  <path d="M3 10H17" stroke="#9fd8ff" strokeWidth="1.8" strokeLinecap="round" />
+                  <path d="M5 8L10 4L15 8" stroke="#9fd8ff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M6 8V14" stroke="#9fd8ff" strokeWidth="1.8" strokeLinecap="round" />
+                  <path d="M14 8V14" stroke="#9fd8ff" strokeWidth="1.8" strokeLinecap="round" />
+                  <path d="M10 10V14" stroke="#9fd8ff" strokeWidth="1.8" strokeLinecap="round" />
+                </svg>
+              </div>
+              <div className="mt-5 text-center text-lg font-semibold text-white">Merchant Workspace</div>
+              <div className="mt-2 text-center text-sm text-[#d4e6f6]">{selectedMerchantName}</div>
+              <div className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full border border-[#8dd8ff]/18 bg-[#8dd8ff]/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#dff6ff]">
+                <span className="h-2 w-2 rounded-full bg-[#8dd8ff]" />
+                {isMerchantActive ? "Online" : "Inactive"}
+              </div>
+            </div>
+
+            <div className="absolute left-1/2 top-1/2 w-[228px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#8dd8ff]/20 bg-[radial-gradient(circle_at_50%_40%,rgba(46,114,255,0.18),transparent_58%),linear-gradient(180deg,rgba(22,50,92,0.96),rgba(11,28,54,0.94))] px-6 py-16 text-center shadow-[0_0_80px_rgba(46,114,255,0.18)]">
+              <div className="absolute right-6 top-6 inline-flex items-center gap-2 rounded-full border border-[#8dd8ff]/20 bg-[#8dd8ff]/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#dff6ff]">
+                <span className="h-2 w-2 rounded-full bg-[#8dd8ff]" />
+                Live
+              </div>
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-[#8dd8ff]/20 bg-[#8dd8ff]/10 text-2xl font-semibold text-white">
+                S
+              </div>
+              <div className="mt-5 text-[28px] font-semibold tracking-tight text-white">Stackaura Engine</div>
+              <div className="mt-2 text-sm text-[#9fb4c9]">Route. Recover. Visibility.</div>
+            </div>
+
+            {rails.map((rail, index) => {
+              const positions = [
+                "top-3 right-0",
+                "top-[138px] right-8",
+                "bottom-0 right-0",
+              ];
+
+              return (
+                <div
+                  key={rail.code}
+                  className={cn(
+                    "absolute w-[222px] rounded-[28px] border p-5 shadow-[0_18px_40px_rgba(0,0,0,0.22)]",
+                    railCardTone(rail.code),
+                    positions[index],
+                  )}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/12 bg-white/[0.06] text-lg font-semibold text-white">
+                        {railIcon(rail.code)}
+                      </div>
+                      <div>
+                        <div className="text-lg font-semibold text-white">{rail.label}</div>
+                        <div className="mt-1 text-xs uppercase tracking-[0.18em] text-[#7ea4c7]">
+                          {rail.role}
+                        </div>
+                      </div>
+                    </div>
+                    <span className={darkStatusPillClass(rail.count > 0 ? "success" : "muted")}>
+                      {rail.status}
+                    </span>
+                  </div>
+
+                  <div className="mt-4 grid gap-2 text-sm text-[#d8e8f7]">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-[#7ea4c7]">Volume</span>
+                      <span>{formatCurrencyFromCents(rail.volumeCents)}</span>
+                    </div>
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-[#7ea4c7]">Payment share</span>
+                      <span>{formatPercent(rail.share)}</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        <div className="grid gap-6">
+          <section id="payouts" className={cn(darkRichPanelClass, "p-6")}>
+            <div className={darkSectionEyebrowClass}>Quick Actions</div>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white">Move fast from the dashboard</h2>
+            <p className={cn(darkMutedTextClass, "mt-3")}>
+              Use the actions below to create payments, review transactions, and stage the next
+              merchant task without leaving the workspace.
+            </p>
+
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              {quickActions.map((action) =>
+                action.enabled ? (
+                  <Link
+                    key={action.label}
+                    href={action.href}
+                    className="rounded-[22px] border border-[#8dd8ff]/16 bg-[linear-gradient(180deg,rgba(141,216,255,0.14),rgba(255,255,255,0.03))] px-4 py-4 transition hover:border-[#8dd8ff]/26 hover:bg-[linear-gradient(180deg,rgba(141,216,255,0.18),rgba(255,255,255,0.05))]"
+                  >
+                    <div className="text-sm font-semibold text-white">{action.label}</div>
+                    <div className="mt-2 text-sm text-[#9fb4c9]">{action.detail}</div>
+                  </Link>
+                ) : (
+                  <div
+                    key={action.label}
+                    className="rounded-[22px] border border-dashed border-white/10 bg-white/[0.03] px-4 py-4"
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="text-sm font-semibold text-white">{action.label}</div>
+                      <span className={darkStatusPillClass("muted")}>Not wired yet</span>
+                    </div>
+                    <div className="mt-2 text-sm text-[#9fb4c9]">{action.detail}</div>
+                  </div>
+                ),
+              )}
+            </div>
+          </section>
+
+          <section id="customers" className={cn(darkRichPanelClass, "p-6")}>
+            <div className={darkSectionEyebrowClass}>Customer Access</div>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white">Recent customers</h2>
+            <p className={cn(darkMutedTextClass, "mt-3")}>
+              Customer quick access will appear here once customer records are wired into the merchant
+              workspace. The layout is ready for fast repeat actions.
+            </p>
+
+            <div className="mt-6 flex flex-wrap gap-3">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <div
+                  key={`customer-placeholder-${index}`}
+                  className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] text-sm font-semibold text-[#a7bfd8]"
+                >
+                  ••
+                </div>
+              ))}
+              <div className="flex h-14 items-center rounded-2xl border border-dashed border-white/10 bg-white/[0.03] px-4 text-sm text-[#9fb4c9]">
+                Recent customers not wired yet
+              </div>
+            </div>
+          </section>
         </div>
       </section>
 
-      {!hasPayments ? (
-        <section className="mt-8 grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-          <div className={cn(lightProductPanelClass, "p-6 lg:p-7")}>
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <div className={lightProductSectionEyebrowClass}>Getting started</div>
-                <div className="mt-2 text-2xl font-semibold tracking-tight text-[#0a2540]">
-                  This merchant has not processed a real payment yet
-                </div>
-              </div>
-              <span className={lightProductStatusPillClass("muted")}>Truthful empty state</span>
-            </div>
+      <section className="grid gap-6 2xl:grid-cols-[1.15fr_0.85fr]">
+        <div id="reports">
+          <VolumeTrendCard payments={analytics.recentPayments} />
+        </div>
 
-            <p className={cn(lightProductMutedTextClass, "mt-4 max-w-3xl")}>
-              The dashboard stays empty until a real payment is created and updated in the database.
-              Once a payment succeeds, the metrics, recent payments, and routing history will reflect
-              that real activity automatically.
-            </p>
-
-            <div className="mt-6 grid gap-4">
-              {onboardingSteps.map((step) => (
-                <div key={step.title} className={cn(lightProductInsetPanelClass, "p-5")}>
-                  <div className="text-lg font-semibold tracking-tight text-[#0a2540]">
-                    {step.title}
-                  </div>
-                  <p className="mt-2 text-sm leading-6 text-[#425466]">{step.detail}</p>
-                  <Link href={step.href} className={cn(publicSecondaryButtonClass, "mt-4 inline-flex")}>
-                    {step.label}
-                  </Link>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className={cn(lightProductPanelClass, "p-6 lg:p-7")}>
-            <div className={lightProductSectionEyebrowClass}>Plan visibility</div>
-            <div className="mt-2 text-2xl font-semibold tracking-tight text-[#0a2540]">
-              {formatPlanLabel(selectedPlan.code)} merchant plan
-            </div>
-            <p className={cn(lightProductMutedTextClass, "mt-4")}>
-              Plan visibility stays real and merchant-specific even before payment activity starts.
-            </p>
-
-            <div className="mt-5 grid gap-3">
-              {routingFeatureItems.map((item) => (
-                <div
-                  key={item.label}
-                  className="flex items-start justify-between gap-4 rounded-[18px] border border-white/42 bg-white/22 px-4 py-3 shadow-[0_8px_18px_rgba(133,156,180,0.08)]"
-                >
-                  <div>
-                    <div className="text-sm font-medium text-[#0a2540]">{item.label}</div>
-                    <div className="mt-1 text-xs text-[#6b7c93]">{item.detail}</div>
-                  </div>
-                  <span className={lightProductStatusPillClass(item.enabled ? "success" : "muted")}>
-                    {item.enabled ? "Enabled" : "Not enabled"}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      ) : (
-        <>
-          <section className="mt-8 grid gap-6 lg:grid-cols-[1.12fr_0.88fr]">
-            <div className={cn(lightProductPanelClass, "p-6 lg:p-7")}>
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                  <div className={lightProductSectionEyebrowClass}>Recent payments</div>
-                  <div className="mt-2 text-2xl font-semibold tracking-tight text-[#0a2540]">
-                    Latest real payment outcomes
-                  </div>
-                </div>
-                <span className={lightProductStatusPillClass("success")}>Database-backed</span>
-              </div>
-
-              <p className={cn(lightProductMutedTextClass, "mt-4 max-w-3xl")}>
-                These are the latest real merchant payments, including status, gateway, and amount.
-              </p>
-
-              <div className="mt-6 grid gap-4">
-                {analytics.recentPayments.map((payment) => (
-                  <div key={payment.reference} className={cn(lightProductInsetPanelClass, "p-5")}>
-                    <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                      <div className="min-w-0">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <div className="text-lg font-semibold tracking-tight text-[#0a2540]">
-                            {payment.reference}
-                          </div>
-                          <span className={lightProductStatusPillClass(paymentStatusTone(payment.status))}>
-                            {payment.status}
-                          </span>
-                        </div>
-                        <div className="mt-2 text-sm text-[#425466]">
-                          {payment.gatewayLabel} · {formatDateTime(payment.createdAt)}
-                        </div>
-                      </div>
-
-                      <div className="text-right">
-                        <div className="text-lg font-semibold text-[#0a2540]">
-                          {formatCurrencyFromCents(payment.amountCents)}
-                        </div>
-                        <div className="mt-1 text-xs text-[#6b7c93]">Real payment amount</div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className={cn(lightProductPanelClass, "p-6 lg:p-7")}>
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                  <div className={lightProductSectionEyebrowClass}>Gateway distribution</div>
-                  <div className="mt-2 text-2xl font-semibold tracking-tight text-[#0a2540]">
-                    Real payment mix by gateway
-                  </div>
-                </div>
-                <span className={lightProductStatusPillClass("violet")}>
-                  {formatNumber(analytics.activeGatewaysUsed)} gateways used
-                </span>
-              </div>
-
-              <p className={cn(lightProductMutedTextClass, "mt-4")}>
-                {analytics.metricDefinitions.gatewayDistribution}
-              </p>
-
-              <div className="mt-6 grid gap-4">
-                {analytics.gatewayDistribution.map((item) => {
-                  const share =
-                    analytics.totalPayments > 0 ? (item.count / analytics.totalPayments) * 100 : 0;
-
-                  return (
-                    <div key={item.gateway} className={cn(lightProductInsetPanelClass, "p-4")}>
-                      <div className="flex items-center justify-between gap-3">
-                        <div>
-                          <div className="text-sm font-semibold text-[#0a2540]">{item.label}</div>
-                          <div className="mt-1 text-xs text-[#6b7c93]">
-                            {formatNumber(item.count)} payments · {formatCurrencyFromCents(item.volumeCents)}
-                          </div>
-                        </div>
-                        <span className={lightProductStatusPillClass("muted")}>
-                          {formatPercent(share)}
-                        </span>
-                      </div>
-
-                      <div className="mt-4 h-3 overflow-hidden rounded-full bg-white/40">
-                        <div
-                          className={cn("h-full rounded-full", gatewayBarClass(item.gateway))}
-                          style={{ width: `${Math.max(share, 6)}%` }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </section>
-
-          <section className="mt-8 grid gap-6 lg:grid-cols-[1.12fr_0.88fr]">
-            <div className={cn(lightProductPanelClass, "p-6 lg:p-7")}>
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                  <div className={lightProductSectionEyebrowClass}>Routing history</div>
-                  <div className="mt-2 text-2xl font-semibold tracking-tight text-[#0a2540]">
-                    Latest real routing paths
-                  </div>
-                </div>
-                <span className={lightProductStatusPillClass("success")}>Attempts from the database</span>
-              </div>
-
-              <p className={cn(lightProductMutedTextClass, "mt-4 max-w-3xl")}>
-                Each card below uses real payment attempts and routing metadata when available.
-              </p>
-
-              <div className="mt-6 grid gap-4">
-                {analytics.recentRoutingHistory.length > 0 ? (
-                  analytics.recentRoutingHistory.map((item) => (
-                    <div key={item.reference} className={cn(lightProductInsetPanelClass, "p-5")}>
-                      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                        <div className="min-w-0">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <div className="text-lg font-semibold tracking-tight text-[#0a2540]">
-                              {item.reference}
-                            </div>
-                            <span className={lightProductStatusPillClass(paymentStatusTone(item.status))}>
-                              {item.status}
-                            </span>
-                          </div>
-                          <div className="mt-2 text-sm font-medium text-[#0a2540]">
-                            {item.routeSummary}
-                          </div>
-                          <p className="mt-2 text-sm leading-6 text-[#425466]">
-                            {item.gatewayLabel} · {formatDateTime(item.createdAt)}
-                            {item.fallbackCount > 0
-                              ? ` · ${formatNumber(item.fallbackCount)} fallback decision${item.fallbackCount > 1 ? "s" : ""}`
-                              : ""}
-                          </p>
-                        </div>
-
-                        <div className="grid min-w-[180px] gap-2 text-sm text-[#425466]">
-                          <div className="flex items-center justify-between gap-3">
-                            <span className="text-[#6b7c93]">Amount</span>
-                            <span className="font-medium text-[#0a2540]">
-                              {formatCurrencyFromCents(item.amountCents)}
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-between gap-3">
-                            <span className="text-[#6b7c93]">Selection</span>
-                            <span className="text-right text-[#0a2540]">
-                              {item.selectionMode || "recorded"}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="mt-4 flex flex-wrap items-center gap-2">
-                        {item.path.map((step, index) => (
-                          <div key={`${item.reference}-${step.label}-${index}`} className="flex items-center gap-2">
-                            <span
-                              className={
-                                step.kind === "gateway"
-                                  ? "inline-flex items-center rounded-[16px] border border-white/42 bg-white/28 px-3 py-2 text-sm font-medium text-[#0a2540] shadow-[0_8px_18px_rgba(133,156,180,0.08)]"
-                                  : lightProductStatusPillClass(paymentStatusTone(step.label))
-                              }
-                            >
-                              {step.label}
-                            </span>
-                            {index < item.path.length - 1 ? (
-                              <span className="text-sm text-[#6b7c93]">→</span>
-                            ) : null}
-                          </div>
-                        ))}
-                      </div>
-
-                      <div className="mt-4 flex flex-wrap items-center gap-2">
-                        {item.timelineStages.map((stage, index) => (
-                          <div key={`${item.reference}-${stage}`} className="flex items-center gap-2">
-                            <span className={lightProductStatusPillClass(timelineStageTone(stage))}>
-                              {stage}
-                            </span>
-                            {index < item.timelineStages.length - 1 ? (
-                              <span className="text-sm text-[#6b7c93]">→</span>
-                            ) : null}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className={cn(lightProductInsetPanelClass, "p-5")}>
-                    <div className="text-lg font-semibold tracking-tight text-[#0a2540]">
-                      No routing attempts recorded yet
-                    </div>
-                    <p className="mt-2 text-sm leading-6 text-[#425466]">
-                      Routing history appears here once the selected merchant creates payments that
-                      generate gateway attempts.
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className={cn(lightProductPanelClass, "p-6 lg:p-7")}>
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <div className={lightProductSectionEyebrowClass}>Plan visibility</div>
-                  <div className="mt-2 text-2xl font-semibold tracking-tight text-[#0a2540]">
-                    {formatPlanLabel(selectedPlan.code)} merchant plan
-                  </div>
-                </div>
-                <span className={lightProductStatusPillClass("violet")}>Current plan</span>
-              </div>
-
-              <p className={cn(lightProductMutedTextClass, "mt-4")}>
-                Plan visibility remains real and merchant-assigned. Analytics above stay separate from
-                plan entitlements.
-              </p>
-
-              <div className={cn("mt-5 p-4", lightProductInsetPanelClass)}>
-                <div className="text-xs uppercase tracking-[0.18em] text-[#6b7c93]">Current posture</div>
-                <div className="mt-2 text-sm text-[#425466]">
-                  {selectedPlan.manualGatewaySelection
-                    ? "Merchants can manually choose a gateway when they need direct control."
-                    : "Merchants follow the unified orchestration defaults for gateway selection."}
-                </div>
-                <div className="mt-2 text-sm text-[#425466]">
-                  {selectedPlan.fallback
-                    ? "Fallback recovery is available when the first eligible rail fails."
-                    : "Fallback recovery is not included in the current plan."}
-                </div>
-              </div>
-
-              <div className="mt-5 grid gap-3">
-                {routingFeatureItems.map((item) => (
-                  <div
-                    key={item.label}
-                    className="flex items-start justify-between gap-4 rounded-[18px] border border-white/42 bg-white/22 px-4 py-3 shadow-[0_8px_18px_rgba(133,156,180,0.08)]"
-                  >
-                    <div>
-                      <div className="text-sm font-medium text-[#0a2540]">{item.label}</div>
-                      <div className="mt-1 text-xs text-[#6b7c93]">
-                        {item.enabled
-                          ? "Included in the current merchant plan."
-                          : "Not included in the current merchant plan."}
-                      </div>
-                    </div>
-                    <span className={lightProductStatusPillClass(item.enabled ? "success" : "muted")}>
-                      {item.enabled ? "Included" : "Not included"}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        </>
-      )}
-
-      <section className="mt-8 grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-        <div className={cn(lightProductPanelClass, "p-6 lg:p-7")}>
+        <section id="recovery" className={cn(darkRichPanelClass, "p-6 lg:p-7")}>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <div className={lightProductSectionEyebrowClass}>Merchant context</div>
-              <div className="mt-2 text-2xl font-semibold tracking-tight text-[#0a2540]">
-                Workspace and merchant visibility stay intact
-              </div>
+              <div className={darkSectionEyebrowClass}>Recovery & Gateway Health</div>
+              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white">
+                Routing confidence across active rails
+              </h2>
             </div>
-            <span className={lightProductStatusPillClass(isMerchantActive ? "success" : "muted")}>
-              {isMerchantActive ? "Active workspace" : "Inactive workspace"}
+            <span className={darkStatusPillClass(hasPayments ? "success" : "muted")}>
+              {hasPayments ? "Real activity" : "No live payments yet"}
             </span>
           </div>
 
-          <div className="mt-5 grid gap-4 md:grid-cols-2">
-            <div className={cn(lightProductInsetPanelClass, "p-5")}>
-              <div className="text-xs uppercase tracking-[0.18em] text-[#6b7c93]">Merchant profile</div>
-              <div className="mt-4 space-y-3 text-sm text-[#425466]">
-                <div className="flex items-start justify-between gap-4">
-                  <span className="text-[#6b7c93]">Name</span>
-                  <span className="text-right text-[#0a2540]">{selectedMerchantName}</span>
+          <div className="mt-6 grid gap-3">
+            {rails.map((rail) => (
+              <div key={rail.code} className={cn(darkInsetPanelClass, "p-4")}>
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <div className="text-sm font-semibold text-white">{rail.label}</div>
+                    <div className="mt-1 text-xs uppercase tracking-[0.18em] text-[#7ea4c7]">
+                      {rail.role}
+                    </div>
+                  </div>
+                  <span className={darkStatusPillClass(rail.count > 0 ? "success" : "muted")}>
+                    {rail.status}
+                  </span>
                 </div>
-                <div className="flex items-start justify-between gap-4">
-                  <span className="text-[#6b7c93]">Email</span>
-                  <span className="text-right text-[#0a2540]">{selectedMerchantEmail}</span>
+
+                <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-white/6">
+                  <div
+                    className="h-full rounded-full bg-[linear-gradient(90deg,rgba(141,216,255,0.96)_0%,rgba(91,146,255,0.82)_100%)]"
+                    style={{ width: `${Math.max(rail.share, rail.count > 0 ? 14 : 8)}%` }}
+                  />
                 </div>
-                <div className="flex items-start justify-between gap-4">
-                  <span className="text-[#6b7c93]">Role</span>
-                  <span className="text-right text-[#0a2540]">{selectedMembership?.role || "Member"}</span>
+
+                <div className="mt-3 flex items-center justify-between gap-4 text-sm text-[#d8e8f7]">
+                  <span>{formatCurrencyFromCents(rail.volumeCents)}</span>
+                  <span>{formatPercent(rail.share)} of real payments</span>
                 </div>
               </div>
-            </div>
+            ))}
+          </div>
 
-            <div className={cn(lightProductInsetPanelClass, "p-5")}>
-              <div className="text-xs uppercase tracking-[0.18em] text-[#6b7c93]">Workspace scope</div>
-              <div className="mt-4 space-y-3 text-sm text-[#425466]">
-                <div className="flex items-start justify-between gap-4">
-                  <span className="text-[#6b7c93]">Selection</span>
-                  <span className="text-right text-[#0a2540]">
-                    {selectedMerchantId ? "Workspace selected" : "Choose a merchant"}
-                  </span>
-                </div>
-                <div className="flex items-start justify-between gap-4">
-                  <span className="text-[#6b7c93]">Memberships</span>
-                  <span className="text-right text-[#0a2540]">{formatNumber(memberships.length)}</span>
-                </div>
-                <div className="flex items-start justify-between gap-4">
-                  <span className="text-[#6b7c93]">Status</span>
-                  <span className="text-right text-[#0a2540]">
-                    {isMerchantActive ? "Active" : "Inactive"}
-                  </span>
-                </div>
+          <div className={cn(darkInsetPanelClass, "mt-6 p-5")}>
+            <div className="text-[11px] uppercase tracking-[0.18em] text-[#7ea4c7]">Recovery summary</div>
+            <div className="mt-3 grid gap-3 sm:grid-cols-3">
+              <div>
+                <div className="text-2xl font-semibold text-white">{formatNumber(analytics.recoveredPayments)}</div>
+                <div className="mt-1 text-sm text-[#9fb4c9]">Recovered payments</div>
+              </div>
+              <div>
+                <div className="text-2xl font-semibold text-white">{formatPercent(recoveryRate)}</div>
+                <div className="mt-1 text-sm text-[#9fb4c9]">Recovery rate</div>
+              </div>
+              <div>
+                <div className="text-2xl font-semibold text-white">{formatNumber(analytics.activeGatewaysUsed)}</div>
+                <div className="mt-1 text-sm text-[#9fb4c9]">Active rails used</div>
               </div>
             </div>
           </div>
+        </section>
+      </section>
 
-          <p className={cn(lightProductMutedTextClass, "mt-5")}>
-            Merchant context remains the source of truth for dashboard actions, payment links,
-            gateway configuration, and analytics visibility inside Stackaura.
-          </p>
+      <section id="payments" className={cn(darkRichPanelClass, "p-6 lg:p-7")}>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <div className={darkSectionEyebrowClass}>Transactions</div>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white">
+              Recent payment activity
+            </h2>
+          </div>
+          <span className={darkStatusPillClass(hasPayments ? "success" : "muted")}>
+            {hasPayments ? "Live transaction feed" : "Waiting for first payment"}
+          </span>
         </div>
 
-        <div className={cn(lightProductPanelClass, "p-6 lg:p-7")}>
-          <div className={lightProductSectionEyebrowClass}>Quick actions</div>
-          <div className="mt-2 text-2xl font-semibold tracking-tight text-[#0a2540]">
-            Move into the next payment task fast
-          </div>
-          <p className={cn(lightProductMutedTextClass, "mt-4")}>
-            Jump directly into gateway setup, developer access, payment links, and docs without losing
-            the merchant context selected above.
+        <p className={cn(darkMutedTextClass, "mt-4")}>
+          Reference, amount, status, gateway, and time stay visible in one structured table.
+        </p>
+
+        <div className="mt-6">
+          <ActivityTable rows={analytics.recentPayments} />
+        </div>
+      </section>
+
+      <section id="settings" className="grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
+        <section className={cn(darkRichPanelClass, "p-6 lg:p-7")}>
+          <div className={darkSectionEyebrowClass}>Settings & Access</div>
+          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white">
+            Keep critical workspace tools one click away
+          </h2>
+          <p className={cn(darkMutedTextClass, "mt-3")}>
+            Configure gateway credentials, API keys, support, and merchant-facing docs from the same
+            dashboard shell.
           </p>
 
-          <div className="mt-5 grid gap-3">
-            {quickActions.map((action) => (
+          <div className="mt-6 grid gap-3">
+            {settingsLinks.map((item) => (
               <Link
-                key={action.href}
-                href={action.href}
-                className={action.tone === "primary" ? publicPrimaryButtonClass : publicSecondaryButtonClass}
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  darkCompactGhostButtonClass,
+                  "justify-start rounded-[18px] border-white/12 bg-white/[0.04] px-4 py-3 text-[#d3e5f5] hover:border-[#8dd8ff]/24 hover:bg-white/[0.08]",
+                )}
               >
-                {action.label}
+                {item.label}
               </Link>
             ))}
           </div>
-        </div>
+
+          <div className={cn(darkInsetPanelClass, "mt-6 p-5")}>
+            <div className="text-[11px] uppercase tracking-[0.18em] text-[#7ea4c7]">Current plan</div>
+            <div className="mt-3 text-xl font-semibold text-white">{formatPlanLabel(selectedPlan.code)}</div>
+            <div className="mt-4 grid gap-3 text-sm text-[#d8e8f7]">
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-[#7ea4c7]">Auto routing</span>
+                <span>{selectedPlan.autoRouting ? "Enabled" : "Not enabled"}</span>
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-[#7ea4c7]">Manual gateway selection</span>
+                <span>{selectedPlan.manualGatewaySelection ? "Enabled" : "Not enabled"}</span>
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-[#7ea4c7]">Fallback recovery</span>
+                <span>{selectedPlan.fallback ? "Enabled" : "Not enabled"}</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className={cn(darkRichPanelClass, "p-6 lg:p-7")}>
+          <div className={darkSectionEyebrowClass}>Routing Insights</div>
+          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white">
+            Latest routing and recovery outcomes
+          </h2>
+          <p className={cn(darkMutedTextClass, "mt-3")}>
+            Recent payment attempt paths stay readable, with fallback behavior surfaced directly from
+            the merchant&apos;s live attempt records.
+          </p>
+
+          <div className="mt-6 grid gap-4">
+            {routingHighlights.length > 0 ? (
+              routingHighlights.map((item) => (
+                <div key={item.reference} className={cn(darkInsetPanelClass, "p-5")}>
+                  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <div className="text-lg font-semibold text-white">{item.reference}</div>
+                        <span className={darkStatusPillClass(item.status === "PAID" ? "success" : "muted")}>
+                          {item.status === "PAID" ? "Success" : item.status}
+                        </span>
+                      </div>
+                      <div className="mt-2 text-sm font-medium text-[#d8e8f7]">{item.routeSummary}</div>
+                      <p className="mt-2 text-sm text-[#9fb4c9]">
+                        {item.gatewayLabel}
+                        {item.fallbackCount > 0
+                          ? ` · ${formatNumber(item.fallbackCount)} fallback decision${item.fallbackCount > 1 ? "s" : ""}`
+                          : ""}
+                      </p>
+                    </div>
+
+                    <div className="text-sm text-[#9fb4c9]">
+                      {formatCurrencyFromCents(item.amountCents)}
+                    </div>
+                  </div>
+
+                  <div className="mt-4 flex flex-wrap items-center gap-2 text-sm">
+                    {item.path.map((step, index) => (
+                      <div key={`${item.reference}-${step.label}-${index}`} className="flex items-center gap-2">
+                        <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[#d8e8f7]">
+                          {step.label}
+                        </span>
+                        {index < item.path.length - 1 ? <span className="text-[#7ea4c7]">→</span> : null}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="rounded-[24px] border border-dashed border-white/12 bg-white/[0.03] px-5 py-10 text-sm text-[#9fb4c9]">
+                No routing insights yet. Live routing paths appear here after the first real payment
+                generates gateway attempts.
+              </div>
+            )}
+          </div>
+        </section>
       </section>
     </div>
   );
