@@ -272,26 +272,30 @@ export default function SignupClient({
                       plan.featured && !selected && "border-[#d6d0ff] bg-[#f6f3ff]/88"
                     )}
                   >
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
+                    <div className="flex flex-col gap-3">
+                      <div className="min-w-0">
                         <div className="text-sm font-semibold text-[#0a2540]">{plan.name}</div>
-                        <div className="mt-2 text-lg font-semibold tracking-tight text-[#0a2540]">
+                      </div>
+
+                      {plan.featured ? (
+                        <span
+                          className={cn(
+                            lightProductStatusPillClass(selected ? "success" : "violet"),
+                            "max-w-max self-start"
+                          )}
+                        >
+                          Popular
+                        </span>
+                      ) : null}
+
+                      <div>
+                        <div className="text-lg font-semibold tracking-tight text-[#0a2540]">
                           {plan.price}
                         </div>
                         <div className="text-[11px] tracking-[0.12em] text-[#6b7c93]">
                           {plan.suffix}
                         </div>
                       </div>
-
-                      {plan.featured ? (
-                        <span
-                          className={lightProductStatusPillClass(
-                            selected ? "success" : "violet"
-                          )}
-                        >
-                          Popular
-                        </span>
-                      ) : null}
                     </div>
 
                     <p className="mt-3 text-sm leading-6 text-[#425466]">{plan.description}</p>
