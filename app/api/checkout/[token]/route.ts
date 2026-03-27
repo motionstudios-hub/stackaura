@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { fetchServerApi } from "@/app/lib/server-api";
 
-type Ctx = {
-  params: Promise<{ token: string }> | { token: string };
+type RouteContext = {
+  params: Promise<{ token: string }>;
 };
 
-async function getToken(ctx: Ctx) {
-  const params = await Promise.resolve(ctx.params);
+async function getToken(ctx: RouteContext) {
+  const params = await ctx.params;
   return params.token;
 }
 
-export async function GET(req: NextRequest, ctx: Ctx) {
+export async function GET(req: NextRequest, ctx: RouteContext) {
   const token = await getToken(ctx);
   const url = new URL(req.url);
   let res: Response;

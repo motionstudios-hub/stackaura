@@ -13,12 +13,12 @@ const ALLOWED_PROXY_ROUTES = [
   { method: "POST", pattern: /^v1\/support\/conversations\/[^/]+\/escalate$/ },
 ] as const;
 
-type Ctx = {
-  params: Promise<{ path?: string[] }> | { path?: string[] };
+type RouteContext = {
+  params: Promise<{ path?: string[] }>;
 };
 
-async function getPath(ctx: Ctx) {
-  const params = await Promise.resolve(ctx.params);
+async function getPath(ctx: RouteContext) {
+  const params = await ctx.params;
   return (params?.path ?? []).join("/");
 }
 
@@ -44,7 +44,7 @@ function isAllowedProxyRoute(method: string, path: string) {
   );
 }
 
-async function proxy(req: NextRequest, ctx: Ctx, method: string) {
+async function proxy(req: NextRequest, ctx: RouteContext, method: string) {
   const path = normalizeProxyPath(await getPath(ctx));
   if (!isAllowedProxyRoute(method, path)) {
     return NextResponse.json({ message: "Not found" }, { status: 404 });
@@ -74,9 +74,9 @@ async function proxy(req: NextRequest, ctx: Ctx, method: string) {
   return new NextResponse(body, { status: res.status, headers: outHeaders });
 }
 
-export async function GET(req: NextRequest, ctx: Ctx) {
+export async function GET(req: NextRequest, ctx: RouteContext) {
   return proxy(req, ctx, "GET");
 }
-export async function POST(req: NextRequest, ctx: Ctx) {
+export async function POST(req: NextRequest, ctx: RouteContext) {
   return proxy(req, ctx, "POST");
 }

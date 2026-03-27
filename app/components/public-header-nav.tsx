@@ -79,13 +79,13 @@ export default function PublicHeaderNav({
     <nav className={cn("hidden lg:flex", className)}>
       <div
         ref={containerRef}
-        className="relative flex items-center gap-2 rounded-full border border-white/38 bg-white/16 p-1.5 shadow-[0_12px_28px_rgba(133,156,180,0.10)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/5 dark:shadow-[0_16px_32px_rgba(0,0,0,0.24)]"
+        className="relative flex items-center gap-1"
         onMouseLeave={() => setHoveredIndex(null)}
       >
         <span
           ref={indicatorRef}
           aria-hidden="true"
-          className="pointer-events-none absolute inset-y-1.5 left-0 rounded-full border border-white/62 bg-[linear-gradient(180deg,rgba(255,255,255,0.78),rgba(233,242,248,0.50))] shadow-[0_10px_24px_rgba(122,146,168,0.14),inset_0_1px_0_rgba(255,255,255,0.82)] transition-[transform,width,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none dark:border-[#8dd8ff]/22 dark:bg-[linear-gradient(180deg,rgba(130,226,255,0.14),rgba(76,109,255,0.16))] dark:shadow-[0_12px_28px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.08)]"
+          className="pointer-events-none absolute bottom-0 left-0 h-px bg-[#4f46e5] transition-[transform,width,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none dark:bg-[#8dd8ff]"
           style={{ opacity: 0, width: 0 }}
         />
 
@@ -102,7 +102,7 @@ export default function PublicHeaderNav({
               onMouseEnter={() => setHoveredIndex(index)}
               onFocus={() => setHoveredIndex(index)}
               className={cn(
-                "group relative z-10 inline-flex min-h-[42px] items-center justify-center rounded-full px-4 py-2 text-sm font-medium text-[#425466] transition duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:text-[#0a2540] focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7a73ff]/18 motion-reduce:transform-none motion-reduce:transition-none dark:text-zinc-300 dark:hover:text-white dark:focus-visible:ring-[#20BCED]/24",
+                "group relative z-10 inline-flex min-h-[42px] items-center justify-center px-4 py-2 text-sm font-medium text-[#425466] transition duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:text-[#0a2540] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7a73ff]/18 motion-reduce:transition-none dark:text-[#e2ebf8] dark:hover:text-white dark:focus-visible:ring-[#20BCED]/24",
                 isActive && "text-[#0a2540] dark:text-white",
               )}
             >
@@ -111,8 +111,8 @@ export default function PublicHeaderNav({
                 <span
                   aria-hidden="true"
                   className={cn(
-                    "absolute inset-x-0 -bottom-1 h-px rounded-full bg-[linear-gradient(90deg,rgba(99,91,255,0),rgba(99,91,255,0.72),rgba(99,91,255,0))] transition-opacity duration-300 motion-reduce:transition-none",
-                    "dark:bg-[linear-gradient(90deg,rgba(160,233,255,0),rgba(160,233,255,0.84),rgba(160,233,255,0))]",
+                    "absolute inset-x-0 -bottom-1 h-px bg-[#4f46e5] transition-opacity duration-300 motion-reduce:transition-none",
+                    "dark:bg-[#8dd8ff]",
                     isActive ? "opacity-100" : "opacity-0 group-hover:opacity-70",
                   )}
                 />

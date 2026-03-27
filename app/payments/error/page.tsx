@@ -1,12 +1,8 @@
 import PaymentStatePage from "../../components/PaymentStatePage";
 
-type SearchParams =
-  | Promise<{
-      reference?: string | string[];
-    }>
-  | {
-      reference?: string | string[];
-    };
+type SearchParams = Promise<{
+  reference?: string | string[];
+}>;
 
 function getSearchValue(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
@@ -17,7 +13,7 @@ export default async function PaymentsErrorPage({
 }: {
   searchParams: SearchParams;
 }) {
-  const resolvedSearchParams = await Promise.resolve(searchParams);
+  const resolvedSearchParams = await searchParams;
   const reference = getSearchValue(resolvedSearchParams.reference) || null;
 
   return (

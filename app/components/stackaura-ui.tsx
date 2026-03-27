@@ -40,11 +40,35 @@ export const publicPillClass =
 export const publicSectionLabelClass =
   "text-sm font-semibold uppercase tracking-[0.18em] text-[#6b7c93] dark:text-[#8dd8ff]";
 
+export const publicTextPrimaryClass =
+  "text-[#0a2540] dark:text-[#f8fafc]";
+
+export const publicTextSecondaryClass =
+  "text-[#425466] dark:text-[#e2e9f5]";
+
+export const publicTextMutedClass =
+  "text-[#5b6b7e] dark:text-[#b4c2d8]";
+
+export const publicBorderSubtleClass =
+  "border-slate-200 dark:border-white/16";
+
+export const publicBadgeClass =
+  "inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6b7c93] dark:border-white/18 dark:bg-[#0f172a] dark:text-[#d7e2f2]";
+
+export const publicMinimalSecondaryButtonClass =
+  "inline-flex min-h-[52px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3.5 text-sm font-semibold text-[#0a2540] transition hover:border-slate-400 hover:bg-slate-50 dark:border-white/22 dark:bg-[#111827] dark:text-[#f8fafc] dark:hover:border-white/34 dark:hover:bg-[#162033]";
+
+export const publicHeaderSecondaryButtonClass =
+  "inline-flex min-h-[44px] items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-[#0a2540] transition hover:border-slate-400 hover:bg-slate-50 dark:border-white/22 dark:bg-[#0f172a] dark:text-[#f8fafc] dark:hover:border-white/34 dark:hover:bg-[#111827]";
+
+export const publicHeaderMobileButtonClass =
+  "inline-flex min-h-[46px] w-full items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-[#0a2540] transition hover:border-slate-400 hover:bg-slate-50 dark:border-white/22 dark:bg-[#0f172a] dark:text-[#f8fafc] dark:hover:border-white/34 dark:hover:bg-[#111827]";
+
 export const publicCodePanelClass =
   "rounded-[28px] border border-white/25 bg-[linear-gradient(180deg,rgba(10,37,64,0.84),rgba(28,53,94,0.80))] p-6 text-white shadow-[0_16px_36px_rgba(10,37,64,0.16)] backdrop-blur-2xl dark:border-white/10 dark:bg-[linear-gradient(180deg,rgba(12,27,57,0.92),rgba(6,15,36,0.82))] dark:shadow-[0_22px_56px_rgba(0,0,0,0.28)]";
 
 export const brandGlassContainerClass =
-  "border border-white/48 bg-[linear-gradient(180deg,rgba(255,255,255,0.34)_0%,rgba(238,246,250,0.24)_100%),radial-gradient(circle_at_30%_25%,rgba(125,211,252,0.18),transparent_52%),radial-gradient(circle_at_72%_74%,rgba(167,139,250,0.16),transparent_48%)] shadow-[0_14px_32px_rgba(122,146,168,0.14),inset_0_1px_0_rgba(255,255,255,0.58),inset_0_0_24px_rgba(122,115,255,0.08)] backdrop-blur-2xl dark:border-white/10 dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.03)_100%),radial-gradient(circle_at_28%_24%,rgba(32,188,237,0.16),transparent_52%),radial-gradient(circle_at_74%_72%,rgba(114,98,255,0.18),transparent_48%)] dark:shadow-[0_18px_42px_rgba(0,0,0,0.26),inset_0_1px_0_rgba(255,255,255,0.08)]";
+  "border border-slate-200 bg-white shadow-[0_6px_18px_rgba(148,163,184,0.12)] dark:border-white/14 dark:bg-[#0f172a] dark:shadow-[0_10px_24px_rgba(0,0,0,0.22)]";
 
 export const lightProductHeroClass =
   "rounded-[32px] border border-white/48 bg-[linear-gradient(180deg,rgba(255,255,255,0.34)_0%,rgba(242,248,251,0.24)_100%)] shadow-[0_20px_42px_rgba(122,146,168,0.12),inset_0_1px_0_rgba(255,255,255,0.62)] backdrop-blur-2xl dark:border-white/12 dark:bg-[linear-gradient(180deg,rgba(12,27,57,0.92)_0%,rgba(6,15,36,0.78)_100%)] dark:shadow-[0_26px_96px_rgba(0,0,0,0.34),inset_0_1px_0_rgba(255,255,255,0.06)]";
@@ -229,14 +253,12 @@ export function PublicBackground({
   return (
     <main
       className={cn(
-        "min-h-screen overflow-x-clip bg-[#dbe8ee] text-[#0a2540] dark:bg-[#020817] dark:text-white",
+        "min-h-screen overflow-x-clip bg-[#f8fafc] text-[#0a2540] dark:bg-[#020817] dark:text-white",
         className
       )}
     >
       <div className="relative overflow-hidden">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-[6px] bg-[linear-gradient(90deg,#7a73ff_0%,#4f46e5_22%,#7dd3fc_46%,#fb7185_72%,#f59e0b_100%)]" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_16%,rgba(255,255,255,0.30),transparent_24%),radial-gradient(circle_at_34%_40%,rgba(186,214,227,0.26),transparent_26%),radial-gradient(circle_at_78%_28%,rgba(241,248,251,0.28),transparent_30%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(32,188,237,0.22),transparent_28%),radial-gradient(circle_at_top_right,rgba(17,106,248,0.20),transparent_30%),linear-gradient(135deg,#061229_0%,#020817_48%,#04174a_100%)]" />
-        <div className="pointer-events-none absolute left-0 top-[88px] h-[560px] w-[60%] bg-[linear-gradient(135deg,rgba(231,240,245,0.36)_0%,rgba(196,220,233,0.12)_30%,rgba(255,255,255,0)_76%)] dark:bg-[linear-gradient(135deg,rgba(32,188,237,0.12)_0%,rgba(17,106,248,0.06)_30%,rgba(255,255,255,0)_76%)]" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-slate-200 dark:bg-white/10" />
         {children}
       </div>
     </main>
@@ -255,94 +277,80 @@ export function SoftProductBackground({
 
 export function PublicHeader() {
   return (
-    <header className="public-header-shell relative z-20 border-b border-white/35 bg-white/18 backdrop-blur-2xl shadow-[0_10px_30px_rgba(122,146,168,0.10)] supports-[backdrop-filter]:bg-white/14 dark:border-white/10 dark:bg-[#061229]/68 dark:shadow-[0_10px_30px_rgba(0,0,0,0.28)] dark:supports-[backdrop-filter]:bg-[#061229]/60">
-      <div className="mx-auto max-w-[1440px] px-4 py-4 sm:px-6 sm:py-5 lg:px-10">
-        <div className="flex items-center justify-between gap-4 lg:gap-6">
-          <div className="public-header-block min-w-0 flex items-center gap-10">
-            <div className="min-w-0 lg:hidden">
-              <BrandLockup compact showTagline={false} />
-            </div>
-            <div className="hidden lg:block">
-              <BrandLockup />
-            </div>
-
-            <PublicHeaderNav items={navItems} className="public-header-block public-header-block-delay-1" />
+    <header className="public-header-shell relative z-20 border-b border-slate-200 bg-white/96 px-4 sm:px-6 lg:px-10 dark:border-white/14 dark:bg-[#030712]">
+      <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-4 py-4 lg:gap-6">
+        <div className="public-header-block min-w-0 flex items-center gap-10">
+          <div className="min-w-0 lg:hidden">
+            <BrandLockup compact showTagline={false} />
+          </div>
+          <div className="hidden lg:block">
+            <BrandLockup />
           </div>
 
-          <div className="public-header-block public-header-block-delay-2 hidden items-center gap-3 lg:flex">
-            <Link
-              href="/login"
-              className={cn(
-                publicSecondaryButtonClass,
-                "group relative overflow-hidden px-5 py-2.5 transition duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-white/60 hover:bg-white/32 hover:shadow-[0_16px_30px_rgba(133,156,180,0.14)] focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7a73ff]/16 motion-reduce:transform-none motion-reduce:transition-none",
-              )}
-            >
-              <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.20),rgba(255,255,255,0))] opacity-0 transition duration-300 group-hover:opacity-100 motion-reduce:transition-none" />
-              <span className="pointer-events-none absolute inset-x-5 top-0 h-px bg-[linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,0.84),rgba(255,255,255,0))] opacity-70" />
-              <span className="relative z-10">Sign in</span>
-            </Link>
-            <Link
-              href="/contact"
-              className={cn(
-                publicPrimaryButtonClass,
-                "group relative overflow-hidden px-5 py-2.5 transition duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:scale-[1.015] hover:shadow-[0_22px_38px_rgba(99,91,255,0.30)] focus-visible:-translate-y-0.5 focus-visible:scale-[1.015] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7a73ff]/24 motion-reduce:transform-none motion-reduce:transition-none",
-              )}
-            >
-              <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.20),rgba(255,255,255,0)_38%,rgba(160,233,255,0.18)_100%)] opacity-80 transition duration-500 group-hover:opacity-100 motion-reduce:transition-none" />
-              <span className="pointer-events-none absolute inset-x-6 top-0 h-px bg-[linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,0.92),rgba(255,255,255,0))]" />
-              <span className="pointer-events-none absolute inset-y-0 left-[-28%] w-[42%] -skew-x-12 bg-[linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,0.34),rgba(255,255,255,0))] opacity-0 transition-[left,opacity] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:left-[108%] group-hover:opacity-100 motion-reduce:hidden" />
-              <span className="relative z-10">Contact sales</span>
-            </Link>
-          </div>
-
-          <details className="public-header-block public-header-block-delay-1 relative lg:hidden">
-            <summary className="group flex min-h-[44px] list-none items-center justify-center gap-2 rounded-2xl border border-white/45 bg-white/24 px-4 py-2 text-sm font-semibold text-[#425466] shadow-[0_8px_24px_rgba(133,156,180,0.10)] backdrop-blur-2xl transition duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:bg-white/30 hover:shadow-[0_14px_28px_rgba(133,156,180,0.14)] focus-visible:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none dark:border-white/10 dark:bg-white/6 dark:text-zinc-200 dark:shadow-[0_12px_26px_rgba(0,0,0,0.24)] dark:hover:bg-white/10 [&::-webkit-details-marker]:hidden">
-              <span>Menu</span>
-              <span className="flex flex-col gap-1 transition duration-300 group-hover:translate-x-0.5 motion-reduce:transform-none motion-reduce:transition-none">
-                <span className="block h-[2px] w-4 rounded-full bg-[#4f46e5] transition duration-300 group-hover:w-[18px] motion-reduce:transition-none dark:bg-[#8dd8ff]" />
-                <span className="block h-[2px] w-4 rounded-full bg-[#4f46e5] transition duration-300 group-hover:w-[14px] motion-reduce:transition-none dark:bg-[#8dd8ff]" />
-                <span className="block h-[2px] w-4 rounded-full bg-[#4f46e5] transition duration-300 group-hover:w-[18px] motion-reduce:transition-none dark:bg-[#8dd8ff]" />
-              </span>
-            </summary>
-
-            <div className="absolute right-0 top-[calc(100%+12px)] z-30 w-[min(320px,calc(100vw-2rem))] rounded-[28px] border border-white/45 bg-white/24 p-4 shadow-[0_18px_38px_rgba(122,146,168,0.16)] backdrop-blur-2xl dark:border-white/10 dark:bg-[#08152f]/92 dark:shadow-[0_22px_42px_rgba(0,0,0,0.34)]">
-              <nav className="grid gap-2">
-                {navItems.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="rounded-2xl border border-white/42 bg-white/20 px-4 py-3 text-sm font-medium text-[#425466] shadow-[0_8px_20px_rgba(133,156,180,0.08)] backdrop-blur-2xl transition duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:bg-white/28 hover:text-[#0a2540] motion-reduce:transform-none motion-reduce:transition-none dark:border-white/10 dark:bg-white/6 dark:text-zinc-200 dark:hover:bg-white/10 dark:hover:text-white"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </nav>
-
-              <div className="mt-3 grid gap-2">
-                <Link
-                  href="/login"
-                  className={cn(
-                    publicSecondaryButtonClass,
-                    "group relative w-full overflow-hidden px-4 py-3 transition duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none",
-                  )}
-                >
-                  <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.18),rgba(255,255,255,0))] opacity-0 transition duration-300 group-hover:opacity-100 motion-reduce:transition-none" />
-                  <span className="relative z-10">Sign in</span>
-                </Link>
-                <Link
-                  href="/contact"
-                  className={cn(
-                    publicPrimaryButtonClass,
-                    "group relative w-full overflow-hidden px-4 py-3 transition duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:shadow-[0_22px_38px_rgba(99,91,255,0.30)] motion-reduce:transform-none motion-reduce:transition-none",
-                  )}
-                >
-                  <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.20),rgba(255,255,255,0)_38%,rgba(160,233,255,0.18)_100%)] opacity-80 transition duration-500 group-hover:opacity-100 motion-reduce:transition-none" />
-                  <span className="relative z-10">Contact sales</span>
-                </Link>
-              </div>
-            </div>
-          </details>
+          <PublicHeaderNav
+            items={navItems}
+            className="public-header-block public-header-block-delay-1"
+          />
         </div>
+
+        <div className="public-header-block public-header-block-delay-2 hidden items-center gap-3 lg:flex">
+          <Link
+            href="/login"
+            className={publicHeaderSecondaryButtonClass}
+          >
+            Sign in
+          </Link>
+          <Link
+            href="/signup"
+            className={cn(
+              "inline-flex min-h-[44px] items-center justify-center rounded-xl bg-[#4f46e5] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#4338ca]",
+            )}
+          >
+            Start integrating
+          </Link>
+        </div>
+
+        <details className="public-header-block public-header-block-delay-1 relative lg:hidden">
+          <summary className="group flex min-h-[44px] list-none items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-[#425466] transition hover:border-slate-400 hover:bg-slate-50 dark:border-white/22 dark:bg-[#0f172a] dark:text-[#f8fafc] dark:hover:border-white/34 dark:hover:bg-[#111827] [&::-webkit-details-marker]:hidden">
+            <span>Menu</span>
+            <span className="flex flex-col gap-1">
+              <span className="block h-[2px] w-4 rounded-full bg-[#4f46e5] dark:bg-[#8dd8ff]" />
+              <span className="block h-[2px] w-4 rounded-full bg-[#4f46e5] dark:bg-[#8dd8ff]" />
+              <span className="block h-[2px] w-4 rounded-full bg-[#4f46e5] dark:bg-[#8dd8ff]" />
+            </span>
+          </summary>
+
+          <div className="absolute right-0 top-[calc(100%+12px)] z-30 w-[min(320px,calc(100vw-2rem))] rounded-[24px] border border-slate-200 bg-white p-4 shadow-[0_18px_38px_rgba(148,163,184,0.14)] dark:border-white/14 dark:bg-[#0f172a] dark:shadow-[0_22px_42px_rgba(0,0,0,0.30)]">
+            <nav className="grid gap-2">
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-[#425466] transition hover:bg-slate-100 hover:text-[#0a2540] dark:border-white/14 dark:bg-[#111b2d] dark:text-[#dbe6f6] dark:hover:bg-[#18253a] dark:hover:text-white"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+
+            <div className="mt-3 grid gap-2">
+              <Link
+                href="/login"
+                className={publicHeaderMobileButtonClass}
+              >
+                Sign in
+              </Link>
+              <Link
+                href="/signup"
+                className={cn(
+                  "inline-flex min-h-[46px] w-full items-center justify-center rounded-xl bg-[#4f46e5] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#4338ca]",
+                )}
+              >
+                Start integrating
+              </Link>
+            </div>
+          </div>
+        </details>
       </div>
     </header>
   );

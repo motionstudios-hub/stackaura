@@ -1,21 +1,23 @@
+import Image from "next/image";
 import Link from "next/link";
-import { AuroraBackground } from "@/components/ui/aurora-background";
-import LogoCloud from "@/components/ui/logo-cloud";
-import AfricaNetworkHero from "./components/africa-network-hero";
 import {
   cn,
-  lightProductHeroClass,
   lightProductInsetPanelClass,
   lightProductPanelClass,
   PublicBackground,
+  publicBadgeClass,
+  publicBorderSubtleClass,
   PublicFooter,
   PublicHeader,
   publicCodePanelClass,
-  publicPillClass,
+  publicMinimalSecondaryButtonClass,
   publicPrimaryButtonClass,
-  publicSecondaryButtonClass,
   publicSectionLabelClass,
+  publicSecondaryButtonClass,
   publicSubtleSurfaceClass,
+  publicTextMutedClass,
+  publicTextPrimaryClass,
+  publicTextSecondaryClass,
 } from "./components/stackaura-ui";
 import PricingSection from "./components/pricing-section";
 import { buildHomepagePricingTiers, getServerPricing } from "./lib/pricing";
@@ -25,47 +27,15 @@ const valueProps = [
     title: "Smart routing",
     description:
       "Automatically send each payment to the best-performing gateway.",
-    accent:
-      "bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.26),transparent_68%)]",
   },
   {
     title: "Built-in fallback",
     description:
       "If one provider fails, Stackaura retries with another.",
-    accent:
-      "bg-[radial-gradient(circle_at_top,rgba(56,189,248,0.24),transparent_68%)]",
   },
   {
     title: "Unified API",
     description: "One integration for checkout, routing, and multiple gateways.",
-    accent:
-      "bg-[radial-gradient(circle_at_top,rgba(168,85,247,0.18),transparent_70%)]",
-  },
-] as const;
-
-const connectedRails = [
-  {
-    name: "Paystack",
-    src: "/providers/paystack.svg",
-    width: 29,
-    height: 28,
-    pillClassName:
-      "min-w-[156px] px-7 sm:min-w-[170px] sm:px-8 bg-[linear-gradient(180deg,rgba(255,255,255,0.48),rgba(229,245,251,0.28))]",
-  },
-  {
-    name: "Yoco",
-    src: "/providers/yoco.svg",
-    width: 110,
-    height: 42,
-    pillClassName: "min-w-[194px] sm:min-w-[216px]",
-  },
-  {
-    name: "Ozow",
-    src: "/providers/ozow.png",
-    width: 150,
-    height: 49,
-    pillClassName: "min-w-[182px] sm:min-w-[200px]",
-    imageClassName: "max-h-[26px] sm:max-h-[28px]",
   },
 ] as const;
 
@@ -115,6 +85,166 @@ const merchantBenefits = [
   },
 ] as const;
 
+const heroRails = [
+  {
+    name: "Paystack",
+    lightSrc: "/providers/paystack-wordmark-light.svg",
+    darkSrc: "/providers/paystack-wordmark-dark.svg",
+    width: 156,
+    height: 32,
+    className: "h-[18px] w-auto sm:h-[20px]",
+    itemClassName: "min-w-[142px] sm:min-w-[156px]",
+  },
+  {
+    name: "Ozow",
+    lightSrc: "/providers/ozow.png",
+    darkSrc: "/providers/ozow-wordmark-dark.svg",
+    width: 150,
+    height: 49,
+    className: "h-[17px] w-auto sm:h-[19px]",
+    itemClassName: "min-w-[126px] sm:min-w-[142px]",
+  },
+  {
+    name: "Yoco",
+    lightSrc: "/providers/yoco.svg",
+    darkSrc: "/providers/yoco-wordmark-dark.svg",
+    width: 110,
+    height: 42,
+    className: "h-[15px] w-auto sm:h-[17px]",
+    itemClassName: "min-w-[118px] sm:min-w-[132px]",
+  },
+] as const;
+
+function HomepageProductPreview() {
+  return (
+    <div
+      className="relative mx-auto w-full max-w-[620px] overflow-hidden rounded-[28px] border border-slate-200 bg-white p-3 shadow-[0_18px_40px_rgba(148,163,184,0.14)] sm:p-4"
+    >
+      <div className="rounded-[24px] border border-slate-200 bg-white shadow-[0_8px_24px_rgba(148,163,184,0.10)]">
+        <div className="flex items-center justify-between gap-3 border-b border-slate-200/70 px-4 py-3 sm:px-5">
+          <div className="flex items-center gap-2">
+            <span className="h-2.5 w-2.5 rounded-full bg-slate-300" />
+            <span className="h-2.5 w-2.5 rounded-full bg-slate-300" />
+            <span className="h-2.5 w-2.5 rounded-full bg-slate-300" />
+          </div>
+          <div className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+            Live orchestration
+          </div>
+        </div>
+
+        <div className="grid gap-4 p-4 sm:p-5">
+          <div className="rounded-[22px] border border-slate-200 bg-slate-50 p-4 sm:p-5">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6b7c93]">
+                  Unified API
+                </div>
+                <div className="mt-2 text-base font-semibold text-[#0a2540]">
+                  POST /v1/payments
+                </div>
+              </div>
+              <div className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-emerald-700">
+                One request
+              </div>
+            </div>
+            <pre className="mt-4 overflow-x-auto rounded-[18px] bg-[#eef4f7] px-4 py-3 text-[12px] leading-6 text-[#425466]">
+              <code>{`{
+  "amountCents": 550,
+  "currency": "ZAR",
+  "gateway": "AUTO",
+  "reference": "INV-08c39cca4e22"
+}`}</code>
+            </pre>
+          </div>
+
+          <div className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+            <div className="rounded-[22px] border border-slate-200 bg-slate-50 p-4 sm:p-5">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6b7c93]">
+                    Routing decision
+                  </div>
+                  <div className="mt-2 text-lg font-semibold text-[#0a2540]">
+                    Paystack selected
+                  </div>
+                </div>
+                <div className="rounded-full border border-[#d9d5ff] bg-[#f4f2ff] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#5146df]">
+                  Auto
+                </div>
+              </div>
+
+              <div className="mt-4 space-y-3">
+                <div className="flex items-center justify-between rounded-2xl border border-slate-200/80 bg-white/88 px-4 py-3">
+                  <div className="flex items-center gap-3">
+                    <Image src="/providers/paystack.svg" alt="Paystack" width={20} height={20} className="h-5 w-auto" />
+                    <span className="text-sm font-semibold text-[#0a2540]">Paystack</span>
+                  </div>
+                  <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-700">
+                    Active
+                  </span>
+                </div>
+                <div className="flex items-center justify-between rounded-2xl border border-slate-200/80 bg-white/76 px-4 py-3">
+                  <div className="flex items-center gap-3">
+                    <Image src="/providers/ozow.png" alt="Ozow" width={58} height={20} className="h-5 w-auto object-contain" />
+                  </div>
+                  <span className="text-[11px] font-medium uppercase tracking-[0.16em] text-slate-500">
+                    Fallback ready
+                  </span>
+                </div>
+                <div className="flex items-center justify-between rounded-2xl border border-slate-200/80 bg-white/76 px-4 py-3">
+                  <div className="flex items-center gap-3">
+                    <Image src="/providers/yoco.svg" alt="Yoco" width={52} height={18} className="h-4.5 w-auto" />
+                  </div>
+                  <span className="text-[11px] font-medium uppercase tracking-[0.16em] text-slate-500">
+                    Available
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid gap-4">
+              <div className="rounded-[22px] border border-slate-200 bg-slate-50 p-4 sm:p-5">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6b7c93]">
+                  Merchant view
+                </div>
+                <div className="mt-3 text-lg font-semibold text-[#0a2540]">
+                  Stackaura Payments
+                </div>
+                <div className="mt-4 space-y-3 text-sm text-[#425466]">
+                  <div className="flex items-center justify-between">
+                    <span>Current rail</span>
+                    <span className="font-semibold text-[#0a2540]">Paystack</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>Status</span>
+                    <span className="font-semibold text-[#0a2540]">PAID</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>Webhooks</span>
+                    <span className="font-semibold text-[#0a2540]">Healthy</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-[24px] border border-slate-200 bg-[#0f2745] px-5 py-4 text-white shadow-[0_16px_34px_rgba(15,39,69,0.14)]">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#b9cdf5]">
+                  Infrastructure result
+                </div>
+                <div className="mt-3 text-2xl font-semibold tracking-[-0.03em]">
+                  One integration. Multiple payment rails.
+                </div>
+                <div className="mt-2 text-sm leading-6 text-[#d5e2f0]">
+                  Route, recover, and reconcile payments through a single Stackaura layer.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default async function Home() {
   const pricing = await getServerPricing();
   const pricingTiers = buildHomepagePricingTiers(pricing);
@@ -148,6 +278,8 @@ export default async function Home() {
   };
 
   const sectionClass = "mx-auto max-w-[1440px] px-5 sm:px-6 lg:px-10";
+  const heroPrimaryButtonClass =
+    "inline-flex min-h-[52px] items-center justify-center rounded-2xl bg-[#4f46e5] px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-[#4338ca] dark:bg-[#4f46e5] dark:text-white dark:hover:bg-[#5b54ee]";
 
   return (
     <>
@@ -168,177 +300,88 @@ export default async function Home() {
         <PublicHeader />
 
         <div className="relative pb-20">
-          <section className={cn(sectionClass, "pt-6 sm:pt-8 lg:pt-10")}>
-            <div
-              className={cn(
-                "relative isolate overflow-hidden px-5 pb-8 pt-6 sm:px-8 sm:pb-10 sm:pt-8 lg:px-10 lg:py-10",
-                lightProductHeroClass
-              )}
-            >
-              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_18%,rgba(255,255,255,0.52),transparent_26%),radial-gradient(circle_at_74%_18%,rgba(125,211,252,0.28),transparent_24%),radial-gradient(circle_at_84%_70%,rgba(168,85,247,0.16),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.16),rgba(219,232,238,0.02))]" />
-              <div className="pointer-events-none absolute inset-x-0 top-0 h-[220px] bg-[radial-gradient(circle_at_84%_18%,rgba(125,211,252,0.20),transparent_26%),radial-gradient(circle_at_72%_14%,rgba(122,115,255,0.12),transparent_22%),linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0))] lg:hidden" />
-              <AuroraBackground
-                showRadialGradient={false}
-                className="pointer-events-none absolute inset-0 h-auto min-h-0 justify-start bg-transparent text-inherit [--transparent:transparent] [&>div]:bg-transparent [&>div]:text-inherit"
-              >
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_16%_22%,rgba(255,255,255,0.42),transparent_30%),radial-gradient(circle_at_78%_14%,rgba(125,211,252,0.24),transparent_28%),radial-gradient(circle_at_58%_72%,rgba(122,115,255,0.14),transparent_38%)] opacity-100 sm:opacity-84 lg:opacity-62" />
-              </AuroraBackground>
+          <section className={cn(sectionClass, "pt-14 sm:pt-18 lg:pt-20")}>
+            <div className="mx-auto max-w-4xl text-center">
+              <div className={publicBadgeClass}>
+                Stackaura payments infrastructure
+              </div>
 
-              <div className="relative grid gap-8 lg:grid-cols-[1.03fr_0.97fr] lg:items-center">
-                <div className="relative z-10 max-w-3xl pr-0">
-                  <div className={cn(publicPillClass, "max-w-max px-3 py-1.5 text-xs sm:text-sm")}>
-                    Payment orchestration and infrastructure for African commerce
-                  </div>
+              <h1 className={cn("mx-auto mt-8 max-w-4xl text-[40px] font-semibold leading-[0.96] tracking-[-0.065em] sm:text-6xl lg:text-[78px]", publicTextPrimaryClass)}>
+                One integration. Multiple payment rails.
+              </h1>
 
-                  <h1 className="mt-5 max-w-4xl text-[42px] font-semibold leading-[0.98] tracking-[-0.06em] text-[#0a2540] sm:text-6xl lg:text-[78px]">
-                    Payments that never fail.
-                  </h1>
+              <p className={cn("mx-auto mt-6 max-w-2xl text-base leading-7 sm:text-[21px] sm:leading-8", publicTextSecondaryClass)}>
+                Orchestrate payments across Paystack, Ozow, and Yoco through a single unified API.
+              </p>
 
-                  <p className="mt-5 max-w-2xl text-base leading-7 text-[#425466] sm:text-[21px] sm:leading-8">
-                    Route every transaction across multiple gateways
-                    automatically. Increase success rates, reduce downtime, and
-                    scale faster with Stackaura.
-                  </p>
+              <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                <Link href="/signup" className={heroPrimaryButtonClass}>
+                  Start integrating
+                </Link>
+                <Link href="/docs" className={publicMinimalSecondaryButtonClass}>
+                  View documentation
+                </Link>
+              </div>
 
-                  <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-                    <Link href="/signup" className={publicPrimaryButtonClass}>
-                      Start accepting payments
-                    </Link>
-                    <Link href="/docs" className={publicSecondaryButtonClass}>
-                      View docs
-                    </Link>
-                  </div>
+              <div className={cn("mt-10 text-sm font-medium sm:text-[15px]", publicTextMutedClass)}>
+                Built for modern African payment infrastructure
+              </div>
 
-                  <div className="mt-6 inline-flex max-w-full rounded-full border border-white/48 bg-white/32 px-4 py-2 text-sm font-medium text-[#425466] shadow-[0_10px_24px_rgba(133,156,180,0.10)] backdrop-blur-2xl">
-                    One integration. Multiple gateways. Smart routing and fallback.
-                  </div>
-
-                  <div className="mt-8 grid gap-3 sm:mt-8 sm:grid-cols-3">
-                    <div className={cn("p-4", publicSubtleSurfaceClass)}>
-                      <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6b7c93]">
-                        Routing layer
-                      </div>
-                      <p className="mt-2 text-sm leading-6 text-[#425466]">
-                        A single infrastructure layer for intelligent gateway
-                        selection.
-                      </p>
+              <div className="mt-8 flex justify-center">
+                <div className="flex flex-wrap items-center justify-center gap-y-4 border-y border-slate-200/80 py-4 dark:border-white/12">
+                  {heroRails.map((rail, index) => (
+                    <div
+                      key={rail.name}
+                      className={cn(
+                        "flex h-9 items-center justify-center px-5 opacity-85 transition duration-200 hover:opacity-100 sm:px-7",
+                        rail.itemClassName,
+                        index < heroRails.length - 1 && "md:border-r md:border-slate-200/80 md:dark:border-white/12",
+                      )}
+                    >
+                      <Image
+                        src={rail.lightSrc}
+                        alt={rail.name}
+                        width={rail.width}
+                        height={rail.height}
+                        className={cn("w-auto dark:hidden", rail.className)}
+                      />
+                      <Image
+                        src={rail.darkSrc}
+                        alt={rail.name}
+                        width={rail.width}
+                        height={rail.height}
+                        className={cn("hidden w-auto dark:block", rail.className)}
+                      />
                     </div>
-                    <div className={cn("p-4", publicSubtleSurfaceClass)}>
-                      <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6b7c93]">
-                        Fallback ready
-                      </div>
-                      <p className="mt-2 text-sm leading-6 text-[#425466]">
-                        Recovery flows designed to rescue payments before
-                        checkout fails.
-                      </p>
-                    </div>
-                    <div className={cn("p-4", publicSubtleSurfaceClass)}>
-                      <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6b7c93]">
-                        Unified ops
-                      </div>
-                      <p className="mt-2 text-sm leading-6 text-[#425466]">
-                        One API for checkout, routing, events, and gateway
-                        visibility.
-                      </p>
-                    </div>
-                  </div>
+                  ))}
                 </div>
-
-                <AfricaNetworkHero />
               </div>
             </div>
           </section>
 
-          <section className={cn(sectionClass, "py-6 sm:py-8 lg:py-10")}>
-            <div className="max-w-3xl">
-              <div className={publicSectionLabelClass}>Value proposition</div>
-              <h2 className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-[#0a2540] sm:text-5xl">
-                Orchestration that protects every checkout.
-              </h2>
-            </div>
+          <section className={cn(sectionClass, "py-12 sm:py-14 lg:py-16")}>
+            <div className={cn("mx-auto grid max-w-6xl gap-10 border-t pt-10 lg:grid-cols-[0.42fr_0.58fr] lg:items-start lg:pt-12", publicBorderSubtleClass)}>
+              <div className="max-w-xl">
+                <div className={publicSectionLabelClass}>Product preview</div>
+                <h2 className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-[#0a2540] sm:text-5xl">
+                  One control layer for every transaction
+                </h2>
+                <p className="mt-5 text-lg leading-8 text-[#425466]">
+                  Stackaura gives teams one place to initialize payments, route across rails, and keep merchant operations aligned as volume grows.
+                </p>
 
-            <div className="mt-8 grid gap-4 lg:grid-cols-3">
-              {valueProps.map((item) => (
-                <div
-                  key={item.title}
-                  className={cn(
-                    "relative overflow-hidden p-6 sm:p-7",
-                    lightProductPanelClass
-                  )}
-                >
-                  <div className={cn("absolute inset-x-0 top-0 h-28", item.accent)} />
-                  <div className="relative">
-                    <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/55 bg-white/50 text-sm font-semibold text-[#635bff] shadow-[0_12px_24px_rgba(133,156,180,0.12)]">
-                      {item.title.split(" ")[0]}
+                <div className="mt-6 grid gap-3">
+                  {valueProps.map((item) => (
+                    <div key={item.title} className="rounded-2xl border border-slate-200 bg-white px-4 py-4">
+                      <div className="text-sm font-semibold text-[#0a2540]">{item.title}</div>
+                      <p className="mt-1 text-sm leading-6 text-[#425466]">{item.description}</p>
                     </div>
-                    <h3 className="mt-5 text-2xl font-semibold tracking-[-0.03em] text-[#0a2540]">
-                      {item.title}
-                    </h3>
-                    <p className="mt-3 text-base leading-7 text-[#425466]">
-                      {item.description}
-                    </p>
-                  </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </section>
-
-          <section className={cn(sectionClass, "py-6 sm:py-8 lg:py-10")}>
-            <div className={cn("overflow-hidden p-6 sm:p-8 lg:p-10", lightProductPanelClass)}>
-              <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-                <div className="max-w-xl">
-                  <div className={publicSectionLabelClass}>
-                    Connected payment rails
-                  </div>
-                  <h2 className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-[#0a2540] sm:text-5xl">
-                    Connect Africa&apos;s leading payment rails
-                  </h2>
-                  <p className="mt-5 text-lg leading-8 text-[#425466]">
-                    Current live payment rails available through Stackaura&apos;s
-                    orchestration layer. One merchant-ready integration for
-                    routing, fallback, and payment recovery across supported
-                    providers.
-                  </p>
-                </div>
-
-                <LogoCloud items={connectedRails} />
               </div>
 
-              <div className="mt-8 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-                <div className={cn("p-5 sm:p-6", lightProductInsetPanelClass)}>
-                  <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6b7c93]">
-                    How Stackaura fits
-                  </div>
-                  <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_auto_1fr_auto_1fr] sm:items-center">
-                    <div className="rounded-2xl border border-white/52 bg-white/54 px-4 py-4 text-center text-sm font-semibold text-[#0a2540] shadow-[0_12px_24px_rgba(133,156,180,0.10)]">
-                      Merchant / Platform
-                    </div>
-                    <div className="hidden text-center text-xl text-[#635bff] sm:block">
-                      →
-                    </div>
-                    <div className="rounded-2xl border border-white/52 bg-[linear-gradient(180deg,rgba(122,115,255,0.18),rgba(160,233,255,0.14))] px-4 py-4 text-center text-sm font-semibold text-[#0a2540] shadow-[0_12px_24px_rgba(133,156,180,0.10)]">
-                      Stackaura
-                    </div>
-                    <div className="hidden text-center text-xl text-[#635bff] sm:block">
-                      →
-                    </div>
-                    <div className="rounded-2xl border border-white/52 bg-white/54 px-4 py-4 text-center text-sm font-semibold text-[#0a2540] shadow-[0_12px_24px_rgba(133,156,180,0.10)]">
-                      Licensed Payment Providers
-                    </div>
-                  </div>
-                </div>
-
-                <div className={cn("p-5 sm:p-6", publicSubtleSurfaceClass)}>
-                  <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6b7c93]">
-                    Trust clarification
-                  </div>
-                  <p className="mt-3 text-sm leading-7 text-[#425466]">
-                    Stackaura is a software infrastructure and orchestration
-                    layer. Stackaura does not directly process, hold, or settle
-                    customer funds; licensed payment providers process and
-                    settle payments.
-                  </p>
-                </div>
+              <div>
+                <HomepageProductPreview />
               </div>
             </div>
           </section>

@@ -3,13 +3,9 @@ import MetaPixelEvent from "../../components/meta-pixel-event";
 import { resolvePaymentSuccessContent } from "../../lib/payment-success";
 import { getPayment } from "@/lib/api";
 
-type SearchParams =
-  | Promise<{
-      reference?: string | string[];
-    }>
-  | {
-      reference?: string | string[];
-    };
+type SearchParams = Promise<{
+  reference?: string | string[];
+}>;
 
 function getSearchValue(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
@@ -20,7 +16,7 @@ export default async function PaymentsSuccessPage({
 }: {
   searchParams: SearchParams;
 }) {
-  const resolvedSearchParams = await Promise.resolve(searchParams);
+  const resolvedSearchParams = await searchParams;
   const reference = getSearchValue(resolvedSearchParams.reference) || null;
   let payment = null;
 
