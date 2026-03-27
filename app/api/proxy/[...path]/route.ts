@@ -7,6 +7,7 @@ const ALLOWED_PROXY_ROUTES = [
   { method: "POST", pattern: /^v1\/merchants\/[^/]+\/api-keys\/[^/]+\/revoke$/ },
   { method: "GET", pattern: /^v1\/merchants\/[^/]+\/gateways\/(?:ozow|yoco|paystack)$/ },
   { method: "POST", pattern: /^v1\/merchants\/[^/]+\/gateways\/(?:ozow|yoco|paystack)$/ },
+  { method: "POST", pattern: /^v1\/merchants\/[^/]+\/gateways\/paystack\/test-connection$/ },
   { method: "GET", pattern: /^v1\/support\/conversations$/ },
   { method: "GET", pattern: /^v1\/support\/conversations\/[^/]+$/ },
   { method: "POST", pattern: /^v1\/support\/chat$/ },
