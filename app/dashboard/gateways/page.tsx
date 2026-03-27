@@ -49,7 +49,21 @@ type YocoFormState = {
 type PaystackConnectionState = {
   connected: boolean;
   hasSecretKey: boolean;
+  secretKeyMasked: string | null;
   testMode: boolean;
+  mode: "test" | "live";
+  lastSuccessfulPayment: {
+    reference: string;
+    amountCents: number;
+    currency: string;
+    paidAt: string;
+  } | null;
+  lastWebhookReceived: {
+    reference: string | null;
+    eventType: string | null;
+    providerStatus: string | null;
+    receivedAt: string;
+  } | null;
   updatedAt: string | null;
 };
 
@@ -57,6 +71,15 @@ type PaystackFormState = {
   secretKey: string;
   testMode: boolean;
 };
+
+type PaystackValidationState = {
+  status: "idle" | "success" | "error";
+  message: string | null;
+  verifiedAt: string | null;
+  paymentSessionTimeout: number | null;
+};
+
+type PaystackPanelIntent = "connect" | "manage" | "rotate";
 
 type PresenceTone = "success" | "warning" | "muted" | "violet";
 
@@ -80,7 +103,11 @@ const emptyYocoConnection: YocoConnectionState = {
 const emptyPaystackConnection: PaystackConnectionState = {
   connected: false,
   hasSecretKey: false,
+  secretKeyMasked: null,
   testMode: false,
+  mode: "live",
+  lastSuccessfulPayment: null,
+  lastWebhookReceived: null,
   updatedAt: null,
 };
 
@@ -121,6 +148,23 @@ function pickBoolean(data: Record<string, unknown>, keys: string[]) {
   for (const key of keys) {
     const parsed = parseBooleanLike(data[key]);
     if (parsed !== null) return parsed;
+  }
+
+  return null;
+}
+
+function pickNumber(data: Record<string, unknown>, keys: string[]) {
+  for (const key of keys) {
+    const value = data[key];
+    if (typeof value === "number" && Number.isFinite(value)) {
+      return value;
+    }
+    if (typeof value === "string" && value.trim()) {
+      const parsed = Number(value);
+      if (Number.isFinite(parsed)) {
+        return parsed;
+      }
+    }
   }
 
   return null;
@@ -199,18 +243,88 @@ function parsePaystackConnectionPayload(payload: unknown): PaystackConnectionSta
       ? payload.data
       : payload
     : {};
+  const lastSuccessfulPayment = isRecord(record.lastSuccessfulPayment)
+    ? {
+        reference: pickString(record.lastSuccessfulPayment, ["reference"]) ?? "Unknown reference",
+        amountCents: pickNumber(record.lastSuccessfulPayment, ["amountCents"]) ?? 0,
+        currency: pickString(record.lastSuccessfulPayment, ["currency"]) ?? "ZAR",
+        paidAt: pickString(record.lastSuccessfulPayment, ["paidAt"]) ?? "",
+      }
+    : null;
+  const lastWebhookReceived = isRecord(record.lastWebhookReceived)
+    ? {
+        reference: pickString(record.lastWebhookReceived, ["reference"]),
+        eventType: pickString(record.lastWebhookReceived, ["eventType"]),
+        providerStatus: pickString(record.lastWebhookReceived, ["providerStatus"]),
+        receivedAt:
+          pickString(record.lastWebhookReceived, ["receivedAt"]) ??
+          pickString(record.lastWebhookReceived, ["checkedAt"]) ??
+          "",
+      }
+    : null;
 
   const hasSecretKey = pickBoolean(record, ["hasSecretKey"]) ?? false;
   const connected =
     pickBoolean(record, ["connected", "configured", "paystackConfigured"]) ??
     hasSecretKey;
+  const testMode = pickBoolean(record, ["testMode"]) ?? false;
 
   return {
     connected,
     hasSecretKey,
-    testMode: pickBoolean(record, ["testMode"]) ?? false,
+    secretKeyMasked: pickString(record, ["secretKeyMasked", "maskedSecretKey"]),
+    testMode,
+    mode:
+      (pickString(record, ["mode"])?.toLowerCase() === "test" ? "test" : null) ??
+      (testMode ? "test" : "live"),
+    lastSuccessfulPayment:
+      lastSuccessfulPayment && lastSuccessfulPayment.paidAt ? lastSuccessfulPayment : null,
+    lastWebhookReceived:
+      lastWebhookReceived && lastWebhookReceived.receivedAt ? lastWebhookReceived : null,
     updatedAt: pickString(record, ["updatedAt", "lastUpdatedAt"]),
   };
+}
+
+function detectPaystackModeFromSecretKey(secretKey: string) {
+  const normalized = secretKey.trim();
+  if (!normalized) return null;
+  if (normalized.startsWith("sk_test_")) return true;
+  if (normalized.startsWith("sk_live_")) return false;
+  return null;
+}
+
+function formatCurrencyAmount(amountCents: number, currency: string) {
+  try {
+    return new Intl.NumberFormat("en-ZA", {
+      style: "currency",
+      currency,
+      minimumFractionDigits: 2,
+    }).format(amountCents / 100);
+  } catch {
+    return `${currency} ${(amountCents / 100).toFixed(2)}`;
+  }
+}
+
+function formatRelativeVerificationTimestamp(value: string | null) {
+  if (!value) {
+    return "Not verified yet";
+  }
+
+  try {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+      return value;
+    }
+
+    const deltaSeconds = Math.round((Date.now() - date.getTime()) / 1000);
+    if (Math.abs(deltaSeconds) < 90) {
+      return "Just now";
+    }
+  } catch {
+    return value;
+  }
+
+  return formatTimestamp(value);
 }
 
 function PresenceBadge({
@@ -246,6 +360,39 @@ function PresenceBadge({
   );
 }
 
+function OperationalDetail({
+  label,
+  title,
+  detail,
+  tone = "muted",
+}: {
+  label: string;
+  title: string;
+  detail: string;
+  tone?: PresenceTone;
+}) {
+  return (
+    <div className={cn(lightProductInsetPanelClass, "p-4")}>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <div className="text-xs uppercase tracking-[0.2em] text-[#6b7c93]">{label}</div>
+          <div className="mt-2 text-sm font-semibold text-[#0a2540]">{title}</div>
+          <div className="mt-2 text-sm text-[#425466]">{detail}</div>
+        </div>
+        <span className={lightProductStatusPillClass(tone)}>
+          {tone === "success"
+            ? "Available"
+            : tone === "warning"
+              ? "Attention"
+              : tone === "violet"
+                ? "Test"
+                : "Waiting"}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export default function GatewayConnectionsPage() {
   const [merchantId, setMerchantId] = useState<string | null>(null);
   const [form, setForm] = useState<OzowFormState>({
@@ -274,6 +421,14 @@ export default function GatewayConnectionsPage() {
   const [saving, setSaving] = useState(false);
   const [yocoSaving, setYocoSaving] = useState(false);
   const [paystackSaving, setPaystackSaving] = useState(false);
+  const [paystackTesting, setPaystackTesting] = useState(false);
+  const [paystackPanelIntent, setPaystackPanelIntent] = useState<PaystackPanelIntent | null>(null);
+  const [paystackValidation, setPaystackValidation] = useState<PaystackValidationState>({
+    status: "idle",
+    message: null,
+    verifiedAt: null,
+    paymentSessionTimeout: null,
+  });
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [yocoError, setYocoError] = useState<string | null>(null);
@@ -291,7 +446,26 @@ export default function GatewayConnectionsPage() {
     Boolean(merchantId) &&
     Boolean(yocoForm.publicKey.trim()) &&
     Boolean(yocoForm.secretKey.trim());
-  const paystackCanSave = Boolean(merchantId) && Boolean(paystackForm.secretKey.trim());
+  const paystackDetectedMode = detectPaystackModeFromSecretKey(paystackForm.secretKey);
+  const paystackModeMismatch =
+    paystackDetectedMode !== null && paystackDetectedMode !== paystackForm.testMode;
+  const paystackCanSave =
+    Boolean(merchantId) && Boolean(paystackForm.secretKey.trim()) && !paystackModeMismatch;
+  const paystackPanelOpen = paystackPanelIntent !== null;
+  const paystackConnectionStateLabel = !paystackConnection.connected
+    ? "Not connected"
+    : paystackValidation.status === "error"
+      ? "Validation failed"
+      : paystackConnection.testMode
+        ? "Connected (Test)"
+        : "Connected (Live)";
+  const paystackConnectionTone: PresenceTone = !paystackConnection.connected
+    ? "muted"
+    : paystackValidation.status === "error"
+      ? "warning"
+      : paystackConnection.testMode
+        ? "violet"
+        : "success";
 
   async function fetchActiveMerchant() {
     const res = await fetch("/api/active-merchant", {
@@ -406,6 +580,14 @@ export default function GatewayConnectionsPage() {
       setPaystackConnection(parsed);
       setPaystackReadbackStatus("available");
       setPaystackForm((current) => ({ ...current, testMode: parsed.testMode }));
+      if (!parsed.connected) {
+        setPaystackValidation({
+          status: "idle",
+          message: null,
+          verifiedAt: null,
+          paymentSessionTimeout: null,
+        });
+      }
       return parsed;
     } catch (loadError: unknown) {
       setPaystackReadbackStatus("error");
@@ -418,6 +600,82 @@ export default function GatewayConnectionsPage() {
       await loadPaystackConnection();
     } catch (loadError: unknown) {
       setPaystackError(getErrorMessage(loadError, "We couldn't load the Paystack connection."));
+    }
+  }
+
+  function openPaystackPanel(intent: PaystackPanelIntent) {
+    setPaystackPanelIntent(intent);
+    setPaystackError(null);
+    setPaystackSuccess(null);
+    setPaystackForm((current) => ({
+      ...current,
+      secretKey: "",
+      testMode: paystackConnection.connected ? paystackConnection.testMode : current.testMode,
+    }));
+  }
+
+  function closePaystackPanel() {
+    setPaystackPanelIntent(null);
+  }
+
+  async function testPaystackConnection(options?: { silentSuccess?: boolean }) {
+    if (!merchantId) return false;
+
+    setPaystackTesting(true);
+    setPaystackError(null);
+    if (!options?.silentSuccess) {
+      setPaystackSuccess(null);
+    }
+
+    try {
+      const res = await fetch(
+        `/api/proxy/v1/merchants/${merchantId}/gateways/paystack/test-connection`,
+        {
+          method: "POST",
+          credentials: "include",
+          cache: "no-store",
+        }
+      );
+
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        throw new Error(text || "We couldn't verify the Paystack connection.");
+      }
+
+      const payload: unknown = await res.json();
+      const record = isRecord(payload) ? (isRecord(payload.data) ? payload.data : payload) : {};
+      const verifiedAt = pickString(record, ["verifiedAt"]) ?? new Date().toISOString();
+      const message =
+        pickString(record, ["message"]) ??
+        "Paystack credentials verified successfully.";
+      const paymentSessionTimeout =
+        pickNumber(record, ["paymentSessionTimeout", "payment_session_timeout"]) ?? null;
+
+      setPaystackValidation({
+        status: "success",
+        message,
+        verifiedAt,
+        paymentSessionTimeout,
+      });
+      if (!options?.silentSuccess) {
+        setPaystackSuccess(message);
+      }
+      return true;
+    } catch (testError: unknown) {
+      const message = getErrorMessage(
+        testError,
+        "We couldn't verify the saved Paystack credentials."
+      );
+      setPaystackValidation({
+        status: "error",
+        message,
+        verifiedAt: null,
+        paymentSessionTimeout: null,
+      });
+      setPaystackError(message);
+      return false;
+    } finally {
+      setPaystackTesting(false);
     }
   }
 
@@ -561,9 +819,20 @@ export default function GatewayConnectionsPage() {
       return;
     }
 
+    if (paystackModeMismatch) {
+      setPaystackError("The Paystack key prefix does not match the selected mode.");
+      return;
+    }
+
     setPaystackSaving(true);
     setPaystackError(null);
     setPaystackSuccess(null);
+    setPaystackValidation({
+      status: "idle",
+      message: null,
+      verifiedAt: null,
+      paymentSessionTimeout: null,
+    });
 
     try {
       const res = await fetch(`/api/proxy/v1/merchants/${merchantId}/gateways/paystack`, {
@@ -588,20 +857,26 @@ export default function GatewayConnectionsPage() {
         testMode: current.testMode,
       }));
 
+      let refreshedConnection: PaystackConnectionState | null = null;
       try {
         const refreshed = await loadPaystackConnection(merchantId);
+        refreshedConnection = refreshed;
         setPaystackForm({
           secretKey: "",
           testMode: refreshed.testMode,
         });
-        setPaystackSuccess("Paystack connection saved and refreshed.");
       } catch (refreshError: unknown) {
-        setPaystackSuccess(
-          "Paystack connection saved. We couldn't refresh the latest saved state right away."
-        );
         setPaystackError(
           getErrorMessage(refreshError, "We couldn't refresh the Paystack connection.")
         );
+      }
+
+      const verified = await testPaystackConnection({ silentSuccess: true });
+      if (verified) {
+        setPaystackSuccess(
+          `Paystack connected. ${refreshedConnection?.testMode ? "Test" : "Live"} credentials verified just now.`
+        );
+        setPaystackPanelIntent("manage");
       }
     } catch (saveError: unknown) {
       setPaystackError(getErrorMessage(saveError, "We couldn't save the Paystack connection."));
@@ -609,6 +884,17 @@ export default function GatewayConnectionsPage() {
       setPaystackSaving(false);
     }
   }
+
+  useEffect(() => {
+    const detectedMode = detectPaystackModeFromSecretKey(paystackForm.secretKey);
+    if (detectedMode === null) {
+      return;
+    }
+
+    setPaystackForm((current) =>
+      current.testMode === detectedMode ? current : { ...current, testMode: detectedMode }
+    );
+  }, [paystackForm.secretKey]);
 
   useEffect(() => {
     let cancelled = false;
@@ -955,18 +1241,6 @@ export default function GatewayConnectionsPage() {
         </div>
       ) : null}
 
-      {paystackSuccess ? (
-        <div className="mt-6 rounded-[24px] border border-emerald-300/70 bg-emerald-50/85 p-4 text-sm text-emerald-700">
-          {paystackSuccess}
-        </div>
-      ) : null}
-
-      {paystackError ? (
-        <div className="mt-6 rounded-[24px] border border-rose-300/70 bg-rose-50/85 p-4 text-sm text-rose-700">
-          {paystackError}
-        </div>
-      ) : null}
-
       <section id="yoco" className="scroll-mt-28 mt-6 grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
         <div className={cn(lightProductPanelClass, "overflow-hidden")}>
           <div className="border-b border-white/42 px-5 py-4">
@@ -1139,22 +1413,32 @@ export default function GatewayConnectionsPage() {
         </div>
       </section>
 
-      <section id="paystack" className="scroll-mt-28 mt-6 grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
+      {paystackSuccess ? (
+        <div className="mt-6 rounded-[24px] border border-emerald-300/70 bg-emerald-50/85 p-4 text-sm text-emerald-700">
+          {paystackSuccess}
+        </div>
+      ) : null}
+
+      {paystackError ? (
+        <div className="mt-6 rounded-[24px] border border-rose-300/70 bg-rose-50/85 p-4 text-sm text-rose-700">
+          {paystackError}
+        </div>
+      ) : null}
+
+      <section id="paystack" className="scroll-mt-28 mt-6 grid gap-6 xl:grid-cols-[0.96fr_1.04fr]">
         <div className={cn(lightProductPanelClass, "overflow-hidden")}>
           <div className="border-b border-white/42 px-5 py-4">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <div className="text-base font-semibold text-[#0a2540]">Paystack connection state</div>
                 <div className="mt-1 text-xs uppercase tracking-[0.16em] text-[#6b7c93]">
-                  Masked merchant view
+                  Operational merchant view
                 </div>
               </div>
-              <span
-                className={lightProductStatusPillClass(
-                  paystackConnection.connected ? "success" : "muted"
-                )}
-              >
-                {paystackConnection.connected ? "Credentials saved" : "Awaiting setup"}
+              <span className={lightProductStatusPillClass(paystackConnectionTone)}>
+                {paystackValidation.status === "error"
+                  ? "Action needed"
+                  : paystackConnectionStateLabel}
               </span>
             </div>
           </div>
@@ -1163,62 +1447,117 @@ export default function GatewayConnectionsPage() {
             <div className={cn(lightProductInsetPanelClass, "p-4")}>
               <div className="text-xs uppercase tracking-[0.2em] text-[#6b7c93]">Connection state</div>
               <div className="mt-3 text-lg font-semibold tracking-tight text-[#0a2540]">
-                {paystackConnection.connected
-                  ? "Paystack is connected for this merchant"
-                  : "Paystack is not configured yet"}
+                {!paystackConnection.connected
+                  ? "Connect Paystack"
+                  : paystackValidation.status === "error"
+                    ? "Validation failed"
+                    : "Paystack connected"}
               </div>
               <div className="mt-2 text-sm text-[#425466]">
-                The dashboard only shows persisted presence indicators for the Paystack secret key
-                after save.
+                {!paystackConnection.connected
+                  ? "Accept card payments via Paystack through Stackaura."
+                  : paystackValidation.status === "error"
+                    ? "The saved secret needs attention before you rely on Paystack in production."
+                    : paystackConnection.testMode
+                      ? "Test transactions enabled."
+                      : "Live transactions enabled."}
               </div>
             </div>
 
             <div className="grid gap-3">
               <PresenceBadge
-                label="Secret key"
-                value={paystackConnection.hasSecretKey ? "Stored and masked" : "Missing"}
-                tone={
+                label="Secret stored"
+                value={
                   paystackConnection.hasSecretKey
-                    ? "success"
-                    : paystackConnection.connected
-                      ? "warning"
-                      : "muted"
+                    ? paystackConnection.secretKeyMasked ?? "Secret stored and masked"
+                    : "No Paystack secret saved yet"
                 }
+                tone={paystackConnection.hasSecretKey ? "success" : "muted"}
+                statusLabel={paystackConnection.hasSecretKey ? "Masked" : "Missing"}
               />
               <PresenceBadge
-                label="Test mode"
+                label="Mode"
                 value={
                   !paystackConnection.connected
-                    ? "No persisted mode reported yet"
+                    ? "Select test or live mode while connecting"
                     : paystackConnection.testMode
-                      ? "Test transactions are enabled"
-                      : "Live transactions are enabled"
+                      ? "Test transactions enabled"
+                      : "Live transactions enabled"
                 }
-                tone={
-                  !paystackConnection.connected
-                    ? "warning"
-                    : paystackConnection.testMode
-                      ? "violet"
-                      : "success"
-                }
-                statusLabel={
-                  !paystackConnection.connected
-                    ? "Pending"
-                    : paystackConnection.testMode
-                      ? "Test"
-                      : "Live"
-                }
+                tone={!paystackConnection.connected ? "muted" : paystackConnection.testMode ? "violet" : "success"}
+                statusLabel={!paystackConnection.connected ? "Setup" : paystackConnection.testMode ? "Test" : "Live"}
               />
             </div>
 
+            <OperationalDetail
+              label="Last verified"
+              title={
+                paystackValidation.status === "success"
+                  ? formatRelativeVerificationTimestamp(paystackValidation.verifiedAt)
+                  : "Run test connection"
+              }
+              detail={
+                paystackValidation.status === "success"
+                  ? paystackValidation.message ??
+                    (paystackValidation.paymentSessionTimeout
+                      ? `Payment session timeout: ${paystackValidation.paymentSessionTimeout} minutes.`
+                      : "Saved credentials verified successfully.")
+                  : paystackValidation.status === "error"
+                    ? paystackValidation.message ?? "The saved credentials need attention."
+                    : "Use Test connection after saving to verify the stored secret."
+              }
+              tone={
+                paystackValidation.status === "success"
+                  ? "success"
+                  : paystackValidation.status === "error"
+                    ? "warning"
+                    : "muted"
+              }
+            />
+
+            <OperationalDetail
+              label="Last successful payment"
+              title={
+                paystackConnection.lastSuccessfulPayment
+                  ? `${paystackConnection.lastSuccessfulPayment.reference} · ${formatCurrencyAmount(
+                      paystackConnection.lastSuccessfulPayment.amountCents,
+                      paystackConnection.lastSuccessfulPayment.currency
+                    )}`
+                  : "No successful Paystack payment yet"
+              }
+              detail={
+                paystackConnection.lastSuccessfulPayment
+                  ? `Paid ${formatTimestamp(paystackConnection.lastSuccessfulPayment.paidAt)}`
+                  : "This will appear after the first successful Paystack transaction."
+              }
+              tone={paystackConnection.lastSuccessfulPayment ? "success" : "muted"}
+            />
+
+            <OperationalDetail
+              label="Last webhook received"
+              title={
+                paystackConnection.lastWebhookReceived
+                  ? `${paystackConnection.lastWebhookReceived.eventType ?? "Webhook event"}${paystackConnection.lastWebhookReceived.reference ? ` · ${paystackConnection.lastWebhookReceived.reference}` : ""}`
+                  : "No Paystack webhook received yet"
+              }
+              detail={
+                paystackConnection.lastWebhookReceived
+                  ? `${paystackConnection.lastWebhookReceived.providerStatus ?? "Processed"} · ${formatTimestamp(
+                      paystackConnection.lastWebhookReceived.receivedAt
+                    )}`
+                  : "Webhook activity appears here once Stackaura receives a Paystack event."
+              }
+              tone={paystackConnection.lastWebhookReceived ? "success" : "muted"}
+            />
+
             <div className={cn(lightProductInsetPanelClass, "p-4")}>
-              <div className="text-xs uppercase tracking-[0.2em] text-[#6b7c93]">Last update</div>
-              <div className="mt-2 text-sm text-[#0a2540]">
+              <div className="text-xs uppercase tracking-[0.2em] text-[#6b7c93]">Last updated</div>
+              <div className="mt-2 text-sm font-medium text-[#0a2540]">
                 {formatTimestamp(paystackConnection.updatedAt)}
               </div>
               <div className="mt-2 text-sm text-[#425466]">
-                Raw Paystack secrets are intentionally hidden after save. Enter a new value below
-                whenever you need to rotate or replace the merchant configuration.
+                Stackaura keeps the Paystack secret masked after save. Use Rotate secret any time
+                you need to replace the stored credential.
               </div>
             </div>
           </div>
@@ -1228,9 +1567,11 @@ export default function GatewayConnectionsPage() {
           <div className="border-b border-white/42 px-5 py-4">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <div className="text-base font-semibold text-[#0a2540]">Configure Paystack</div>
+                <div className="text-base font-semibold text-[#0a2540]">
+                  {paystackConnection.connected ? "Manage Paystack" : "Connect Paystack"}
+                </div>
                 <div className="mt-1 text-xs uppercase tracking-[0.16em] text-[#6b7c93]">
-                  Merchant gateway credentials
+                  Merchant gateway onboarding
                 </div>
               </div>
               <span className={lightProductStatusPillClass("violet")}>Paystack</span>
@@ -1239,88 +1580,303 @@ export default function GatewayConnectionsPage() {
 
           <div className="space-y-5 p-5">
             <div className={cn(lightProductInsetPanelClass, "p-4")}>
-              <div className="text-sm font-medium text-[#0a2540]">Connection behavior</div>
+              <div className="text-sm font-medium text-[#0a2540]">
+                {paystackConnection.connected ? "Connected and ready to manage" : "Connect card payments"}
+              </div>
               <div className={cn(lightProductMutedTextClass, "mt-2")}>
-                Saving posts the Paystack secret key and test mode to the merchant gateway API.
-                After a successful save, the dashboard refreshes from the persisted backend
-                readback and clears the secret input again.
+                {paystackConnection.connected
+                  ? "Manage the stored secret, re-verify the connection, or rotate the Paystack credential without exposing the current value."
+                  : "Paste the merchant's Paystack secret key to enable card payments through Stackaura."}
               </div>
             </div>
 
-            <label className="block">
-              <div className="mb-1 text-xs uppercase tracking-[0.16em] text-[#6b7c93]">Secret key</div>
-              <input
-                className={lightProductInputClass}
-                type="password"
-                value={paystackForm.secretKey}
-                onChange={(event) =>
-                  setPaystackForm((current) => ({ ...current, secretKey: event.target.value }))
-                }
-                placeholder="sk_test_..."
-                autoComplete="new-password"
-              />
-            </label>
-
-            <div className={cn(lightProductInsetPanelClass, "p-4")}>
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <div className="text-xs uppercase tracking-[0.16em] text-[#6b7c93]">Test mode</div>
-                  <div className="mt-2 text-sm font-medium text-[#0a2540]">
-                    {paystackForm.testMode ? "Enabled" : "Disabled"}
-                  </div>
-                  <div className={cn(lightProductMutedTextClass, "mt-2 max-w-md")}>
-                    Toggle the merchant between Paystack test and live mode before saving this
-                    connection.
-                  </div>
+            {paystackValidation.status !== "idle" ? (
+              <div
+                className={cn(
+                  "rounded-[24px] border p-4 text-sm",
+                  paystackValidation.status === "success"
+                    ? "border-emerald-300/70 bg-emerald-50/85 text-emerald-700"
+                    : "border-amber-300/70 bg-amber-50/90 text-amber-700"
+                )}
+              >
+                <div className="font-medium">
+                  {paystackValidation.status === "success"
+                    ? "Paystack credentials verified"
+                    : "Validation failed"}
                 </div>
+                <div className="mt-2">{paystackValidation.message}</div>
+                <div className="mt-2 opacity-80">
+                  Last verified: {formatRelativeVerificationTimestamp(paystackValidation.verifiedAt)}
+                </div>
+              </div>
+            ) : null}
 
+            {!paystackConnection.connected ? (
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                 <button
-                  type="button"
-                  role="switch"
-                  aria-checked={paystackForm.testMode}
-                  aria-label="Toggle Paystack test mode"
-                  onClick={() =>
-                    setPaystackForm((current) => ({
-                      ...current,
-                      testMode: !current.testMode,
-                    }))
-                  }
-                  className={cn(
-                    "relative inline-flex h-12 w-[84px] shrink-0 items-center rounded-full border p-1 transition duration-200",
-                    paystackForm.testMode
-                      ? "border-[#b8b2ff]/70 bg-[linear-gradient(180deg,rgba(122,115,255,0.18)_0%,rgba(160,233,255,0.16)_100%)] shadow-[0_10px_24px_rgba(99,91,255,0.14)]"
-                      : "border-white/45 bg-white/24 shadow-[0_10px_24px_rgba(133,156,180,0.10)]"
-                  )}
+                  className={cn(lightProductCompactPrimaryButtonClass, "disabled:opacity-60")}
+                  onClick={() => openPaystackPanel("connect")}
+                  disabled={!hasActiveMerchant}
                 >
-                  <span className="sr-only">Toggle Paystack test mode</span>
-                  <span
-                    className={cn(
-                      "inline-block h-10 w-10 rounded-full border bg-white shadow-[0_10px_20px_rgba(122,146,168,0.18)] transition-transform duration-200",
-                      paystackForm.testMode
-                        ? "translate-x-8 border-[#b8b2ff]/70"
-                        : "translate-x-0 border-white/55"
-                    )}
-                  />
+                  Connect Paystack
+                </button>
+                <div className={cn(lightProductMutedTextClass, "max-w-md")}>
+                  Accept card payments via Paystack through Stackaura.
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+                <button
+                  className={cn(lightProductCompactPrimaryButtonClass, "disabled:opacity-60")}
+                  onClick={() => openPaystackPanel("manage")}
+                  disabled={!hasActiveMerchant}
+                >
+                  Manage connection
+                </button>
+                <button
+                  className={cn(lightProductCompactGhostButtonClass, "disabled:opacity-60")}
+                  onClick={() => void testPaystackConnection()}
+                  disabled={!hasActiveMerchant || paystackTesting}
+                >
+                  {paystackTesting ? "Testing connection..." : "Test connection"}
+                </button>
+                <button
+                  className={cn(lightProductCompactGhostButtonClass, "disabled:opacity-60")}
+                  onClick={() => openPaystackPanel("rotate")}
+                  disabled={!hasActiveMerchant}
+                >
+                  Rotate secret
                 </button>
               </div>
-            </div>
+            )}
 
-            <div className="flex flex-col gap-3 border-t border-white/42 pt-5 sm:flex-row sm:items-center sm:justify-between">
-              <div className={cn(lightProductMutedTextClass, "max-w-lg")}>
-                Required fields: Paystack secret key. Saving updates the current merchant only.
+            <div className="grid gap-3 sm:grid-cols-3">
+              <div className={cn(lightProductInsetPanelClass, "p-4")}>
+                <div className="text-xs uppercase tracking-[0.16em] text-[#6b7c93]">Step 1</div>
+                <div className="mt-2 text-sm font-semibold text-[#0a2540]">Paste secret key</div>
+                <div className="mt-2 text-sm text-[#425466]">
+                  Use the merchant's Paystack secret key only. Stackaura keeps it masked after
+                  save.
+                </div>
               </div>
-
-              <button
-                className={cn(lightProductCompactPrimaryButtonClass, "disabled:opacity-60")}
-                onClick={savePaystackConnection}
-                disabled={!paystackCanSave || paystackSaving || !hasActiveMerchant}
-              >
-                {paystackSaving ? "Saving..." : "Save Paystack connection"}
-              </button>
+              <div className={cn(lightProductInsetPanelClass, "p-4")}>
+                <div className="text-xs uppercase tracking-[0.16em] text-[#6b7c93]">Step 2</div>
+                <div className="mt-2 text-sm font-semibold text-[#0a2540]">Confirm mode</div>
+                <div className="mt-2 text-sm text-[#425466]">
+                  Stackaura detects test or live mode from the key prefix and keeps the backend
+                  validation unchanged.
+                </div>
+              </div>
+              <div className={cn(lightProductInsetPanelClass, "p-4")}>
+                <div className="text-xs uppercase tracking-[0.16em] text-[#6b7c93]">Step 3</div>
+                <div className="mt-2 text-sm font-semibold text-[#0a2540]">Verify connection</div>
+                <div className="mt-2 text-sm text-[#425466]">
+                  Run Test connection to verify the saved credential without creating a real
+                  payment.
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
+
+      {paystackPanelOpen ? (
+        <div className="fixed inset-0 z-50 flex justify-end bg-[#0a2540]/26 backdrop-blur-[2px]">
+          <div className="flex h-full w-full max-w-[560px] flex-col border-l border-white/45 bg-[#eef5fb] shadow-[0_20px_60px_rgba(10,37,64,0.18)]">
+            <div className="flex items-start justify-between gap-4 border-b border-white/42 px-6 py-5">
+              <div>
+                <div className="text-xs uppercase tracking-[0.2em] text-[#6b7c93]">
+                  {paystackPanelIntent === "connect"
+                    ? "Step 1 of 3"
+                    : paystackPanelIntent === "rotate"
+                      ? "Rotate secret"
+                      : "Manage connection"}
+                </div>
+                <div className="mt-2 text-2xl font-semibold tracking-tight text-[#0a2540]">
+                  {paystackPanelIntent === "connect"
+                    ? "Connect Paystack"
+                    : paystackPanelIntent === "rotate"
+                      ? "Rotate Paystack secret"
+                      : "Manage Paystack connection"}
+                </div>
+                <div className={cn(lightProductMutedTextClass, "mt-2 max-w-md")}>
+                  {paystackPanelIntent === "connect"
+                    ? "Paste your Paystack secret key to enable transactions through Stackaura."
+                    : paystackPanelIntent === "rotate"
+                      ? "Paste a new Paystack secret key to replace the currently stored one."
+                      : "Review the mode, re-verify the connection, or paste a new secret to update the saved Paystack credentials."}
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={closePaystackPanel}
+                className={cn(lightProductCompactGhostButtonClass, "min-h-[40px] px-3")}
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto space-y-5 p-6">
+              <div className={cn(lightProductInsetPanelClass, "p-4")}>
+                <div className="text-sm font-medium text-[#0a2540]">Current connection</div>
+                <div className="mt-2 text-sm text-[#425466]">
+                  {paystackConnection.connected
+                    ? `${paystackConnection.testMode ? "Test" : "Live"} mode is active. ${
+                        paystackConnection.secretKeyMasked ?? "Secret stored and masked."
+                      }`
+                    : "No Paystack secret has been saved for this merchant yet."}
+                </div>
+              </div>
+
+              <div className={cn(lightProductInsetPanelClass, "p-4")}>
+                <div className="text-sm font-medium text-[#0a2540]">Step 1 · Secret key</div>
+                <div className={cn(lightProductMutedTextClass, "mt-2")}>
+                  Test keys start with <span className="font-semibold text-[#0a2540]">sk_test_</span>.
+                  Live keys start with <span className="font-semibold text-[#0a2540]">sk_live_</span>.
+                </div>
+
+                <label className="mt-4 block">
+                  <div className="mb-1 text-xs uppercase tracking-[0.16em] text-[#6b7c93]">
+                    Paystack secret key
+                  </div>
+                  <input
+                    className={lightProductInputClass}
+                    type="password"
+                    value={paystackForm.secretKey}
+                    onChange={(event) =>
+                      setPaystackForm((current) => ({ ...current, secretKey: event.target.value }))
+                    }
+                    placeholder="sk_test_..."
+                    autoComplete="new-password"
+                  />
+                </label>
+
+                {paystackDetectedMode !== null ? (
+                  <div className="mt-3 rounded-2xl border border-[#7a73ff]/18 bg-white/45 px-3 py-2 text-sm text-[#425466]">
+                    Detected{" "}
+                    <span className="font-semibold text-[#0a2540]">
+                      {paystackDetectedMode ? "test" : "live"}
+                    </span>{" "}
+                    key from prefix.
+                  </div>
+                ) : null}
+              </div>
+
+              <div className={cn(lightProductInsetPanelClass, "p-4")}>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <div className="text-sm font-medium text-[#0a2540]">Step 2 · Mode</div>
+                    <div className={cn(lightProductMutedTextClass, "mt-2 max-w-md")}>
+                      Stackaura keeps the mode aligned with the Paystack key prefix. Change it only
+                      if you are pasting a different key.
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={paystackForm.testMode}
+                    aria-label="Toggle Paystack test mode"
+                    onClick={() =>
+                      setPaystackForm((current) => ({
+                        ...current,
+                        testMode: !current.testMode,
+                      }))
+                    }
+                    className={cn(
+                      "relative inline-flex h-12 w-[84px] shrink-0 items-center rounded-full border p-1 transition duration-200",
+                      paystackForm.testMode
+                        ? "border-[#b8b2ff]/70 bg-[linear-gradient(180deg,rgba(122,115,255,0.18)_0%,rgba(160,233,255,0.16)_100%)] shadow-[0_10px_24px_rgba(99,91,255,0.14)]"
+                        : "border-white/45 bg-white/24 shadow-[0_10px_24px_rgba(133,156,180,0.10)]"
+                    )}
+                  >
+                    <span className="sr-only">Toggle Paystack test mode</span>
+                    <span
+                      className={cn(
+                        "inline-block h-10 w-10 rounded-full border bg-white shadow-[0_10px_20px_rgba(122,146,168,0.18)] transition-transform duration-200",
+                        paystackForm.testMode
+                          ? "translate-x-8 border-[#b8b2ff]/70"
+                          : "translate-x-0 border-white/55"
+                      )}
+                    />
+                  </button>
+                </div>
+
+                <div className="mt-4 rounded-2xl border border-white/45 bg-white/34 px-4 py-3 text-sm text-[#425466]">
+                  Mode selected:{" "}
+                  <span className="font-semibold text-[#0a2540]">
+                    {paystackForm.testMode ? "Test" : "Live"}
+                  </span>
+                </div>
+
+                {paystackModeMismatch ? (
+                  <div className="mt-3 rounded-2xl border border-rose-300/70 bg-rose-50/90 px-4 py-3 text-sm text-rose-700">
+                    The Paystack key prefix does not match the selected mode. Update the key or the
+                    toggle before you continue.
+                  </div>
+                ) : null}
+              </div>
+
+              <div className={cn(lightProductInsetPanelClass, "p-4")}>
+                <div className="text-sm font-medium text-[#0a2540]">Step 3 · Save and verify</div>
+                <div className={cn(lightProductMutedTextClass, "mt-2")}>
+                  Saving updates the merchant-scoped Paystack secret. Stackaura then verifies the
+                  saved credential without initiating a real payment.
+                </div>
+                <div className="mt-3 text-sm text-[#425466]">
+                  {paystackConnection.connected
+                    ? "The current secret remains masked after save. Paste a new key only when you need to update or rotate it."
+                    : "Once verified, Paystack becomes available immediately in the hosted checkout and routing flow."}
+                </div>
+              </div>
+
+              {paystackError ? (
+                <div className="rounded-[24px] border border-rose-300/70 bg-rose-50/85 p-4 text-sm text-rose-700">
+                  {paystackError}
+                </div>
+              ) : null}
+
+              {paystackSuccess ? (
+                <div className="rounded-[24px] border border-emerald-300/70 bg-emerald-50/85 p-4 text-sm text-emerald-700">
+                  {paystackSuccess}
+                </div>
+              ) : null}
+            </div>
+
+            <div className="flex flex-col gap-3 border-t border-white/42 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
+              <div className={cn(lightProductMutedTextClass, "max-w-sm")}>
+                {paystackPanelIntent === "rotate"
+                  ? "Rotate secret stores the new key and keeps the previous value hidden."
+                  : "The secret key stays backend-only and masked after save."}
+              </div>
+
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <button
+                  className={cn(lightProductCompactGhostButtonClass, "disabled:opacity-60")}
+                  onClick={closePaystackPanel}
+                  disabled={paystackSaving}
+                >
+                  Cancel
+                </button>
+                <button
+                  className={cn(lightProductCompactPrimaryButtonClass, "disabled:opacity-60")}
+                  onClick={savePaystackConnection}
+                  disabled={!paystackCanSave || paystackSaving || !hasActiveMerchant}
+                >
+                  {paystackSaving
+                    ? "Verifying connection..."
+                    : paystackPanelIntent === "rotate"
+                      ? "Rotate secret"
+                      : paystackConnection.connected
+                        ? "Save connection"
+                        : "Connect Paystack"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
