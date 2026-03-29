@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { cn } from "../components/stackaura-ui";
+import { cn, lightProductStatusPillClass } from "../components/stackaura-ui";
 import { Button } from "../../components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../../components/ui/popover";
 import { Separator } from "../../components/ui/separator";
@@ -25,6 +25,13 @@ function kindBadge(kind: NotificationItem["kind"]) {
   if (kind === "recovered_payment") return "Recovered";
   if (kind === "support_escalation") return "Support";
   return "Gateway";
+}
+
+function kindTone(kind: NotificationItem["kind"]): "warning" | "success" | "violet" | "muted" {
+  if (kind === "failed_payment") return "warning";
+  if (kind === "recovered_payment") return "success";
+  if (kind === "support_escalation") return "violet";
+  return "muted";
 }
 
 export default function DashboardNotifications({ userEmail }: { userEmail: string }) {
@@ -121,105 +128,105 @@ export default function DashboardNotifications({ userEmail }: { userEmail: strin
       </PopoverTrigger>
 
       <PopoverContent className="p-0" align="end">
-        <div className="rounded-[24px] border border-white/45 bg-white/88 p-2 shadow-[0_18px_34px_rgba(122,146,168,0.16)] backdrop-blur-2xl">
-          <div className="flex items-center justify-between gap-3 px-4 py-3">
-            <div>
-              <div className="text-xs uppercase tracking-[0.18em] text-[#6b7c93]">Notifications</div>
-              <div className="mt-1 text-sm font-semibold text-[#0a2540]">
-                {unreadCount > 0 ? `${unreadCount} unread` : "All caught up"}
-              </div>
-            </div>
-            {items.length > 0 ? (
-              <button
-                type="button"
-                onClick={markAllAsRead}
-                className="text-xs font-medium text-[#635bff] transition hover:text-[#0a2540]"
-              >
-                Mark all as read
-              </button>
-            ) : null}
-          </div>
-
-          <Separator className="bg-white/50" />
-
-          <div className="max-h-[min(65vh,28rem)] overflow-y-auto px-2 py-2">
-            <div className="grid gap-2">
-              {loading ? (
-                <div className="rounded-2xl px-3 py-4 text-sm text-[#6b7c93]">Loading notifications…</div>
-              ) : items.length === 0 ? (
-                <div className="rounded-2xl px-3 py-4 text-sm text-[#6b7c93]">
-                  No operational notifications right now.
-                </div>
-              ) : (
-                items.map((item) => {
-                  const unread = !readIds.includes(item.id);
-                  return (
-                    <div
-                      key={item.id}
-                      className={cn(
-                        "rounded-2xl border px-3 py-3 transition",
-                        unread ? "border-white/52 bg-white/30" : "border-transparent bg-white/14"
-                      )}
-                    >
-                      <button
-                        type="button"
-                        onClick={() => {
-                          markAsRead(item.id);
-                          setOpen(false);
-                          router.push(item.href);
-                        }}
-                        className="w-full text-left"
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="min-w-0">
-                            <div className="truncate text-sm font-semibold text-[#0a2540]">{item.title}</div>
-                            <div className="mt-1 text-xs leading-5 text-[#6b7c93]">{item.description}</div>
-                          </div>
-                          <span className="rounded-full border border-white/42 bg-white/24 px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] text-[#6b7c93]">
-                            {kindBadge(item.kind)}
-                          </span>
-                        </div>
-                      </button>
-
-                      <div className="mt-3 flex items-center justify-between gap-3">
-                        <div className="text-[11px] text-[#6b7c93]">
-                          {new Intl.DateTimeFormat("en-ZA", {
-                            dateStyle: "medium",
-                            timeStyle: "short",
-                          }).format(new Date(item.createdAt))}
-                        </div>
-                        {unread ? (
-                          <button
-                            type="button"
-                            onClick={() => markAsRead(item.id)}
-                            className="text-[11px] font-medium text-[#635bff] transition hover:text-[#0a2540]"
-                          >
-                            Mark read
-                          </button>
-                        ) : null}
-                      </div>
-                    </div>
-                  );
-                })
-              )}
+        <div className="flex items-center justify-between gap-3 px-4 py-3">
+          <div>
+            <div className="text-xs uppercase tracking-[0.18em] text-[#6b7c93] dark:text-[#8ea5c0]">Notifications</div>
+            <div className="mt-1 text-sm font-semibold text-[#0a2540] dark:text-white">
+              {unreadCount > 0 ? `${unreadCount} unread` : "All caught up"}
             </div>
           </div>
-
-          <Separator className="bg-white/50" />
-
-          <div className="flex items-center justify-between gap-3 px-4 py-3">
-            <div className="text-xs text-[#6b7c93]">Real merchant console activity</div>
+          {items.length > 0 ? (
             <button
               type="button"
-              onClick={() => {
-                setOpen(false);
-                router.push("/dashboard/support");
-              }}
-              className="text-xs font-medium text-[#635bff] transition hover:text-[#0a2540]"
+              onClick={markAllAsRead}
+              className="text-xs font-medium text-[#4f46e5] transition-opacity duration-150 ease-out hover:opacity-80 dark:text-[#8dd8ff]"
             >
-              View all notifications
+              Mark all as read
             </button>
+          ) : null}
+        </div>
+
+        <Separator />
+
+        <div className="max-h-[min(65vh,28rem)] overflow-y-auto p-2">
+          <div className="grid gap-2">
+            {loading ? (
+              <div className="rounded-2xl px-3 py-4 text-sm text-[#6b7c93] dark:text-[#8ea5c0]">Loading notifications…</div>
+            ) : items.length === 0 ? (
+              <div className="rounded-2xl px-3 py-4 text-sm text-[#6b7c93] dark:text-[#8ea5c0]">
+                No operational notifications right now.
+              </div>
+            ) : (
+              items.map((item) => {
+                const unread = !readIds.includes(item.id);
+                return (
+                  <div
+                    key={item.id}
+                    className={cn(
+                      "rounded-2xl border px-3 py-3 transition-all duration-200 ease-out",
+                      unread
+                        ? "border-slate-200/90 bg-slate-50 dark:border-white/10 dark:bg-white/[0.05]"
+                        : "border-slate-200/60 bg-transparent dark:border-white/6 dark:bg-transparent",
+                    )}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => {
+                        markAsRead(item.id);
+                        setOpen(false);
+                        router.push(item.href);
+                      }}
+                      className="w-full text-left"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <div className="truncate text-sm font-semibold text-[#0a2540] dark:text-white">{item.title}</div>
+                          <div className="mt-1 text-xs leading-5 text-[#6b7c93] dark:text-[#8ea5c0]">{item.description}</div>
+                        </div>
+                        <span className={lightProductStatusPillClass(kindTone(item.kind))}>
+                          {kindBadge(item.kind)}
+                        </span>
+                      </div>
+                    </button>
+
+                    <div className="mt-3 flex items-center justify-between gap-3">
+                      <div className="text-[11px] text-[#6b7c93] dark:text-[#8ea5c0]">
+                        {new Intl.DateTimeFormat("en-ZA", {
+                          dateStyle: "medium",
+                          timeStyle: "short",
+                        }).format(new Date(item.createdAt))}
+                      </div>
+                      {unread ? (
+                        <button
+                          type="button"
+                          onClick={() => markAsRead(item.id)}
+                          className="text-[11px] font-medium text-[#4f46e5] transition-opacity duration-150 ease-out hover:opacity-80 dark:text-[#8dd8ff]"
+                        >
+                          Mark read
+                        </button>
+                      ) : null}
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
+        </div>
+
+        <Separator />
+
+        <div className="flex items-center justify-between gap-3 px-4 py-3">
+          <div className="text-xs text-[#6b7c93] dark:text-[#8ea5c0]">Real merchant console activity</div>
+          <button
+            type="button"
+            onClick={() => {
+              setOpen(false);
+              router.push("/dashboard/support");
+            }}
+            className="text-xs font-medium text-[#4f46e5] transition-opacity duration-150 ease-out hover:opacity-80 dark:text-[#8dd8ff]"
+          >
+            View all notifications
+          </button>
         </div>
       </PopoverContent>
     </Popover>

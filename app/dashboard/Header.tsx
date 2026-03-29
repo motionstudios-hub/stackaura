@@ -5,6 +5,7 @@ import { useTransition } from "react";
 import {
   cn,
   lightProductHeroClass,
+  lightProductSectionEyebrowClass,
 } from "../components/stackaura-ui";
 import { resolveDashboardTitle } from "./dashboard-nav";
 import DashboardNotifications from "./DashboardNotifications";
@@ -39,9 +40,7 @@ export default function Header({
 
   return (
     <header className="sticky top-0 z-30 px-4 pt-5 sm:px-6 sm:pt-6 lg:px-8">
-      <div className={cn(lightProductHeroClass, "relative overflow-hidden px-4 py-4 sm:px-5 sm:py-5")}>
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_10%_20%,rgba(255,255,255,0.34),transparent_24%),radial-gradient(circle_at_84%_18%,rgba(122,115,255,0.14),transparent_26%),linear-gradient(180deg,rgba(255,255,255,0.14),transparent_24%)]" />
-
+      <div className={cn(lightProductHeroClass, "px-4 py-4 sm:px-5 sm:py-5")}>
         <div className="relative flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
           <div className="flex items-center gap-3">
             <Button
@@ -60,8 +59,8 @@ export default function Header({
             </Button>
 
             <div>
-              <div className="text-xs uppercase tracking-[0.22em] text-[#635bff]">Dashboard</div>
-              <div className="mt-1 text-2xl font-semibold tracking-tight text-[#0a2540]">
+              <div className={lightProductSectionEyebrowClass}>Dashboard</div>
+              <div className="mt-1 text-2xl font-semibold tracking-tight text-[#0a2540] dark:text-white">
                 {resolveDashboardTitle(pathname)}
               </div>
             </div>
@@ -85,60 +84,58 @@ export default function Header({
                       <AvatarFallback>{initials}</AvatarFallback>
                     </Avatar>
                     <span className="hidden max-w-[220px] truncate text-left sm:block">
-                      <span className="block text-sm font-medium text-[#0a2540]">{userEmail}</span>
-                      <span className="mt-0.5 block text-xs uppercase tracking-[0.16em] text-[#6b7c93]">
+                      <span className="block text-sm font-medium text-[#0a2540] dark:text-white">{userEmail}</span>
+                      <span className="mt-0.5 block text-xs uppercase tracking-[0.16em] text-[#6b7c93] dark:text-[#8ea5c0]">
                         Workspace operator
                       </span>
                     </span>
                   </Button>
                 </PopoverTrigger>
 
-                <PopoverContent className="p-0" align="end">
-                  <div className="rounded-[24px] border border-white/45 bg-white/88 p-2 shadow-[0_18px_34px_rgba(122,146,168,0.16)] backdrop-blur-2xl">
-                    <div className="flex items-center gap-3 px-4 py-4">
-                      <Avatar className="h-12 w-12">
-                        <AvatarImage src={avatarSrc ?? undefined} alt={`${userEmail} profile photo`} />
-                        <AvatarFallback>{initials}</AvatarFallback>
-                      </Avatar>
-                      <div className="min-w-0">
-                        <div className="truncate text-sm font-semibold text-[#0a2540]">{userEmail}</div>
-                        <div className="mt-1 text-xs uppercase tracking-[0.16em] text-[#6b7c93]">
-                          Workspace operator
-                        </div>
+                <PopoverContent className="w-[320px] overflow-hidden p-0" align="end">
+                  <div className="flex items-center gap-3 px-4 py-4">
+                    <Avatar className="h-12 w-12">
+                      <AvatarImage src={avatarSrc ?? undefined} alt={`${userEmail} profile photo`} />
+                      <AvatarFallback>{initials}</AvatarFallback>
+                    </Avatar>
+                    <div className="min-w-0">
+                      <div className="truncate text-sm font-semibold text-[#0a2540] dark:text-white">{userEmail}</div>
+                      <div className="mt-1 text-xs uppercase tracking-[0.16em] text-[#6b7c93] dark:text-[#8ea5c0]">
+                        Workspace operator
                       </div>
                     </div>
+                  </div>
 
-                    <Separator className="bg-white/50" />
+                  <Separator />
 
-                    <div className="grid gap-1 px-2 py-2">
-                      <button
-                        type="button"
-                        onClick={() => router.push("/dashboard/settings#profile")}
-                        className="flex rounded-2xl px-4 py-3 text-left text-sm font-medium text-[#425466] transition hover:bg-white/60 hover:text-[#0a2540]"
-                      >
-                        Edit profile
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => router.push("/dashboard/settings")}
-                        className="flex rounded-2xl px-4 py-3 text-left text-sm font-medium text-[#425466] transition hover:bg-white/60 hover:text-[#0a2540]"
-                      >
-                        Settings
-                      </button>
-                    </div>
+                  <div className="grid gap-1 p-2">
+                    <button
+                      type="button"
+                      onClick={() => router.push("/dashboard/settings#profile")}
+                      className="flex rounded-2xl px-4 py-3 text-left text-sm font-medium text-[#475569] transition-all duration-200 ease-out hover:bg-slate-50 hover:text-[#0f172a] dark:text-[#c9d5e5] dark:hover:bg-white/[0.04] dark:hover:text-white"
+                    >
+                      Edit profile
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => router.push("/dashboard/settings")}
+                      className="flex rounded-2xl px-4 py-3 text-left text-sm font-medium text-[#475569] transition-all duration-200 ease-out hover:bg-slate-50 hover:text-[#0f172a] dark:text-[#c9d5e5] dark:hover:bg-white/[0.04] dark:hover:text-white"
+                    >
+                      Settings
+                    </button>
+                  </div>
 
-                    <Separator className="bg-white/50" />
+                  <Separator />
 
-                    <div className="px-2 py-2">
-                      <button
-                        type="button"
-                        onClick={logout}
-                        disabled={isPending}
-                        className="flex w-full rounded-2xl px-4 py-3 text-left text-sm font-medium text-[#425466] transition hover:bg-white/60 hover:text-[#0a2540]"
-                      >
-                        {isPending ? "Signing out..." : "Sign out"}
-                      </button>
-                    </div>
+                  <div className="p-2">
+                    <button
+                      type="button"
+                      onClick={logout}
+                      disabled={isPending}
+                      className="flex w-full rounded-2xl px-4 py-3 text-left text-sm font-medium text-[#475569] transition-all duration-200 ease-out hover:bg-slate-50 hover:text-[#0f172a] dark:text-[#c9d5e5] dark:hover:bg-white/[0.04] dark:hover:text-white"
+                    >
+                      {isPending ? "Signing out..." : "Sign out"}
+                    </button>
                   </div>
                 </PopoverContent>
               </Popover>

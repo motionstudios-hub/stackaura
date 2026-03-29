@@ -143,19 +143,19 @@ export default async function DashboardOverviewPage() {
               </p>
 
               <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                <div className="rounded-[18px] border border-white/42 bg-white/24 px-4 py-3 shadow-[0_8px_18px_rgba(133,156,180,0.08)]">
+                <div className={cn(lightProductInsetPanelClass, "px-4 py-3")}>
                   <div className="text-xs uppercase tracking-[0.18em] text-[#6b7c93]">Workspace</div>
                   <div className="mt-2 text-lg font-semibold text-[#0a2540]">
                     {workspace.selectedMerchantId ? "Selected" : "Missing"}
                   </div>
                 </div>
-                <div className="rounded-[18px] border border-white/42 bg-white/24 px-4 py-3 shadow-[0_8px_18px_rgba(133,156,180,0.08)]">
+                <div className={cn(lightProductInsetPanelClass, "px-4 py-3")}>
                   <div className="text-xs uppercase tracking-[0.18em] text-[#6b7c93]">Email</div>
                   <div className="mt-2 truncate text-lg font-semibold text-[#0a2540]">
                     {workspace.selectedMerchantEmail}
                   </div>
                 </div>
-                <div className="rounded-[18px] border border-white/42 bg-white/24 px-4 py-3 shadow-[0_8px_18px_rgba(133,156,180,0.08)]">
+                <div className={cn(lightProductInsetPanelClass, "px-4 py-3")}>
                   <div className="text-xs uppercase tracking-[0.18em] text-[#6b7c93]">Gateways</div>
                   <div className="mt-2 text-lg font-semibold text-[#0a2540]">
                     {formatNumber(analytics.activeGatewaysUsed)}

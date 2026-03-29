@@ -12,11 +12,11 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "border border-[#7a73ff]/30 bg-[linear-gradient(135deg,#6e5bff_0%,#4d8df7_100%)] text-white shadow-[0_14px_28px_rgba(93,106,255,0.24)] hover:-translate-y-0.5 hover:shadow-[0_18px_34px_rgba(93,106,255,0.28)] dark:border-[#8dd8ff]/18 dark:shadow-[0_16px_34px_rgba(0,0,0,0.26)]",
+          "border border-indigo-500/70 bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-[0_12px_28px_rgba(79,70,229,0.22)] hover:brightness-105 active:scale-[0.99] dark:border-indigo-400/70 dark:shadow-[0_16px_34px_rgba(0,0,0,0.26)]",
         ghost:
-          "border border-white/45 bg-white/24 text-[#425466] shadow-[0_8px_18px_rgba(133,156,180,0.08)] hover:border-white/55 hover:bg-white/34 hover:text-[#0a2540] dark:border-white/10 dark:bg-white/6 dark:text-zinc-200 dark:shadow-[0_12px_24px_rgba(0,0,0,0.22)] dark:hover:border-[#20BCED]/35 dark:hover:bg-white/10 dark:hover:text-white",
+          "border border-slate-200/80 bg-white/92 text-[#0f172a] shadow-[0_8px_18px_rgba(15,23,42,0.06)] hover:border-slate-300 hover:bg-slate-50 hover:text-[#0f172a] active:scale-[0.99] dark:border-white/10 dark:bg-white/[0.04] dark:text-white dark:shadow-none dark:hover:border-white/16 dark:hover:bg-white/[0.06] dark:hover:text-white",
         outline:
-          "border border-white/48 bg-white/18 text-[#0a2540] shadow-[0_8px_18px_rgba(133,156,180,0.08)] hover:border-white/55 hover:bg-white/30 dark:border-white/10 dark:bg-white/5 dark:text-white dark:shadow-[0_12px_24px_rgba(0,0,0,0.22)] dark:hover:border-[#20BCED]/35 dark:hover:bg-white/10",
+          "border border-slate-200/80 bg-transparent text-[#0f172a] hover:border-slate-300 hover:bg-slate-50 active:scale-[0.99] dark:border-white/10 dark:bg-transparent dark:text-white dark:hover:border-white/16 dark:hover:bg-white/[0.04]",
       },
       size: {
         default: "min-h-[44px] px-4 py-2.5",

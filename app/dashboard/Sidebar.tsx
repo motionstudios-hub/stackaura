@@ -5,9 +5,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";
 import {
+  brandGlassContainerClass,
   cn,
   lightProductCompactGhostButtonClass,
   lightProductHeroClass,
+  lightProductInsetPanelClass,
+  lightProductNavItemClass,
+  lightProductSectionEyebrowClass,
 } from "../components/stackaura-ui";
 import { dashboardNavItems, type DashboardNavIcon } from "./dashboard-nav";
 
@@ -24,7 +28,7 @@ function isActiveLink(pathname: string, href: string) {
 }
 
 function navIcon(active: boolean, icon: DashboardNavIcon) {
-  const stroke = active ? "#0a2540" : "#6b7c93";
+  const stroke = active ? "#0f172a" : "#64748b";
 
   if (icon === "overview") {
     return (
@@ -166,7 +170,7 @@ export default function Sidebar({
     <>
       <div
         className={cn(
-          "fixed inset-0 z-30 bg-[#0a2540]/28 backdrop-blur-[2px] transition lg:hidden",
+          "fixed inset-0 z-30 bg-slate-950/20 backdrop-blur-sm transition dark:bg-[#020617]/70 lg:hidden",
           mobileOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0",
         )}
         onClick={onCloseMobile}
@@ -182,15 +186,20 @@ export default function Sidebar({
         <div className={cn(lightProductHeroClass, "flex h-full min-h-0 flex-col overflow-hidden px-3 py-4")}>
           <div className="flex items-center justify-between gap-3 px-2">
             <Link href="/dashboard" className="flex min-w-0 items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-[20px] border border-white/48 bg-[linear-gradient(180deg,rgba(255,255,255,0.34)_0%,rgba(238,246,250,0.24)_100%),radial-gradient(circle_at_30%_25%,rgba(125,211,252,0.18),transparent_52%),radial-gradient(circle_at_72%_74%,rgba(167,139,250,0.16),transparent_48%)] shadow-[0_14px_32px_rgba(122,146,168,0.14),inset_0_1px_0_rgba(255,255,255,0.58),inset_0_0_24px_rgba(122,115,255,0.08)] backdrop-blur-2xl">
+              <div
+                className={cn(
+                  "flex h-11 w-11 items-center justify-center rounded-[20px]",
+                  brandGlassContainerClass,
+                )}
+              >
                 <Image src="/stackaura-logo.png" alt="Stackaura" width={26} height={26} className="object-contain" priority />
               </div>
               {!collapsed ? (
                 <div className="min-w-0">
-                  <div className="truncate text-lg font-semibold tracking-tight text-[#0a2540]">
+                  <div className="truncate text-lg font-semibold tracking-tight text-[#0a2540] dark:text-white">
                     Stackaura
                   </div>
-                  <div className="text-[11px] uppercase tracking-[0.22em] text-[#635bff]">
+                  <div className={cn(lightProductSectionEyebrowClass, "text-[11px]")}>
                     Merchant Console
                   </div>
                 </div>
@@ -219,36 +228,36 @@ export default function Sidebar({
                     if (mobileOpen) onCloseMobile();
                   }}
                   className={cn(
-                    "group flex items-center gap-3 rounded-2xl border px-3 py-3 text-sm font-semibold transition",
-                    item.active
-                      ? "border-white/52 bg-[linear-gradient(180deg,rgba(122,115,255,0.22)_0%,rgba(160,233,255,0.20)_100%)] text-[#0a2540]"
-                      : "border-white/42 bg-white/18 text-[#425466] hover:border-white/55 hover:bg-white/28 hover:text-[#0a2540]",
+                    "group flex items-center gap-3 px-3 py-3",
+                    lightProductNavItemClass(item.active),
                     collapsed && "justify-center px-0",
                   )}
                   title={collapsed ? item.label : undefined}
                 >
                   <span
                     className={cn(
-                      "flex h-10 w-10 items-center justify-center rounded-2xl border transition",
+                      "flex h-10 w-10 items-center justify-center rounded-2xl border transition-all duration-200 ease-out",
                       item.active
-                        ? "border-white/48 bg-white/32"
-                        : "border-white/34 bg-white/22 group-hover:border-white/44 group-hover:bg-white/28",
+                        ? "border-indigo-200 bg-indigo-50 dark:border-white/10 dark:bg-white/[0.06]"
+                        : "border-slate-200/80 bg-white/92 group-hover:border-slate-300 group-hover:bg-slate-50 dark:border-white/10 dark:bg-white/[0.03] dark:group-hover:border-white/16 dark:group-hover:bg-white/[0.05]",
                     )}
                   >
                     {navIcon(item.active, item.icon)}
                   </span>
-                  {!collapsed ? <span className="truncate">{item.shortLabel}</span> : null}
+                  {!collapsed ? (
+                    <span className="truncate text-[#475569] dark:text-inherit">{item.shortLabel}</span>
+                  ) : null}
                 </Link>
               ))}
             </nav>
 
             <div className="mt-4 px-2">
               {!collapsed ? (
-                <div className="rounded-[24px] border border-white/42 bg-white/22 p-4 shadow-[0_10px_24px_rgba(133,156,180,0.10)] backdrop-blur-2xl">
-                  <div className="text-[11px] uppercase tracking-[0.2em] text-[#6b7c93]">
+                <div className={cn(lightProductInsetPanelClass, "p-4")}>
+                  <div className="text-[11px] uppercase tracking-[0.2em] text-[#6b7c93] dark:text-[#8ea5c0]">
                     Workspace navigation
                   </div>
-                  <div className="mt-2 text-sm leading-6 text-[#425466]">
+                  <div className="mt-2 text-sm leading-6 text-[#475569] dark:text-[#c3d1e2]">
                     Collapse the sidebar for more canvas space or keep it expanded for full section
                     labels.
                   </div>

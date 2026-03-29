@@ -2,7 +2,12 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { cn, lightProductPanelClass } from "../components/stackaura-ui";
+import {
+  cn,
+  lightProductCompactGhostButtonClass,
+  lightProductPanelClass,
+  lightProductStatusPillClass,
+} from "../components/stackaura-ui";
 import { Input } from "../../components/ui/input";
 
 type SearchResult = {
@@ -99,7 +104,7 @@ export default function DashboardSearch() {
     <div ref={containerRef} className="relative w-full min-w-0 sm:w-[340px]">
       <svg
         viewBox="0 0 20 20"
-        className="pointer-events-none absolute left-4 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-[#6b7c93]"
+        className="pointer-events-none absolute left-4 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-[#6b7c93] dark:text-[#8ea5c0]"
         fill="none"
       >
         <circle cx="9" cy="9" r="5" stroke="currentColor" strokeWidth="1.6" />
@@ -127,10 +132,10 @@ export default function DashboardSearch() {
       {showDropdown ? (
         <div className={cn(lightProductPanelClass, "absolute left-0 right-0 top-[calc(100%+12px)] z-30 p-2")}>
           <div className="flex items-center justify-between gap-3 px-3 py-2">
-            <div className="text-xs uppercase tracking-[0.18em] text-[#6b7c93]">
+            <div className="text-xs uppercase tracking-[0.18em] text-[#6b7c93] dark:text-[#8ea5c0]">
               Search results
             </div>
-            {loading ? <div className="text-xs text-[#6b7c93]">Searching…</div> : null}
+            {loading ? <div className="text-xs text-[#6b7c93] dark:text-[#8ea5c0]">Searching…</div> : null}
           </div>
 
           <div className="grid gap-1">
@@ -143,19 +148,19 @@ export default function DashboardSearch() {
                     setOpen(false);
                     router.push(result.href);
                   }}
-                  className="flex items-start justify-between gap-3 rounded-2xl px-3 py-3 text-left transition hover:bg-white/44"
+                  className="flex items-start justify-between gap-3 rounded-2xl px-3 py-3 text-left transition-all duration-200 ease-out hover:bg-slate-50 dark:hover:bg-white/[0.04]"
                 >
                   <div className="min-w-0">
-                    <div className="truncate text-sm font-semibold text-[#0a2540]">{result.label}</div>
-                    <div className="mt-1 truncate text-xs text-[#6b7c93]">{result.description}</div>
+                    <div className="truncate text-sm font-semibold text-[#0a2540] dark:text-white">{result.label}</div>
+                    <div className="mt-1 truncate text-xs text-[#6b7c93] dark:text-[#8ea5c0]">{result.description}</div>
                   </div>
-                  <span className="rounded-full border border-white/42 bg-white/22 px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] text-[#6b7c93]">
+                  <span className={lightProductStatusPillClass("muted")}>
                     {kindLabel(result.kind)}
                   </span>
                 </button>
               ))
             ) : (
-              <div className="rounded-2xl px-3 py-4 text-sm text-[#6b7c93]">
+              <div className="rounded-2xl px-3 py-4 text-sm text-[#6b7c93] dark:text-[#8ea5c0]">
                 No matching dashboard records yet.
               </div>
             )}
@@ -164,7 +169,10 @@ export default function DashboardSearch() {
           <button
             type="button"
             onClick={submitSearch}
-            className="mt-2 flex w-full rounded-2xl border border-white/42 bg-white/22 px-3 py-3 text-left text-sm font-medium text-[#0a2540] transition hover:bg-white/34"
+            className={cn(
+              lightProductCompactGhostButtonClass,
+              "mt-2 flex w-full justify-start rounded-2xl px-3 py-3 text-left text-sm",
+            )}
           >
             View full payment search for “{query.trim()}”
           </button>

@@ -29,7 +29,7 @@ export default function DashboardShell({
 
       <div
         className={cn(
-          "relative z-10 min-h-screen transition-[padding] duration-300",
+          "dashboard-shell relative z-10 min-h-screen transition-[padding] duration-300",
           collapsed ? "lg:pl-[108px]" : "lg:pl-[288px]",
         )}
       >

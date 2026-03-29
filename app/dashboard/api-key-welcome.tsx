@@ -278,7 +278,7 @@ export default function ApiKeyWelcome({
             <code className="break-all text-sm text-[#0a2540]">{authorizationExample}</code>
           </div>
 
-          <div className="mt-4 rounded-[20px] border border-white/42 bg-white/22 px-4 py-3 text-sm leading-6 text-[#425466] shadow-[0_8px_18px_rgba(133,156,180,0.08)]">
+          <div className={cn(publicSubtleSurfaceClass, "mt-4 px-4 py-3 text-sm leading-6 text-[#425466]")}>
             For production, keep live keys on your server only and store them outside the browser.
           </div>
         </div>

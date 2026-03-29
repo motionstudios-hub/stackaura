@@ -12,8 +12,8 @@ function Textarea({
     <textarea
       data-slot="textarea"
       className={cn(
-        "flex min-h-[96px] w-full rounded-2xl border border-white/45 bg-white/30 px-4 py-3 text-sm text-[#0a2540] shadow-[0_8px_18px_rgba(133,156,180,0.08)] backdrop-blur-2xl outline-none transition placeholder:text-[#6b7c93]",
-        "focus:border-[#7a73ff]/35 focus:bg-white/38 focus:ring-2 focus:ring-[#7a73ff]/20 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:bg-white/6 dark:text-white dark:placeholder:text-[#89a4bf] dark:shadow-[0_12px_24px_rgba(0,0,0,0.2)] dark:focus:border-[#20BCED]/40 dark:focus:bg-white/8 dark:focus:ring-[#20BCED]/20",
+        "flex min-h-[96px] w-full rounded-2xl border border-slate-200/80 bg-white/92 px-4 py-3 text-sm text-[#0f172a] shadow-[inset_0_1px_2px_rgba(15,23,42,0.04)] outline-none transition-[border-color,box-shadow,background-color] duration-150 ease-out placeholder:text-[#64748b]",
+        "focus:border-[#4f46e5]/50 focus:ring-1 focus:ring-[#4f46e5]/16 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-white dark:placeholder:text-white/50 dark:shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)] dark:focus:border-indigo-500/60 dark:focus:ring-indigo-500/30",
         className
       )}
       {...props}
