@@ -73,11 +73,13 @@ type PaystackFormState = {
 };
 
 type PaystackValidationState = {
-  status: "idle" | "success" | "error";
+  status: "idle" | "loading" | "success" | "error";
   message: string | null;
   verifiedAt: string | null;
   paymentSessionTimeout: number | null;
 };
+
+type PaystackErrorAction = "load" | "save" | "test";
 
 type PaystackPanelIntent = "connect" | "manage" | "rotate";
 
@@ -121,6 +123,71 @@ function getErrorMessage(error: unknown, fallback: string) {
   }
 
   return fallback;
+}
+
+function extractResponseErrorMessage(rawText: string) {
+  const trimmed = rawText.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  try {
+    const parsed = JSON.parse(trimmed) as unknown;
+    if (isRecord(parsed)) {
+      return (
+        pickString(parsed, ["message", "error"]) ??
+        (isRecord(parsed.data) ? pickString(parsed.data, ["message", "error"]) : null) ??
+        trimmed
+      );
+    }
+  } catch {
+    return trimmed;
+  }
+
+  return trimmed;
+}
+
+function mapPaystackUiError(args: {
+  status?: number;
+  rawMessage?: string | null;
+  fallback: string;
+}) {
+  const normalized = (args.rawMessage ?? "").trim().toLowerCase();
+
+  if (args.status === 404) {
+    return "Connection test failed. Try again.";
+  }
+
+  if (normalized.includes("invalid key") || normalized.includes("invalid paystack configuration")) {
+    return "Invalid secret key";
+  }
+
+  if (
+    normalized.includes("secret key does not match") ||
+    normalized.includes("secretkey is required") ||
+    normalized.includes("secret key is required")
+  ) {
+    return "Invalid secret key";
+  }
+
+  if (
+    normalized.includes("failed to fetch") ||
+    normalized.includes("networkerror") ||
+    normalized.includes("load failed") ||
+    normalized.includes("fetch")
+  ) {
+    return "Unable to reach provider";
+  }
+
+  if (normalized.includes("merchant access denied")) {
+    return "You don’t have access to manage this merchant’s Paystack connection.";
+  }
+
+  if (normalized.includes("session") && normalized.includes("expired")) {
+    return "Your session expired. Sign in again and retry.";
+  }
+
+  return args.fallback;
 }
 
 function pickString(data: Record<string, unknown>, keys: string[]) {
@@ -316,9 +383,25 @@ function formatRelativeVerificationTimestamp(value: string | null) {
       return value;
     }
 
-    const deltaSeconds = Math.round((Date.now() - date.getTime()) / 1000);
-    if (Math.abs(deltaSeconds) < 90) {
+    const deltaSeconds = Math.round((date.getTime() - Date.now()) / 1000);
+    const absoluteSeconds = Math.abs(deltaSeconds);
+
+    if (absoluteSeconds < 90) {
       return "Just now";
+    }
+
+    const formatter = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
+
+    if (absoluteSeconds < 3600) {
+      return formatter.format(Math.round(deltaSeconds / 60), "minute");
+    }
+
+    if (absoluteSeconds < 86400) {
+      return formatter.format(Math.round(deltaSeconds / 3600), "hour");
+    }
+
+    if (absoluteSeconds < 604800) {
+      return formatter.format(Math.round(deltaSeconds / 86400), "day");
     }
   } catch {
     return value;
@@ -393,6 +476,46 @@ function OperationalDetail({
   );
 }
 
+function PaystackErrorState({
+  message,
+  onRetry,
+  retryLabel = "Try again",
+}: {
+  message: string;
+  onRetry?: () => void;
+  retryLabel?: string;
+}) {
+  return (
+    <div className="rounded-[24px] border border-rose-300/70 bg-rose-50/90 p-4 text-sm text-rose-700">
+      <div className="font-medium">Action needed</div>
+      <div className="mt-2">{message}</div>
+      {onRetry ? (
+        <button
+          type="button"
+          onClick={onRetry}
+          className="mt-3 inline-flex items-center rounded-xl border border-rose-300/70 bg-white px-3 py-2 text-sm font-semibold text-rose-700 transition hover:bg-rose-50"
+        >
+          {retryLabel}
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
+function SpinnerIcon() {
+  return (
+    <svg
+      viewBox="0 0 20 20"
+      className="h-4 w-4 animate-spin motion-reduce:animate-none"
+      fill="none"
+      aria-hidden="true"
+    >
+      <circle cx="10" cy="10" r="7" stroke="currentColor" strokeOpacity="0.25" strokeWidth="2" />
+      <path d="M10 3a7 7 0 0 1 7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export default function GatewayConnectionsPage() {
   const [merchantId, setMerchantId] = useState<string | null>(null);
   const [form, setForm] = useState<OzowFormState>({
@@ -435,6 +558,8 @@ export default function GatewayConnectionsPage() {
   const [yocoSuccess, setYocoSuccess] = useState<string | null>(null);
   const [paystackError, setPaystackError] = useState<string | null>(null);
   const [paystackSuccess, setPaystackSuccess] = useState<string | null>(null);
+  const [paystackSuccessVisible, setPaystackSuccessVisible] = useState(false);
+  const [paystackErrorAction, setPaystackErrorAction] = useState<PaystackErrorAction | null>(null);
 
   const hasActiveMerchant = Boolean(merchantId);
   const canSave =
@@ -452,20 +577,25 @@ export default function GatewayConnectionsPage() {
   const paystackCanSave =
     Boolean(merchantId) && Boolean(paystackForm.secretKey.trim()) && !paystackModeMismatch;
   const paystackPanelOpen = paystackPanelIntent !== null;
-  const paystackConnectionStateLabel = !paystackConnection.connected
-    ? "Not connected"
-    : paystackValidation.status === "error"
-      ? "Validation failed"
-      : paystackConnection.testMode
-        ? "Connected (Test)"
-        : "Connected (Live)";
-  const paystackConnectionTone: PresenceTone = !paystackConnection.connected
-    ? "muted"
-    : paystackValidation.status === "error"
-      ? "warning"
-      : paystackConnection.testMode
-        ? "violet"
-        : "success";
+  const paystackValidationStorageKey = merchantId
+    ? `stackaura:paystack-validation:${merchantId}`
+    : null;
+  const paystackConnectionStateLabel =
+    paystackValidation.status === "loading"
+      ? "Testing"
+      : paystackValidation.status === "error"
+        ? "Retry needed"
+        : paystackValidation.status === "success" || paystackConnection.connected
+          ? "Connected"
+          : "Not connected";
+  const paystackConnectionTone: PresenceTone =
+    paystackValidation.status === "loading"
+      ? "violet"
+      : paystackValidation.status === "error"
+        ? "warning"
+        : paystackValidation.status === "success" || paystackConnection.connected
+          ? "success"
+          : "muted";
 
   async function fetchActiveMerchant() {
     const res = await fetch("/api/active-merchant", {
@@ -563,6 +693,7 @@ export default function GatewayConnectionsPage() {
 
     setPaystackReadbackStatus("loading");
     setPaystackError(null);
+    setPaystackErrorAction(null);
 
     try {
       const res = await fetch(`/api/proxy/v1/merchants/${resolvedMerchantId}/gateways/paystack`, {
@@ -572,7 +703,18 @@ export default function GatewayConnectionsPage() {
 
       if (!res.ok) {
         const text = await res.text().catch(() => "");
-        throw new Error(text || "We couldn't load the Paystack connection.");
+        const rawMessage = extractResponseErrorMessage(text);
+        const userMessage = mapPaystackUiError({
+          status: res.status,
+          rawMessage,
+          fallback: "We couldn’t load the Paystack connection right now.",
+        });
+        console.error("Paystack load connection failed", {
+          status: res.status,
+          rawMessage,
+          merchantId: resolvedMerchantId,
+        });
+        throw new Error(userMessage);
       }
 
       const payload: unknown = await res.json();
@@ -599,7 +741,11 @@ export default function GatewayConnectionsPage() {
     try {
       await loadPaystackConnection();
     } catch (loadError: unknown) {
-      setPaystackError(getErrorMessage(loadError, "We couldn't load the Paystack connection."));
+      console.error("Paystack refresh connection failed", loadError);
+      setPaystackError(
+        getErrorMessage(loadError, "We couldn’t load the Paystack connection right now.")
+      );
+      setPaystackErrorAction("load");
     }
   }
 
@@ -607,6 +753,7 @@ export default function GatewayConnectionsPage() {
     setPaystackPanelIntent(intent);
     setPaystackError(null);
     setPaystackSuccess(null);
+    setPaystackErrorAction(null);
     setPaystackForm((current) => ({
       ...current,
       secretKey: "",
@@ -623,9 +770,14 @@ export default function GatewayConnectionsPage() {
 
     setPaystackTesting(true);
     setPaystackError(null);
-    if (!options?.silentSuccess) {
-      setPaystackSuccess(null);
-    }
+    setPaystackErrorAction(null);
+    setPaystackSuccess(null);
+    setPaystackValidation({
+      status: "loading",
+      message: "Testing connection…",
+      verifiedAt: null,
+      paymentSessionTimeout: null,
+    });
 
     try {
       const res = await fetch(
@@ -639,15 +791,24 @@ export default function GatewayConnectionsPage() {
 
       if (!res.ok) {
         const text = await res.text().catch(() => "");
-        throw new Error(text || "We couldn't verify the Paystack connection.");
+        const rawMessage = extractResponseErrorMessage(text);
+        const userMessage = mapPaystackUiError({
+          status: res.status,
+          rawMessage,
+          fallback: "Connection test failed. Try again.",
+        });
+        console.error("Paystack test connection failed", {
+          status: res.status,
+          rawMessage,
+          merchantId,
+        });
+        throw new Error(userMessage);
       }
 
       const payload: unknown = await res.json();
       const record = isRecord(payload) ? (isRecord(payload.data) ? payload.data : payload) : {};
       const verifiedAt = pickString(record, ["verifiedAt"]) ?? new Date().toISOString();
-      const message =
-        pickString(record, ["message"]) ??
-        "Paystack credentials verified successfully.";
+      const message = "Connection verified successfully";
       const paymentSessionTimeout =
         pickNumber(record, ["paymentSessionTimeout", "payment_session_timeout"]) ?? null;
 
@@ -657,15 +818,13 @@ export default function GatewayConnectionsPage() {
         verifiedAt,
         paymentSessionTimeout,
       });
-      if (!options?.silentSuccess) {
-        setPaystackSuccess(message);
+      if (options?.silentSuccess) {
+        setPaystackSuccess("Connection verified successfully");
       }
       return true;
     } catch (testError: unknown) {
-      const message = getErrorMessage(
-        testError,
-        "We couldn't verify the saved Paystack credentials."
-      );
+      console.error("Paystack test connection error", testError);
+      const message = getErrorMessage(testError, "Connection test failed. Try again.");
       setPaystackValidation({
         status: "error",
         message,
@@ -673,6 +832,7 @@ export default function GatewayConnectionsPage() {
         paymentSessionTimeout: null,
       });
       setPaystackError(message);
+      setPaystackErrorAction("test");
       return false;
     } finally {
       setPaystackTesting(false);
@@ -816,17 +976,20 @@ export default function GatewayConnectionsPage() {
 
     if (!secretKey) {
       setPaystackError("Secret key is required.");
+      setPaystackErrorAction("save");
       return;
     }
 
     if (paystackModeMismatch) {
       setPaystackError("The Paystack key prefix does not match the selected mode.");
+      setPaystackErrorAction("save");
       return;
     }
 
     setPaystackSaving(true);
     setPaystackError(null);
     setPaystackSuccess(null);
+    setPaystackErrorAction(null);
     setPaystackValidation({
       status: "idle",
       message: null,
@@ -849,7 +1012,18 @@ export default function GatewayConnectionsPage() {
 
       if (!res.ok) {
         const text = await res.text().catch(() => "");
-        throw new Error(text || "We couldn't save the Paystack connection.");
+        const rawMessage = extractResponseErrorMessage(text);
+        const userMessage = mapPaystackUiError({
+          status: res.status,
+          rawMessage,
+          fallback: "We couldn’t save the Paystack connection right now.",
+        });
+        console.error("Paystack save connection failed", {
+          status: res.status,
+          rawMessage,
+          merchantId,
+        });
+        throw new Error(userMessage);
       }
 
       setPaystackForm((current) => ({
@@ -866,9 +1040,11 @@ export default function GatewayConnectionsPage() {
           testMode: refreshed.testMode,
         });
       } catch (refreshError: unknown) {
+        console.error("Paystack refresh after save failed", refreshError);
         setPaystackError(
-          getErrorMessage(refreshError, "We couldn't refresh the Paystack connection.")
+          getErrorMessage(refreshError, "We couldn’t refresh the Paystack connection right now.")
         );
+        setPaystackErrorAction("load");
       }
 
       const verified = await testPaystackConnection({ silentSuccess: true });
@@ -879,7 +1055,11 @@ export default function GatewayConnectionsPage() {
         setPaystackPanelIntent("manage");
       }
     } catch (saveError: unknown) {
-      setPaystackError(getErrorMessage(saveError, "We couldn't save the Paystack connection."));
+      console.error("Paystack save connection error", saveError);
+      setPaystackError(
+        getErrorMessage(saveError, "We couldn’t save the Paystack connection right now.")
+      );
+      setPaystackErrorAction("save");
     } finally {
       setPaystackSaving(false);
     }
@@ -957,6 +1137,82 @@ export default function GatewayConnectionsPage() {
           paystackReadbackStatus === "error"
         ? "warning"
         : "muted";
+
+  useEffect(() => {
+    if (!paystackValidationStorageKey) return;
+    if (!paystackConnection.connected) {
+      try {
+        window.localStorage.removeItem(paystackValidationStorageKey);
+      } catch {
+        // ignore localStorage failures
+      }
+      return;
+    }
+
+    if (paystackValidation.status !== "idle" || paystackValidation.verifiedAt) {
+      return;
+    }
+
+    try {
+      const raw = window.localStorage.getItem(paystackValidationStorageKey);
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as { verifiedAt?: string };
+      if (typeof parsed.verifiedAt !== "string" || !parsed.verifiedAt.trim()) return;
+      setPaystackValidation((current) =>
+        current.status !== "idle" || current.verifiedAt
+          ? current
+          : {
+              status: "success",
+              message: "Connection verified successfully",
+              verifiedAt: parsed.verifiedAt,
+              paymentSessionTimeout: null,
+            }
+      );
+    } catch {
+      // ignore localStorage failures
+    }
+  }, [
+    paystackConnection.connected,
+    paystackValidation.status,
+    paystackValidation.verifiedAt,
+    paystackValidationStorageKey,
+  ]);
+
+  useEffect(() => {
+    if (!paystackValidationStorageKey) return;
+
+    if (paystackValidation.status === "success" && paystackValidation.verifiedAt) {
+      try {
+        window.localStorage.setItem(
+          paystackValidationStorageKey,
+          JSON.stringify({ verifiedAt: paystackValidation.verifiedAt })
+        );
+      } catch {
+        // ignore localStorage failures
+      }
+    }
+  }, [
+    paystackValidation.status,
+    paystackValidation.verifiedAt,
+    paystackValidationStorageKey,
+  ]);
+
+  useEffect(() => {
+    if (!paystackSuccess) return;
+
+    setPaystackSuccessVisible(true);
+    const fadeTimer = window.setTimeout(() => {
+      setPaystackSuccessVisible(false);
+    }, 2000);
+    const clearTimer = window.setTimeout(() => {
+      setPaystackSuccess(null);
+    }, 2250);
+
+    return () => {
+      window.clearTimeout(fadeTimer);
+      window.clearTimeout(clearTimer);
+    };
+  }, [paystackSuccess]);
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
@@ -1414,14 +1670,42 @@ export default function GatewayConnectionsPage() {
       </section>
 
       {paystackSuccess ? (
-        <div className="mt-6 rounded-[24px] border border-emerald-300/70 bg-emerald-50/85 p-4 text-sm text-emerald-700">
-          {paystackSuccess}
+        <div
+          className={cn(
+            "mt-6 rounded-[24px] border border-emerald-300/70 bg-emerald-50/85 p-4 text-sm text-emerald-700 transition-all duration-200 ease-out motion-reduce:transition-none",
+            paystackSuccessVisible
+              ? "translate-y-0 opacity-100"
+              : "-translate-y-1 opacity-0"
+          )}
+        >
+          <div className="font-medium">{paystackSuccess}</div>
+          <div className="mt-2 opacity-80">
+            Last verified: {formatRelativeVerificationTimestamp(paystackValidation.verifiedAt)}
+          </div>
         </div>
       ) : null}
 
       {paystackError ? (
-        <div className="mt-6 rounded-[24px] border border-rose-300/70 bg-rose-50/85 p-4 text-sm text-rose-700">
-          {paystackError}
+        <div className="mt-6">
+          <PaystackErrorState
+            message={paystackError}
+            onRetry={
+              paystackErrorAction === "test"
+                ? () => void testPaystackConnection()
+                : paystackErrorAction === "load"
+                  ? () => void refreshPaystackConnection()
+                  : paystackErrorAction === "save"
+                    ? () => void savePaystackConnection()
+                    : undefined
+            }
+            retryLabel={
+              paystackErrorAction === "test"
+                ? "Retry connection test"
+                : paystackErrorAction === "save"
+                  ? "Retry save"
+                  : "Retry"
+            }
+          />
         </div>
       ) : null}
 
@@ -1435,7 +1719,12 @@ export default function GatewayConnectionsPage() {
                   Operational merchant view
                 </div>
               </div>
-              <span className={lightProductStatusPillClass(paystackConnectionTone)}>
+              <span
+                className={cn(
+                  lightProductStatusPillClass(paystackConnectionTone),
+                  "transition-all duration-200 ease-out motion-reduce:transition-none"
+                )}
+              >
                 {paystackValidation.status === "error"
                   ? "Action needed"
                   : paystackConnectionStateLabel}
@@ -1449,13 +1738,17 @@ export default function GatewayConnectionsPage() {
               <div className="mt-3 text-lg font-semibold tracking-tight text-[#0a2540]">
                 {!paystackConnection.connected
                   ? "Connect Paystack"
-                  : paystackValidation.status === "error"
+                  : paystackValidation.status === "loading"
+                    ? "Testing connection"
+                    : paystackValidation.status === "error"
                     ? "Validation failed"
                     : "Paystack connected"}
               </div>
               <div className="mt-2 text-sm text-[#425466]">
                 {!paystackConnection.connected
                   ? "Accept card payments via Paystack through Stackaura."
+                  : paystackValidation.status === "loading"
+                    ? "We’re verifying the saved Paystack credential right now."
                   : paystackValidation.status === "error"
                     ? "The saved secret needs attention before you rely on Paystack in production."
                     : paystackConnection.testMode
@@ -1492,12 +1785,16 @@ export default function GatewayConnectionsPage() {
             <OperationalDetail
               label="Last verified"
               title={
-                paystackValidation.status === "success"
+                paystackValidation.status === "loading"
+                  ? "Testing connection…"
+                  : paystackValidation.status === "success"
                   ? formatRelativeVerificationTimestamp(paystackValidation.verifiedAt)
                   : "Run test connection"
               }
               detail={
-                paystackValidation.status === "success"
+                paystackValidation.status === "loading"
+                  ? "We’re verifying the saved credential now."
+                  : paystackValidation.status === "success"
                   ? paystackValidation.message ??
                     (paystackValidation.paymentSessionTimeout
                       ? `Payment session timeout: ${paystackValidation.paymentSessionTimeout} minutes.`
@@ -1507,7 +1804,9 @@ export default function GatewayConnectionsPage() {
                     : "Use Test connection after saving to verify the stored secret."
               }
               tone={
-                paystackValidation.status === "success"
+                paystackValidation.status === "loading"
+                  ? "violet"
+                  : paystackValidation.status === "success"
                   ? "success"
                   : paystackValidation.status === "error"
                     ? "warning"
@@ -1590,42 +1889,67 @@ export default function GatewayConnectionsPage() {
               </div>
             </div>
 
-            {paystackValidation.status !== "idle" ? (
+            {paystackValidation.status === "loading" || paystackValidation.status === "success" ? (
               <div
                 className={cn(
-                  "rounded-[24px] border p-4 text-sm",
+                  "rounded-[24px] border p-4 text-sm transition-all duration-200 ease-out motion-reduce:transition-none",
+                  paystackValidation.status === "loading"
+                    ? "border-[#d7d2ff] bg-[#f4f2ff] text-[#5146df]"
+                    : "",
                   paystackValidation.status === "success"
                     ? "border-emerald-300/70 bg-emerald-50/85 text-emerald-700"
-                    : "border-amber-300/70 bg-amber-50/90 text-amber-700"
+                    : ""
                 )}
               >
                 <div className="font-medium">
-                  {paystackValidation.status === "success"
-                    ? "Paystack credentials verified"
-                    : "Validation failed"}
+                  {paystackValidation.status === "loading" ? (
+                    <span className="inline-flex items-center gap-2">
+                      <SpinnerIcon />
+                      Testing connection…
+                    </span>
+                  ) : (
+                    "Connection verified successfully"
+                  )}
                 </div>
-                <div className="mt-2">{paystackValidation.message}</div>
-                <div className="mt-2 opacity-80">
-                  Last verified: {formatRelativeVerificationTimestamp(paystackValidation.verifiedAt)}
+                <div className="mt-2">
+                  {paystackValidation.status === "loading"
+                    ? "We’re verifying the stored Paystack secret now."
+                    : paystackValidation.message}
                 </div>
+                {paystackValidation.status === "success" ? (
+                  <div className="mt-2 opacity-80">
+                    Last verified: {formatRelativeVerificationTimestamp(paystackValidation.verifiedAt)}
+                  </div>
+                ) : null}
               </div>
             ) : null}
 
             {!paystackConnection.connected ? (
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                <button
-                  className={cn(lightProductCompactPrimaryButtonClass, "disabled:opacity-60")}
-                  onClick={() => openPaystackPanel("connect")}
-                  disabled={!hasActiveMerchant}
-                >
-                  Connect Paystack
-                </button>
-                <div className={cn(lightProductMutedTextClass, "max-w-md")}>
-                  Accept card payments via Paystack through Stackaura.
+              <div className={cn(lightProductInsetPanelClass, "p-4 transition-all duration-200 ease-out motion-reduce:transition-none")}>
+                <div className="text-sm font-medium text-[#0a2540]">
+                  Connect your Paystack account to start accepting payments
+                </div>
+                <div className={cn(lightProductMutedTextClass, "mt-2 max-w-md")}>
+                  Add the merchant&apos;s Paystack secret key once, then verify it through Stackaura
+                  before sending live card traffic.
+                </div>
+                <div className="mt-4">
+                  <button
+                    className={cn(lightProductCompactPrimaryButtonClass, "disabled:opacity-60")}
+                    onClick={() => openPaystackPanel("connect")}
+                    disabled={!hasActiveMerchant}
+                  >
+                    Connect Paystack
+                  </button>
                 </div>
               </div>
             ) : (
-              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+              <div
+                className={cn(
+                  "flex flex-col gap-3 transition-opacity duration-200 ease-out motion-reduce:transition-none sm:flex-row sm:flex-wrap sm:items-center",
+                  paystackTesting && "opacity-90"
+                )}
+              >
                 <button
                   className={cn(lightProductCompactPrimaryButtonClass, "disabled:opacity-60")}
                   onClick={() => openPaystackPanel("manage")}
@@ -1636,9 +1960,12 @@ export default function GatewayConnectionsPage() {
                 <button
                   className={cn(lightProductCompactGhostButtonClass, "disabled:opacity-60")}
                   onClick={() => void testPaystackConnection()}
-                  disabled={!hasActiveMerchant || paystackTesting}
+                  disabled={!hasActiveMerchant || paystackTesting || paystackSaving}
                 >
-                  {paystackTesting ? "Testing connection..." : "Test connection"}
+                  <span className="inline-flex items-center gap-2">
+                    {paystackTesting ? <SpinnerIcon /> : null}
+                    {paystackTesting ? "Testing connection…" : "Test connection"}
+                  </span>
                 </button>
                 <button
                   className={cn(lightProductCompactGhostButtonClass, "disabled:opacity-60")}
@@ -1655,7 +1982,7 @@ export default function GatewayConnectionsPage() {
                 <div className="text-xs uppercase tracking-[0.16em] text-[#6b7c93]">Step 1</div>
                 <div className="mt-2 text-sm font-semibold text-[#0a2540]">Paste secret key</div>
                 <div className="mt-2 text-sm text-[#425466]">
-                  Use the merchant's Paystack secret key only. Stackaura keeps it masked after
+                  Use the merchant&apos;s Paystack secret key only. Stackaura keeps it masked after
                   save.
                 </div>
               </div>
@@ -1832,14 +2159,40 @@ export default function GatewayConnectionsPage() {
               </div>
 
               {paystackError ? (
-                <div className="rounded-[24px] border border-rose-300/70 bg-rose-50/85 p-4 text-sm text-rose-700">
-                  {paystackError}
-                </div>
+                <PaystackErrorState
+                  message={paystackError}
+                  onRetry={
+                    paystackErrorAction === "test"
+                      ? () => void testPaystackConnection()
+                      : paystackErrorAction === "load"
+                        ? () => void refreshPaystackConnection()
+                        : paystackErrorAction === "save"
+                          ? () => void savePaystackConnection()
+                          : undefined
+                  }
+                  retryLabel={
+                    paystackErrorAction === "test"
+                      ? "Retry connection test"
+                      : paystackErrorAction === "save"
+                        ? "Retry save"
+                        : "Retry"
+                  }
+                />
               ) : null}
 
               {paystackSuccess ? (
-                <div className="rounded-[24px] border border-emerald-300/70 bg-emerald-50/85 p-4 text-sm text-emerald-700">
-                  {paystackSuccess}
+                <div
+                  className={cn(
+                    "rounded-[24px] border border-emerald-300/70 bg-emerald-50/85 p-4 text-sm text-emerald-700 transition-all duration-200 ease-out motion-reduce:transition-none",
+                    paystackSuccessVisible
+                      ? "translate-y-0 opacity-100"
+                      : "-translate-y-1 opacity-0"
+                  )}
+                >
+                  <div className="font-medium">{paystackSuccess}</div>
+                  <div className="mt-2 opacity-80">
+                    Last verified: {formatRelativeVerificationTimestamp(paystackValidation.verifiedAt)}
+                  </div>
                 </div>
               ) : null}
             </div>
@@ -1851,7 +2204,12 @@ export default function GatewayConnectionsPage() {
                   : "The secret key stays backend-only and masked after save."}
               </div>
 
-              <div className="flex flex-col gap-3 sm:flex-row">
+              <div
+                className={cn(
+                  "flex flex-col gap-3 transition-opacity duration-200 ease-out motion-reduce:transition-none sm:flex-row",
+                  paystackTesting && "opacity-90"
+                )}
+              >
                 <button
                   className={cn(lightProductCompactGhostButtonClass, "disabled:opacity-60")}
                   onClick={closePaystackPanel}
@@ -1864,13 +2222,16 @@ export default function GatewayConnectionsPage() {
                   onClick={savePaystackConnection}
                   disabled={!paystackCanSave || paystackSaving || !hasActiveMerchant}
                 >
-                  {paystackSaving
-                    ? "Verifying connection..."
-                    : paystackPanelIntent === "rotate"
-                      ? "Rotate secret"
-                      : paystackConnection.connected
-                        ? "Save connection"
-                        : "Connect Paystack"}
+                  <span className="inline-flex items-center gap-2">
+                    {paystackSaving ? <SpinnerIcon /> : null}
+                    {paystackSaving
+                      ? "Verifying connection..."
+                      : paystackPanelIntent === "rotate"
+                        ? "Rotate secret"
+                        : paystackConnection.connected
+                          ? "Save connection"
+                          : "Connect Paystack"}
+                  </span>
                 </button>
               </div>
             </div>

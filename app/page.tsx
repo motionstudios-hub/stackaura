@@ -2,19 +2,19 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   cn,
-  lightProductInsetPanelClass,
-  lightProductPanelClass,
   PublicBackground,
   publicBadgeClass,
   publicBorderSubtleClass,
   PublicFooter,
   PublicHeader,
   publicCodePanelClass,
+  publicInsetSurfaceClass,
   publicMinimalSecondaryButtonClass,
   publicPrimaryButtonClass,
   publicSectionLabelClass,
   publicSecondaryButtonClass,
   publicSubtleSurfaceClass,
+  publicSurfaceClass,
   publicTextMutedClass,
   publicTextPrimaryClass,
   publicTextSecondaryClass,
@@ -300,7 +300,7 @@ export default async function Home() {
         <PublicHeader />
 
         <div className="relative pb-20">
-          <section className={cn(sectionClass, "pt-14 sm:pt-18 lg:pt-20")}>
+          <section className={cn(sectionClass, "pt-16 sm:pt-20")}>
             <div className="mx-auto max-w-4xl text-center">
               <div className={publicBadgeClass}>
                 Stackaura payments infrastructure
@@ -359,7 +359,7 @@ export default async function Home() {
             </div>
           </section>
 
-          <section className={cn(sectionClass, "py-12 sm:py-14 lg:py-16")}>
+          <section className={cn(sectionClass, "py-16 sm:py-20")}>
             <div className={cn("mx-auto grid max-w-6xl gap-10 border-t pt-10 lg:grid-cols-[0.42fr_0.58fr] lg:items-start lg:pt-12", publicBorderSubtleClass)}>
               <div className="max-w-xl">
                 <div className={publicSectionLabelClass}>Product preview</div>
@@ -372,7 +372,7 @@ export default async function Home() {
 
                 <div className="mt-6 grid gap-3">
                   {valueProps.map((item) => (
-                    <div key={item.title} className="rounded-2xl border border-slate-200 bg-white px-4 py-4">
+                    <div key={item.title} className={cn("px-4 py-4", publicInsetSurfaceClass)}>
                       <div className="text-sm font-semibold text-[#0a2540]">{item.title}</div>
                       <p className="mt-1 text-sm leading-6 text-[#425466]">{item.description}</p>
                     </div>
@@ -386,7 +386,7 @@ export default async function Home() {
             </div>
           </section>
 
-          <section className={cn(sectionClass, "py-6 sm:py-8 lg:py-10")}>
+          <section className={cn(sectionClass, "py-16 sm:py-20")}>
             <div className="max-w-3xl">
               <div className={publicSectionLabelClass}>How it works</div>
               <h2 className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-[#0a2540] sm:text-5xl">
@@ -396,9 +396,9 @@ export default async function Home() {
 
             <div className="mt-8 grid gap-4 lg:grid-cols-3">
               {howItWorks.map((item) => (
-                <div key={item.step} className={cn("p-6 sm:p-7", lightProductPanelClass)}>
+                <div key={item.step} className={cn("p-6 sm:p-7", publicSubtleSurfaceClass)}>
                   <div className="flex items-center gap-3">
-                    <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/55 bg-white/52 text-sm font-semibold text-[#635bff] shadow-[0_10px_24px_rgba(133,156,180,0.10)]">
+                    <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-sm font-semibold text-[#635bff] shadow-[0_10px_18px_rgba(148,163,184,0.08)] dark:border-white/10 dark:bg-[#101b2d] dark:shadow-none">
                       {item.step}
                     </div>
                     <div className="text-lg font-semibold tracking-[-0.02em] text-[#0a2540]">
@@ -413,9 +413,9 @@ export default async function Home() {
             </div>
           </section>
 
-          <section className={cn(sectionClass, "py-6 sm:py-8 lg:py-10")}>
+          <section className={cn(sectionClass, "py-16 sm:py-20")}>
             <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-stretch">
-              <div className={cn("p-6 sm:p-8", lightProductPanelClass)}>
+              <div className={cn("p-6 sm:p-8", publicSurfaceClass)}>
                 <div className={publicSectionLabelClass}>
                   Developer infrastructure
                 </div>
@@ -430,7 +430,7 @@ export default async function Home() {
 
                 <div className="mt-6 grid gap-3 sm:grid-cols-2">
                   {infrastructureFeatures.map((item) => (
-                    <div key={item} className={cn("px-4 py-4", lightProductInsetPanelClass)}>
+                    <div key={item} className={cn("px-4 py-4", publicInsetSurfaceClass)}>
                       <div className="text-sm font-semibold text-[#0a2540]">
                         {item}
                       </div>
@@ -496,9 +496,9 @@ export default async function Home() {
             </div>
           </section>
 
-          <section className={cn(sectionClass, "py-6 sm:py-8 lg:py-10")}>
+          <section className={cn(sectionClass, "py-16 sm:py-20")}>
             <div className="grid gap-6 lg:grid-cols-[0.92fr_1.08fr]">
-              <div className={cn("p-6 sm:p-8", lightProductPanelClass)}>
+              <div className={cn("p-6 sm:p-8", publicSurfaceClass)}>
                 <div className={publicSectionLabelClass}>Merchant outcomes</div>
                 <h2 className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-[#0a2540] sm:text-5xl">
                   Better payment performance without operational sprawl
@@ -508,7 +508,7 @@ export default async function Home() {
                   that want stronger conversion without managing every payment
                   edge case gateway by gateway.
                 </p>
-                <div className="mt-6 rounded-[26px] border border-white/52 bg-[linear-gradient(180deg,rgba(122,115,255,0.14),rgba(255,255,255,0.28))] p-5 shadow-[0_16px_30px_rgba(133,156,180,0.10)]">
+                <div className={cn("mt-6 p-5", publicSubtleSurfaceClass)}>
                   <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6b7c93]">
                     Business impact
                   </div>
@@ -521,7 +521,7 @@ export default async function Home() {
 
               <div className="grid gap-4">
                 {merchantBenefits.map((item) => (
-                  <div key={item.title} className={cn("p-5 sm:p-6", lightProductInsetPanelClass)}>
+                  <div key={item.title} className={cn("p-5 sm:p-6", publicSubtleSurfaceClass)}>
                     <h3 className="text-2xl font-semibold tracking-[-0.03em] text-[#0a2540]">
                       {item.title}
                     </h3>
@@ -534,16 +534,10 @@ export default async function Home() {
             </div>
           </section>
 
-          <PricingSection tiers={pricingTiers} className={cn(sectionClass, "py-6 sm:py-8 lg:py-10")} />
+          <PricingSection tiers={pricingTiers} className={cn(sectionClass, "py-16 sm:py-20")} />
 
-          <section className={cn(sectionClass, "pt-6 sm:pt-8 lg:pt-10")}>
-            <div
-              className={cn(
-                "relative overflow-hidden p-6 sm:p-8 lg:p-10",
-                lightProductPanelClass
-              )}
-            >
-              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(255,255,255,0.32),transparent_24%),radial-gradient(circle_at_80%_24%,rgba(125,211,252,0.24),transparent_24%),linear-gradient(180deg,rgba(122,115,255,0.06),rgba(255,255,255,0.02))]" />
+          <section className={cn(sectionClass, "pt-16 sm:pt-20")}>
+            <div className={cn("p-6 sm:p-8 lg:p-10", publicSurfaceClass)}>
               <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
                 <div className="max-w-3xl">
                   <div className={publicSectionLabelClass}>Start building</div>

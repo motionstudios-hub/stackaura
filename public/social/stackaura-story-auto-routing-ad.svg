@@ -1,0 +1,223 @@
+<svg width="1080" height="1920" viewBox="0 0 1080 1920" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="68" y1="42" x2="1016" y2="1910" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8E6AF0" />
+      <stop offset="0.48" stop-color="#A885FF" />
+      <stop offset="1" stop-color="#C2AEFF" />
+    </linearGradient>
+    <radialGradient id="glowTop" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(852 286) rotate(90) scale(322 314)">
+      <stop stop-color="#F5EEFF" stop-opacity="0.26" />
+      <stop offset="1" stop-color="#F5EEFF" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="glowWarm" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(976 1338) rotate(90) scale(360 312)">
+      <stop stop-color="#FF8D45" stop-opacity="0.24" />
+      <stop offset="1" stop-color="#FF8D45" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="glowCool" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(246 1280) rotate(90) scale(388 326)">
+      <stop stop-color="#6C46E4" stop-opacity="0.34" />
+      <stop offset="1" stop-color="#6C46E4" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="brandOrb" x1="0" y1="0" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6C46E4" />
+      <stop offset="1" stop-color="#8E6AF0" />
+    </linearGradient>
+    <linearGradient id="phoneBody" x1="-230" y1="-410" x2="258" y2="484" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#14111C" />
+      <stop offset="1" stop-color="#2A2238" />
+    </linearGradient>
+    <linearGradient id="screenSoft" x1="-208" y1="-388" x2="244" y2="456" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF" />
+      <stop offset="1" stop-color="#F3F0FB" />
+    </linearGradient>
+    <linearGradient id="screenDark" x1="-176" y1="280" x2="176" y2="420" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#241D34" />
+      <stop offset="1" stop-color="#362B4A" />
+    </linearGradient>
+    <linearGradient id="ctaButton" x1="798" y1="1748" x2="1006" y2="1856" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ECE7F7" />
+      <stop offset="1" stop-color="#DFDBEC" />
+    </linearGradient>
+    <filter id="phoneShadow" x="344" y="646" width="748" height="1214" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="46" stdDeviation="42" flood-color="#5633BE" flood-opacity="0.24" />
+      <feDropShadow dx="0" dy="22" stdDeviation="22" flood-color="#231045" flood-opacity="0.24" />
+    </filter>
+    <filter id="softShadow" x="-120" y="-120" width="1320" height="2160" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="18" stdDeviation="26" flood-color="#5D35C7" flood-opacity="0.18" />
+    </filter>
+    <filter id="footerShadow" x="-60" y="1600" width="1200" height="360" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="20" stdDeviation="30" flood-color="#4E31A7" flood-opacity="0.16" />
+    </filter>
+    <filter id="badgeShadow" x="-320" y="-130" width="640" height="320" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#2C145C" flood-opacity="0.26" />
+    </filter>
+    <mask id="stackauraMarkMask" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100">
+      <rect width="100" height="100" fill="black" />
+      <g transform="translate(50 50) rotate(36) translate(-50 -50)">
+        <rect x="7" y="35" width="86" height="27" rx="13.5" fill="white" />
+        <rect x="40" y="11" width="57" height="19" rx="9.5" fill="white" />
+        <rect x="10" y="74" width="58" height="19" rx="9.5" fill="white" />
+        <ellipse cx="61" cy="40" rx="18.5" ry="8.4" fill="black" />
+        <ellipse cx="40" cy="63" rx="18.5" ry="8.4" fill="black" />
+      </g>
+    </mask>
+    <style>
+      .label { font-family: Inter, "SF Pro Display", "Helvetica Neue", Arial, sans-serif; }
+      .brand { fill: #FFFFFF; font-size: 26px; font-weight: 700; letter-spacing: 0.12em; }
+      .headline { fill: #FFFFFF; font-size: 126px; font-weight: 300; letter-spacing: -0.075em; }
+      .body { fill: rgba(255,255,255,0.9); font-size: 42px; font-weight: 440; letter-spacing: -0.035em; }
+      .eyebrow { fill: rgba(255,255,255,0.72); font-size: 17px; font-weight: 650; letter-spacing: 0.18em; text-transform: uppercase; }
+      .gateway { fill: #FFFFFF; font-size: 34px; font-weight: 560; letter-spacing: -0.035em; }
+      .statValue { fill: #FFFFFF; font-size: 50px; font-weight: 680; letter-spacing: -0.06em; }
+      .statLabel { fill: rgba(255,255,255,0.76); font-size: 18px; font-weight: 650; letter-spacing: 0.12em; text-transform: uppercase; }
+      .screenTitle { fill: #1F1730; font-size: 16px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+      .screenValue { fill: #1B1626; font-size: 44px; font-weight: 700; letter-spacing: -0.05em; }
+      .screenBody { fill: #6A6280; font-size: 18px; font-weight: 550; letter-spacing: -0.02em; }
+      .screenSmall { fill: #7B7391; font-size: 14px; font-weight: 650; letter-spacing: 0.08em; text-transform: uppercase; }
+      .screenRow { fill: #241B35; font-size: 18px; font-weight: 650; letter-spacing: -0.03em; }
+      .screenRowMeta { fill: #7E7693; font-size: 14px; font-weight: 540; letter-spacing: -0.01em; }
+      .badgeText { fill: #18131F; font-size: 34px; font-weight: 520; letter-spacing: -0.055em; }
+      .darkTitle { fill: #FFFFFF; font-size: 24px; font-weight: 650; letter-spacing: -0.03em; }
+      .darkBody { fill: rgba(255,255,255,0.76); font-size: 16px; font-weight: 500; letter-spacing: -0.02em; }
+      .footerDomain { fill: #655C75; font-size: 24px; font-weight: 520; letter-spacing: -0.02em; }
+      .footerCopy { fill: #18131F; font-size: 31px; font-weight: 630; letter-spacing: -0.045em; }
+      .buttonLabel { fill: #18131F; font-size: 30px; font-weight: 650; letter-spacing: -0.035em; }
+    </style>
+  </defs>
+
+  <rect width="1080" height="1920" fill="url(#bg)" />
+  <ellipse cx="852" cy="286" rx="322" ry="286" fill="url(#glowTop)" />
+  <ellipse cx="976" cy="1338" rx="312" ry="286" fill="url(#glowWarm)" />
+  <ellipse cx="246" cy="1280" rx="362" ry="318" fill="url(#glowCool)" />
+
+  <g opacity="0.16">
+    <path d="M78 246C246 152 444 136 648 190" stroke="rgba(255,255,255,0.42)" stroke-width="1.4" stroke-linecap="round" />
+    <path d="M684 164C872 188 996 282 1032 446" stroke="rgba(255,255,255,0.34)" stroke-width="1.4" stroke-linecap="round" />
+    <path d="M90 1514C256 1590 434 1610 620 1570" stroke="rgba(255,255,255,0.30)" stroke-width="1.4" stroke-linecap="round" />
+    <path d="M646 1688C856 1668 986 1568 1030 1408" stroke="rgba(255,255,255,0.26)" stroke-width="1.4" stroke-linecap="round" />
+    <circle cx="112" cy="444" r="3.5" fill="rgba(255,255,255,0.56)" />
+    <circle cx="978" cy="536" r="3.5" fill="rgba(255,255,255,0.44)" />
+    <circle cx="184" cy="1600" r="3.5" fill="rgba(255,255,255,0.38)" />
+    <circle cx="940" cy="1502" r="3.5" fill="rgba(255,255,255,0.34)" />
+  </g>
+
+  <g class="label" filter="url(#softShadow)">
+    <rect x="78" y="74" width="274" height="76" rx="38" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.28)" />
+    <circle cx="118" cy="112" r="24" fill="url(#brandOrb)" />
+    <g transform="translate(104 98) scale(0.28)">
+      <rect width="100" height="100" fill="#FFFFFF" mask="url(#stackauraMarkMask)" />
+    </g>
+    <text class="brand" x="158" y="121">STACKAURA</text>
+  </g>
+
+  <g class="label">
+    <text class="eyebrow" x="78" y="226">Instagram story ad</text>
+    <text class="headline" x="78" y="346">Route every</text>
+    <text class="headline" x="78" y="462">transaction</text>
+    <text class="headline" x="78" y="578">automatically</text>
+
+    <text class="body" x="78" y="686">Across multiple gateways with Stackaura.</text>
+    <text class="body" x="78" y="744">Increase success rates, reduce downtime,</text>
+    <text class="body" x="78" y="802">and scale faster.</text>
+  </g>
+
+  <g class="label" filter="url(#softShadow)">
+    <rect x="78" y="858" width="196" height="78" rx="26" fill="rgba(255,255,255,0.10)" stroke="rgba(255,255,255,0.28)" />
+    <rect x="94" y="888" width="26" height="9" rx="4.5" fill="rgba(255,255,255,0.95)" />
+    <rect x="94" y="903" width="26" height="9" rx="4.5" fill="rgba(255,255,255,0.78)" />
+    <rect x="94" y="918" width="18" height="9" rx="4.5" fill="rgba(255,255,255,0.68)" />
+    <text class="gateway" x="138" y="909">Paystack</text>
+
+    <rect x="290" y="858" width="152" height="78" rx="26" fill="rgba(255,255,255,0.10)" stroke="rgba(255,255,255,0.28)" />
+    <circle cx="322" cy="897" r="15" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.28)" />
+    <path d="M314 897C314 890.8 319 885.8 325.2 885.8C329 885.8 332.4 887.8 334.5 890.9L329.5 893.8C328.4 892.2 326.9 891.3 325.2 891.3C322 891.3 319.5 893.9 319.5 897C319.5 900.2 322 902.7 325.2 902.7C326.9 902.7 328.4 901.8 329.5 900.2L334.5 903.1C332.4 906.2 329 908.2 325.2 908.2C319 908.2 314 903.2 314 897Z" fill="#FFFFFF" />
+    <text class="gateway" x="352" y="909">Ozow</text>
+
+    <rect x="458" y="858" width="144" height="78" rx="26" fill="rgba(255,255,255,0.10)" stroke="rgba(255,255,255,0.28)" />
+    <circle cx="490" cy="897" r="15" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.28)" />
+    <path d="M482 897L487 903L499 891" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    <text class="gateway" x="518" y="909">Yoco</text>
+  </g>
+
+  <g class="label" filter="url(#softShadow)">
+    <rect x="78" y="986" width="294" height="108" rx="32" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.28)" />
+    <text class="statLabel" x="110" y="1030">Success rate</text>
+    <text class="statValue" x="110" y="1078">98.7%</text>
+
+    <rect x="78" y="1116" width="284" height="76" rx="28" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.28)" />
+    <circle cx="114" cy="1154" r="12" fill="#37E38D" />
+    <text x="138" y="1164" fill="#FFFFFF" font-size="30" font-weight="550" letter-spacing="-0.03em">Auto failover live</text>
+  </g>
+
+  <g filter="url(#phoneShadow)" transform="translate(770 1226) rotate(-23)">
+    <ellipse cx="20" cy="374" rx="232" ry="58" fill="rgba(76,39,164,0.14)" />
+    <rect x="-230" y="-410" width="460" height="888" rx="64" fill="url(#phoneBody)" />
+    <rect x="-208" y="-388" width="416" height="844" rx="46" fill="url(#screenSoft)" />
+    <rect x="-84" y="-392" width="168" height="28" rx="14" fill="#18131F" />
+
+    <text class="screenTitle label" x="-170" y="-334">Routing overview</text>
+    <text x="136" y="-334" fill="#8A82A1" font-size="16" font-weight="650" text-anchor="end">Today</text>
+
+    <rect x="-176" y="-306" width="352" height="134" rx="28" fill="#FFFFFF" stroke="#E8E3F4" />
+    <text class="screenTitle label" x="-148" y="-268">Today's recoveries</text>
+    <text class="screenValue label" x="-148" y="-214">R42,890</text>
+    <rect x="72" y="-286" width="80" height="28" rx="14" fill="#EAF8EF" />
+    <text x="112" y="-268" fill="#158A4A" font-size="16" font-weight="700" text-anchor="middle">LIVE</text>
+    <text class="screenBody label" x="-148" y="-182">8 transactions rerouted automatically</text>
+
+    <rect x="-176" y="-146" width="352" height="206" rx="28" fill="#F3F0FB" stroke="#E3DDF2" />
+    <text class="screenTitle label" x="-148" y="-108">Gateway routing</text>
+
+    <rect x="-148" y="-84" width="296" height="52" rx="18" fill="#FFFFFF" stroke="#E8E2F4" />
+    <text class="screenRow label" x="-120" y="-52">STK-24091</text>
+    <text class="screenRowMeta label" x="-120" y="-34">Paystack → Ozow</text>
+    <rect x="52" y="-70" width="72" height="24" rx="12" fill="#EAF8EF" />
+    <text x="88" y="-54" fill="#158A4A" font-size="13" font-weight="700" text-anchor="middle">RECOVERED</text>
+
+    <rect x="-148" y="-18" width="296" height="52" rx="18" fill="#FFFFFF" stroke="#E8E2F4" />
+    <text class="screenRow label" x="-120" y="14">STK-24088</text>
+    <text class="screenRowMeta label" x="-120" y="32">Paystack primary</text>
+    <rect x="66" y="-4" width="58" height="24" rx="12" fill="#F0EEFB" />
+    <text x="95" y="12" fill="#645A7C" font-size="13" font-weight="700" text-anchor="middle">LIVE</text>
+
+    <rect x="-148" y="48" width="296" height="52" rx="18" fill="#FFFFFF" stroke="#E8E2F4" />
+    <text class="screenRow label" x="-120" y="80">Downtime shield</text>
+    <text class="screenRowMeta label" x="-120" y="98">Fallback enabled</text>
+    <circle cx="100" cy="74" r="10" fill="#37E38D" />
+
+    <rect x="-176" y="84" width="352" height="168" rx="28" fill="#FFFFFF" stroke="#E8E3F4" />
+    <text class="screenTitle label" x="-148" y="122">Performance</text>
+    <text class="screenSmall label" x="-148" y="152">Success rate</text>
+    <rect x="-148" y="170" width="292" height="16" rx="8" fill="#ECE8F6" />
+    <rect x="-148" y="170" width="260" height="16" rx="8" fill="#7E5BF0" />
+    <text class="screenRow label" x="144" y="184" text-anchor="end">98.7%</text>
+
+    <text class="screenSmall label" x="-148" y="216">Recovered volume</text>
+    <rect x="-148" y="234" width="292" height="16" rx="8" fill="#ECE8F6" />
+    <rect x="-148" y="234" width="220" height="16" rx="8" fill="#FF944E" />
+    <text class="screenRow label" x="144" y="248" text-anchor="end">R42.9k</text>
+
+    <rect x="-176" y="276" width="352" height="144" rx="28" fill="url(#screenDark)" />
+    <text class="darkTitle label" x="-148" y="322">Automatic retry + fallback</text>
+    <text class="darkBody label" x="-148" y="352">Keep checkout live even when a gateway slows</text>
+    <text class="darkBody label" x="-148" y="374">down or becomes temporarily unavailable.</text>
+    <rect x="-148" y="390" width="150" height="42" rx="21" fill="rgba(255,255,255,0.10)" stroke="rgba(255,255,255,0.18)" />
+    <text x="-73" y="417" fill="#FFFFFF" font-size="17" font-weight="700" text-anchor="middle">Routing logic on</text>
+
+    <g filter="url(#badgeShadow)" transform="translate(12 8)">
+      <rect x="-220" y="-40" width="438" height="108" rx="54" fill="#FFFFFF" />
+      <circle cx="-168" cy="14" r="24" fill="#7A58EF" />
+      <g transform="translate(-182 0) scale(0.16)">
+        <rect width="100" height="100" fill="#FFFFFF" mask="url(#stackauraMarkMask)" />
+      </g>
+      <text class="badgeText label" x="-126" y="26">Routed Successfully</text>
+    </g>
+  </g>
+
+  <g filter="url(#footerShadow)" class="label">
+    <rect x="34" y="1712" width="1012" height="172" rx="36" fill="rgba(255,255,255,0.92)" />
+    <text class="footerDomain" x="74" y="1770">stackaura.co.za</text>
+    <text class="footerCopy" x="74" y="1840">Increase success rates and scale faster.</text>
+    <rect x="818" y="1746" width="194" height="108" rx="32" fill="url(#ctaButton)" />
+    <text class="buttonLabel" x="915" y="1814" text-anchor="middle">Learn more</text>
+  </g>
+</svg>

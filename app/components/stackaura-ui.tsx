@@ -23,13 +23,13 @@ export function CardContent({
 }
 
 export const publicSurfaceClass =
-  "rounded-[32px] border border-slate-200/80 bg-white/96 shadow-[0_20px_44px_rgba(148,163,184,0.12)] dark:border-white/10 dark:bg-[#081221] dark:shadow-[0_16px_36px_rgba(0,0,0,0.22)]";
+  "rounded-[32px] border border-slate-200/80 bg-white/96 shadow-[0_20px_44px_rgba(148,163,184,0.12)] transition-[transform,box-shadow,border-color,background-color] duration-200 ease-out motion-reduce:transition-none dark:border-white/10 dark:bg-[#081221] dark:shadow-[0_16px_36px_rgba(0,0,0,0.22)]";
 
 export const publicSubtleSurfaceClass =
-  "rounded-[26px] border border-slate-200/80 bg-slate-50/92 shadow-[0_12px_28px_rgba(148,163,184,0.09)] dark:border-white/10 dark:bg-[#0d1829] dark:shadow-[0_10px_20px_rgba(0,0,0,0.12)]";
+  "rounded-[26px] border border-slate-200/80 bg-slate-50/92 shadow-[0_12px_28px_rgba(148,163,184,0.09)] transition-[transform,box-shadow,border-color,background-color] duration-200 ease-out motion-safe:hover:-translate-y-0.5 motion-reduce:transition-none dark:border-white/10 dark:bg-[#0d1829] dark:shadow-[0_10px_20px_rgba(0,0,0,0.12)]";
 
 export const publicInsetSurfaceClass =
-  "rounded-[22px] border border-slate-200/75 bg-white/88 shadow-[0_10px_22px_rgba(148,163,184,0.08)] dark:border-white/10 dark:bg-[#101b2d] dark:shadow-none";
+  "rounded-[22px] border border-slate-200/75 bg-white/88 shadow-[0_10px_22px_rgba(148,163,184,0.08)] transition-[transform,box-shadow,border-color,background-color] duration-200 ease-out motion-safe:hover:-translate-y-0.5 motion-reduce:transition-none dark:border-white/10 dark:bg-[#101b2d] dark:shadow-none";
 
 export const publicFormSurfaceClass =
   "relative isolate overflow-hidden rounded-2xl border border-white/10 bg-[#0D1220] shadow-[0_10px_40px_rgba(0,0,0,0.4)] before:pointer-events-none before:absolute before:inset-0 before:rounded-2xl before:border before:border-white/5 before:content-[''] after:pointer-events-none after:absolute after:inset-x-0 after:top-0 after:h-24 after:rounded-t-2xl after:bg-gradient-to-b after:from-white/[0.03] after:to-transparent after:content-['']";
@@ -41,10 +41,10 @@ export const publicFieldLabelClass =
   "text-[11px] font-semibold uppercase tracking-[0.08em] text-white/50";
 
 export const publicPrimaryButtonClass =
-  "inline-flex min-h-[48px] items-center justify-center rounded-2xl border border-[#4f46e5] bg-[#4f46e5] px-6 py-3.5 text-sm font-semibold text-white shadow-[0_12px_26px_rgba(79,70,229,0.22)] transition hover:bg-[#4338ca] dark:border-[#4f46e5] dark:bg-[#4f46e5] dark:shadow-[0_16px_28px_rgba(0,0,0,0.22)] dark:hover:bg-[#5b54ee]";
+  "inline-flex min-h-[48px] items-center justify-center rounded-2xl border border-[#4f46e5] bg-[#4f46e5] px-6 py-3.5 text-sm font-semibold text-white shadow-[0_12px_26px_rgba(79,70,229,0.22)] transition-all duration-200 ease-out hover:bg-[#4338ca] hover:brightness-[1.03] active:scale-[0.99] motion-reduce:transition-none dark:border-[#4f46e5] dark:bg-[#4f46e5] dark:shadow-[0_16px_28px_rgba(0,0,0,0.22)] dark:hover:bg-[#5b54ee]";
 
 export const publicSecondaryButtonClass =
-  "inline-flex min-h-[48px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3.5 text-sm font-semibold text-[#0a2540] shadow-[0_10px_20px_rgba(148,163,184,0.08)] transition hover:border-slate-400 hover:bg-slate-50 dark:border-white/14 dark:bg-[#0d1829] dark:text-[#e2ebf8] dark:shadow-none dark:hover:border-white/22 dark:hover:bg-[#122033]";
+  "inline-flex min-h-[48px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3.5 text-sm font-semibold text-[#0a2540] shadow-[0_10px_20px_rgba(148,163,184,0.08)] transition-all duration-200 ease-out hover:border-slate-400 hover:bg-slate-50 hover:brightness-[0.99] active:scale-[0.99] motion-reduce:transition-none dark:border-white/14 dark:bg-[#0d1829] dark:text-[#e2ebf8] dark:shadow-none dark:hover:border-white/22 dark:hover:bg-[#122033]";
 
 export const publicPillClass =
   "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-[#0a2540] shadow-[0_10px_22px_rgba(148,163,184,0.08)] dark:border-white/10 dark:bg-[#0d1829] dark:text-white dark:shadow-none";
@@ -59,7 +59,7 @@ export const publicTextSecondaryClass =
   "text-[#425466] dark:text-[#e2e9f5]";
 
 export const publicTextMutedClass =
-  "text-[#5b6b7e] dark:text-[#b4c2d8]";
+  "text-[#536477] dark:text-[#c2cfdf]";
 
 export const publicBorderSubtleClass =
   "border-slate-200 dark:border-white/16";
@@ -68,13 +68,13 @@ export const publicBadgeClass =
   "inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6b7c93] shadow-[0_8px_18px_rgba(148,163,184,0.08)] dark:border-white/12 dark:bg-[#0d1829] dark:text-[#d7e2f2] dark:shadow-none";
 
 export const publicMinimalSecondaryButtonClass =
-  "inline-flex min-h-[52px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3.5 text-sm font-semibold text-[#0a2540] transition hover:border-slate-400 hover:bg-slate-50 dark:border-white/14 dark:bg-[#0d1829] dark:text-[#f8fafc] dark:hover:border-white/24 dark:hover:bg-[#122033]";
+  "inline-flex min-h-[52px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3.5 text-sm font-semibold text-[#0a2540] transition-all duration-200 ease-out hover:border-slate-400 hover:bg-slate-50 hover:brightness-[0.99] active:scale-[0.99] motion-reduce:transition-none dark:border-white/14 dark:bg-[#0d1829] dark:text-[#f8fafc] dark:hover:border-white/24 dark:hover:bg-[#122033]";
 
 export const publicHeaderSecondaryButtonClass =
-  "inline-flex min-h-[44px] items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-[#0a2540] transition hover:border-slate-400 hover:bg-slate-50 dark:border-white/14 dark:bg-[#0d1829] dark:text-[#f8fafc] dark:hover:border-white/24 dark:hover:bg-[#122033]";
+  "inline-flex min-h-[44px] items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-[#0a2540] transition-all duration-200 ease-out hover:border-slate-400 hover:bg-slate-50 hover:brightness-[0.99] active:scale-[0.99] motion-reduce:transition-none dark:border-white/14 dark:bg-[#0d1829] dark:text-[#f8fafc] dark:hover:border-white/24 dark:hover:bg-[#122033]";
 
 export const publicHeaderMobileButtonClass =
-  "inline-flex min-h-[46px] w-full items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-[#0a2540] transition hover:border-slate-400 hover:bg-slate-50 dark:border-white/14 dark:bg-[#0d1829] dark:text-[#f8fafc] dark:hover:border-white/24 dark:hover:bg-[#122033]";
+  "inline-flex min-h-[46px] w-full items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-[#0a2540] transition-all duration-200 ease-out hover:border-slate-400 hover:bg-slate-50 hover:brightness-[0.99] active:scale-[0.99] motion-reduce:transition-none dark:border-white/14 dark:bg-[#0d1829] dark:text-[#f8fafc] dark:hover:border-white/24 dark:hover:bg-[#122033]";
 
 export const publicCodePanelClass =
   "rounded-[32px] border border-[#12243c] bg-[#071323] p-6 text-white shadow-[0_20px_42px_rgba(2,8,23,0.22)] dark:border-white/10 dark:bg-[#050d19] dark:shadow-[0_18px_34px_rgba(0,0,0,0.24)]";
@@ -83,19 +83,19 @@ export const brandGlassContainerClass =
   "border border-slate-200 bg-white shadow-[0_8px_18px_rgba(148,163,184,0.10)] dark:border-white/10 dark:bg-[#0d1829] dark:shadow-none";
 
 export const lightProductHeroClass =
-  "relative isolate rounded-[32px] border border-slate-200/80 bg-white/96 shadow-[0_18px_40px_rgba(15,23,42,0.08)] dark:border-white/10 dark:bg-[#0d1220] dark:shadow-[0_18px_40px_rgba(0,0,0,0.32)]";
+  "relative isolate rounded-[32px] border border-slate-200/80 bg-white/96 shadow-[0_18px_40px_rgba(15,23,42,0.08)] transition-[box-shadow,border-color,background-color] duration-200 ease-out motion-reduce:transition-none dark:border-white/10 dark:bg-[#0d1220] dark:shadow-[0_18px_40px_rgba(0,0,0,0.32)]";
 
 export const lightProductPanelClass =
-  "relative isolate rounded-[28px] border border-slate-200/75 bg-white/94 shadow-[0_14px_30px_rgba(15,23,42,0.06)] dark:border-white/10 dark:bg-[#0f1727] dark:shadow-[0_14px_32px_rgba(0,0,0,0.24)]";
+  "relative isolate rounded-[28px] border border-slate-200/75 bg-white/94 shadow-[0_14px_30px_rgba(15,23,42,0.06)] transition-[transform,box-shadow,border-color,background-color] duration-200 ease-out motion-safe:hover:-translate-y-0.5 motion-reduce:transition-none dark:border-white/10 dark:bg-[#0f1727] dark:shadow-[0_14px_32px_rgba(0,0,0,0.24)]";
 
 export const lightProductInsetPanelClass =
-  "relative isolate rounded-[24px] border border-slate-200/70 bg-slate-50/92 shadow-[0_10px_20px_rgba(15,23,42,0.05)] dark:border-white/10 dark:bg-[#111b2d] dark:shadow-none";
+  "relative isolate rounded-[24px] border border-slate-200/70 bg-slate-50/92 shadow-[0_10px_20px_rgba(15,23,42,0.05)] transition-[transform,box-shadow,border-color,background-color] duration-200 ease-out motion-safe:hover:-translate-y-0.5 motion-reduce:transition-none dark:border-white/10 dark:bg-[#111b2d] dark:shadow-none";
 
 export const lightProductGhostButtonClass =
-  "inline-flex min-h-[44px] items-center justify-center rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm font-semibold text-[#0f172a] shadow-[0_10px_20px_rgba(15,23,42,0.06)] transition-all duration-200 ease-out hover:border-slate-300 hover:bg-slate-50 active:scale-[0.99] dark:border-white/10 dark:bg-white/[0.04] dark:text-white dark:shadow-none dark:hover:border-white/16 dark:hover:bg-white/[0.06]";
+  "inline-flex min-h-[44px] items-center justify-center rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm font-semibold text-[#0f172a] shadow-[0_10px_20px_rgba(15,23,42,0.06)] transition-all duration-200 ease-out hover:border-slate-300 hover:bg-slate-50 hover:brightness-[0.99] active:scale-[0.99] motion-reduce:transition-none dark:border-white/10 dark:bg-white/[0.04] dark:text-white dark:shadow-none dark:hover:border-white/16 dark:hover:bg-white/[0.06]";
 
 export const lightProductCompactGhostButtonClass =
-  "inline-flex items-center justify-center rounded-xl border border-slate-200/80 bg-white px-4 py-2 text-sm font-semibold text-[#0f172a] shadow-[0_8px_18px_rgba(15,23,42,0.05)] transition-all duration-200 ease-out hover:border-slate-300 hover:bg-slate-50 active:scale-[0.99] dark:border-white/10 dark:bg-white/[0.04] dark:text-white dark:shadow-none dark:hover:border-white/16 dark:hover:bg-white/[0.06]";
+  "inline-flex items-center justify-center rounded-xl border border-slate-200/80 bg-white px-4 py-2 text-sm font-semibold text-[#0f172a] shadow-[0_8px_18px_rgba(15,23,42,0.05)] transition-all duration-200 ease-out hover:border-slate-300 hover:bg-slate-50 hover:brightness-[0.99] active:scale-[0.99] motion-reduce:transition-none dark:border-white/10 dark:bg-white/[0.04] dark:text-white dark:shadow-none dark:hover:border-white/16 dark:hover:bg-white/[0.06]";
 
 export const lightProductCompactPrimaryButtonClass =
   "inline-flex items-center justify-center rounded-xl border border-indigo-500/70 bg-gradient-to-r from-indigo-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-[0_12px_24px_rgba(79,70,229,0.22)] transition-all duration-200 ease-out hover:brightness-105 active:scale-[0.99] dark:border-indigo-400/70 dark:shadow-[0_14px_30px_rgba(0,0,0,0.24)]";
@@ -106,7 +106,7 @@ export const lightProductInputClass =
 export const lightProductSectionEyebrowClass =
   "text-xs uppercase tracking-[0.24em] text-[#635bff] dark:text-[#8dd8ff]";
 
-export const lightProductMutedTextClass = "text-sm leading-6 text-[#475569] dark:text-[#c3d1e2]";
+export const lightProductMutedTextClass = "text-sm leading-6 text-[#475569] dark:text-[#d0dbea]";
 
 export function lightProductNavItemClass(active: boolean) {
   return cn(
@@ -137,10 +137,10 @@ export const darkSurfaceClass =
   "rounded-[28px] border border-white/10 bg-[#08152f]/60 shadow-[0_20px_80px_rgba(0,0,0,0.28)] backdrop-blur-2xl";
 
 export const darkPanelClass =
-  "rounded-3xl border border-white/10 bg-[#08152f]/55 shadow-[0_12px_40px_rgba(0,0,0,0.22)] backdrop-blur-xl";
+  "rounded-3xl border border-white/10 bg-[#08152f]/55 shadow-[0_12px_40px_rgba(0,0,0,0.22)] backdrop-blur-xl transition-[transform,box-shadow,border-color,background-color] duration-200 ease-out motion-safe:hover:-translate-y-0.5 motion-reduce:transition-none";
 
 export const darkSubtleSurfaceClass =
-  "rounded-2xl border border-white/10 bg-black/20 backdrop-blur-xl";
+  "rounded-2xl border border-white/10 bg-black/20 backdrop-blur-xl transition-[transform,box-shadow,border-color,background-color] duration-200 ease-out motion-safe:hover:-translate-y-0.5 motion-reduce:transition-none";
 
 export const darkHeroSurfaceClass =
   "rounded-[32px] border border-white/12 bg-[linear-gradient(180deg,rgba(12,27,57,0.92)_0%,rgba(6,15,36,0.78)_100%)] shadow-[0_26px_96px_rgba(0,0,0,0.34),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-2xl";
@@ -149,22 +149,22 @@ export const darkRichPanelClass =
   "rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(11,24,52,0.90)_0%,rgba(6,14,34,0.76)_100%)] shadow-[0_18px_56px_rgba(0,0,0,0.30),inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-2xl";
 
 export const darkInsetPanelClass =
-  "rounded-[24px] border border-white/[0.08] bg-white/[0.04] shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]";
+  "rounded-[24px] border border-white/[0.08] bg-white/[0.04] shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] transition-[transform,box-shadow,border-color,background-color] duration-200 ease-out motion-safe:hover:-translate-y-0.5 motion-reduce:transition-none";
 
 export const darkGhostButtonClass =
-  "inline-flex min-h-[44px] items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white shadow-[0_8px_24px_rgba(0,0,0,0.18)] backdrop-blur-xl transition hover:border-[#20BCED]/35 hover:bg-white/10";
+  "inline-flex min-h-[44px] items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white shadow-[0_8px_24px_rgba(0,0,0,0.18)] backdrop-blur-xl transition-all duration-200 ease-out hover:border-[#20BCED]/35 hover:bg-white/10 hover:brightness-105 active:scale-[0.99] motion-reduce:transition-none";
 
 export const darkPrimaryButtonClass =
-  "inline-flex min-h-[44px] items-center justify-center rounded-2xl bg-[#A0E9FF] px-4 py-3 text-sm font-semibold text-[#02142b] transition hover:brightness-105";
+  "inline-flex min-h-[44px] items-center justify-center rounded-2xl bg-[#A0E9FF] px-4 py-3 text-sm font-semibold text-[#02142b] transition-all duration-200 ease-out hover:brightness-105 active:scale-[0.99] motion-reduce:transition-none";
 
 export const darkSecondaryButtonClass =
-  "inline-flex min-h-[44px] items-center justify-center rounded-2xl border border-white/12 bg-[linear-gradient(180deg,rgba(114,98,255,0.18)_0%,rgba(61,83,207,0.18)_100%)] px-4 py-3 text-sm font-semibold text-[#d7dcff] shadow-[0_10px_30px_rgba(44,56,133,0.22)] backdrop-blur-xl transition hover:border-[#8da0ff]/30 hover:bg-[linear-gradient(180deg,rgba(114,98,255,0.24)_0%,rgba(61,83,207,0.22)_100%)]";
+  "inline-flex min-h-[44px] items-center justify-center rounded-2xl border border-white/12 bg-[linear-gradient(180deg,rgba(114,98,255,0.18)_0%,rgba(61,83,207,0.18)_100%)] px-4 py-3 text-sm font-semibold text-[#d7dcff] shadow-[0_10px_30px_rgba(44,56,133,0.22)] backdrop-blur-xl transition-all duration-200 ease-out hover:border-[#8da0ff]/30 hover:bg-[linear-gradient(180deg,rgba(114,98,255,0.24)_0%,rgba(61,83,207,0.22)_100%)] hover:brightness-105 active:scale-[0.99] motion-reduce:transition-none";
 
 export const darkCompactGhostButtonClass =
-  "inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white shadow-[0_8px_24px_rgba(0,0,0,0.18)] backdrop-blur-xl transition hover:border-[#20BCED]/35 hover:bg-white/10";
+  "inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white shadow-[0_8px_24px_rgba(0,0,0,0.18)] backdrop-blur-xl transition-all duration-200 ease-out hover:border-[#20BCED]/35 hover:bg-white/10 hover:brightness-105 active:scale-[0.99] motion-reduce:transition-none";
 
 export const darkCompactPrimaryButtonClass =
-  "inline-flex items-center justify-center rounded-xl bg-[#A0E9FF] px-4 py-2 text-sm font-semibold text-[#02142b] transition hover:brightness-105";
+  "inline-flex items-center justify-center rounded-xl bg-[#A0E9FF] px-4 py-2 text-sm font-semibold text-[#02142b] transition-all duration-200 ease-out hover:brightness-105 active:scale-[0.99] motion-reduce:transition-none";
 
 export const darkInputClass =
   "min-h-[48px] w-full rounded-[20px] border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-sm text-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.4)] outline-none transition-[border-color,box-shadow,background-color] duration-150 ease-out placeholder:text-white/50 focus:border-indigo-500/60 focus:ring-1 focus:ring-indigo-500/30";
@@ -175,7 +175,7 @@ export const darkPillClass =
 export const darkSectionEyebrowClass =
   "text-xs uppercase tracking-[0.24em] text-[#8dd8ff]";
 
-export const darkMutedTextClass = "text-sm leading-6 text-zinc-300";
+export const darkMutedTextClass = "text-sm leading-6 text-[#d4deea]";
 
 export function darkNavItemClass(active: boolean) {
   return cn(
