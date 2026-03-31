@@ -1158,13 +1158,14 @@ export default function GatewayConnectionsPage() {
       if (!raw) return;
       const parsed = JSON.parse(raw) as { verifiedAt?: string };
       if (typeof parsed.verifiedAt !== "string" || !parsed.verifiedAt.trim()) return;
+      const verifiedAt = parsed.verifiedAt;
       setPaystackValidation((current) =>
         current.status !== "idle" || current.verifiedAt
           ? current
           : {
               status: "success",
               message: "Connection verified successfully",
-              verifiedAt: parsed.verifiedAt,
+              verifiedAt,
               paymentSessionTimeout: null,
             }
       );

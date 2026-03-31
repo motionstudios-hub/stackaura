@@ -345,13 +345,16 @@ export default function SignupClient({
       router.replace("/dashboard");
       router.refresh();
     } catch (signupError: unknown) {
-      let mapped = { field: "password" as keyof SignupFields, message: "Unable to create account. Try again." };
+      let mapped: { field: keyof SignupFields; message: string } = {
+        field: "password",
+        message: "Unable to create account. Try again.",
+      };
 
       if (signupError instanceof Error) {
         try {
           const parsed = JSON.parse(signupError.message) as { field?: keyof SignupFields; message?: string };
           if (parsed.field && parsed.message) {
-            mapped = parsed;
+            mapped = { field: parsed.field, message: parsed.message };
           } else {
             mapped = { field: "password", message: signupError.message };
           }
