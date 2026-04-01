@@ -3,12 +3,10 @@
 import { sendGAEvent } from "@next/third-parties/google";
 import { GA_MEASUREMENT_ID } from "./google-analytics-config";
 
-declare global {
-  interface Window {
-    dataLayer?: object[];
-    gtag?: (...args: unknown[]) => void;
-  }
-}
+type GoogleAnalyticsWindow = Window & {
+  dataLayer?: unknown[];
+  gtag?: (...args: unknown[]) => void;
+};
 
 export type GoogleAnalyticsEventParams = Record<
   string,
@@ -44,19 +42,30 @@ function canTrack() {
   return typeof window !== "undefined" && Boolean(GA_MEASUREMENT_ID);
 }
 
+function getAnalyticsWindow(): GoogleAnalyticsWindow | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  return window as GoogleAnalyticsWindow;
+}
+
 export function trackGoogleEvent(
   eventName: string,
   params?: GoogleAnalyticsEventParams
 ) {
   if (!canTrack()) return;
 
-  if (typeof window.gtag === "function") {
+  const analyticsWindow = getAnalyticsWindow();
+  if (!analyticsWindow) return;
+
+  if (typeof analyticsWindow.gtag === "function") {
     if (params && Object.keys(params).length > 0) {
-      window.gtag("event", eventName, params);
+      analyticsWindow.gtag("event", eventName, params);
       return;
     }
 
-    window.gtag("event", eventName);
+    analyticsWindow.gtag("event", eventName);
     return;
   }
 
