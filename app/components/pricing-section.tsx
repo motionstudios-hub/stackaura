@@ -12,6 +12,7 @@ import {
   publicTextPrimaryClass,
   publicTextSecondaryClass,
 } from "./stackaura-ui";
+import ContactSalesLink from "./contact-sales-link";
 
 export type HomepagePricingTier = {
   name: string;
@@ -135,15 +136,27 @@ export default function PricingSection({
                     Infrastructure, orchestration, and payment recovery.
                   </div>
                 </div>
-                <Link
-                  href={tier.ctaHref}
-                  className={cn(
-                    tier.featured ? publicPrimaryButtonClass : publicSecondaryButtonClass,
-                    "min-h-[44px] px-4 py-2.5",
-                  )}
-                >
-                  {tier.ctaLabel}
-                </Link>
+                {tier.ctaHref === "/contact" ? (
+                  <ContactSalesLink
+                    className={cn(
+                      tier.featured ? publicPrimaryButtonClass : publicSecondaryButtonClass,
+                      "min-h-[44px] px-4 py-2.5",
+                    )}
+                    trackingParams={{ surface: "homepage_pricing_card", plan: tier.name }}
+                  >
+                    {tier.ctaLabel}
+                  </ContactSalesLink>
+                ) : (
+                  <Link
+                    href={tier.ctaHref}
+                    className={cn(
+                      tier.featured ? publicPrimaryButtonClass : publicSecondaryButtonClass,
+                      "min-h-[44px] px-4 py-2.5",
+                    )}
+                  >
+                    {tier.ctaLabel}
+                  </Link>
+                )}
               </div>
             </div>
           </div>

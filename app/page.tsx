@@ -19,6 +19,7 @@ import {
   publicTextPrimaryClass,
   publicTextSecondaryClass,
 } from "./components/stackaura-ui";
+import ContactSalesLink from "./components/contact-sales-link";
 import PricingSection from "./components/pricing-section";
 import { buildHomepagePricingTiers, getServerPricing } from "./lib/pricing";
 
@@ -554,9 +555,12 @@ export default async function Home() {
                   <Link href="/signup" className={publicPrimaryButtonClass}>
                     Start accepting payments
                   </Link>
-                  <Link href="/contact" className={publicSecondaryButtonClass}>
+                  <ContactSalesLink
+                    className={publicSecondaryButtonClass}
+                    trackingParams={{ surface: "homepage_final_cta" }}
+                  >
                     Contact sales
-                  </Link>
+                  </ContactSalesLink>
                 </div>
               </div>
             </div>

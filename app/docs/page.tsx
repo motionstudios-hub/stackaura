@@ -1,4 +1,4 @@
-import Link from "next/link";
+import ContactSalesLink from "../components/contact-sales-link";
 import {
   PublicPageShell,
   cn,
@@ -34,13 +34,19 @@ export default function DocsPage() {
               View API reference
             </a>
           ) : (
-            <Link href="/contact" className={publicPrimaryButtonClass}>
+            <ContactSalesLink
+              className={publicPrimaryButtonClass}
+              trackingParams={{ surface: "docs_hero", cta_label: "request_api_access" }}
+            >
               Request API access
-            </Link>
+            </ContactSalesLink>
           )}
-          <Link href="/contact" className={publicSecondaryButtonClass}>
+          <ContactSalesLink
+            className={publicSecondaryButtonClass}
+            trackingParams={{ surface: "docs_hero", cta_label: "contact_sales" }}
+          >
             Contact sales
-          </Link>
+          </ContactSalesLink>
         </>
       }
       aside={

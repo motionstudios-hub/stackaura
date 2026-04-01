@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AuthFormFrame, AuthShell } from "../components/stackaura-auth";
+import { trackLogin } from "../lib/google-analytics";
 import { trackMetaEvent } from "../lib/meta-pixel";
 import {
   cn,
@@ -266,6 +267,9 @@ export default function LoginClient({
       }
 
       setFieldErrors({});
+      trackLogin({
+        method: "email_password",
+      });
       setSubmitState("success");
       await new Promise((resolve) => setTimeout(resolve, 700));
       router.replace("/dashboard");

@@ -10,6 +10,7 @@
     "test": "node --test --experimental-strip-types app/lib/*.test.ts"
   },
   "dependencies": {
+    "@next/third-parties": "^16.2.2",
     "@radix-ui/react-avatar": "^1.1.11",
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-popover": "^1.1.15",

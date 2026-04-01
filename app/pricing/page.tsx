@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ContactSalesLink from "../components/contact-sales-link";
 import {
   cn,
   lightProductStatusPillClass,
@@ -207,9 +208,12 @@ export default async function PricingPage() {
                   <Link href="/signup" className={publicPrimaryButtonClass}>
                     Start accepting payments
                   </Link>
-                  <Link href="/contact" className={publicSecondaryButtonClass}>
+                  <ContactSalesLink
+                    className={publicSecondaryButtonClass}
+                    trackingParams={{ surface: "pricing_hero" }}
+                  >
                     Contact sales
-                  </Link>
+                  </ContactSalesLink>
                 </div>
               </div>
 
@@ -382,16 +386,29 @@ export default async function PricingPage() {
                   </div>
 
                   <div className="mt-7">
-                    <Link
-                      href={plan.ctaHref}
-                      className={
-                        plan.featured
-                          ? publicPrimaryButtonClass
-                          : publicSecondaryButtonClass
-                      }
-                    >
-                      {plan.ctaLabel}
-                    </Link>
+                    {plan.ctaHref === "/contact" ? (
+                      <ContactSalesLink
+                        className={
+                          plan.featured
+                            ? publicPrimaryButtonClass
+                            : publicSecondaryButtonClass
+                        }
+                        trackingParams={{ surface: "pricing_plan_card", plan: plan.name }}
+                      >
+                        {plan.ctaLabel}
+                      </ContactSalesLink>
+                    ) : (
+                      <Link
+                        href={plan.ctaHref}
+                        className={
+                          plan.featured
+                            ? publicPrimaryButtonClass
+                            : publicSecondaryButtonClass
+                        }
+                      >
+                        {plan.ctaLabel}
+                      </Link>
+                    )}
                   </div>
                 </div>
               </div>
@@ -586,9 +603,12 @@ export default async function PricingPage() {
                 <Link href="/signup" className={publicPrimaryButtonClass}>
                   Start accepting payments
                 </Link>
-                <Link href="/contact" className={publicSecondaryButtonClass}>
+                <ContactSalesLink
+                  className={publicSecondaryButtonClass}
+                  trackingParams={{ surface: "pricing_final_cta" }}
+                >
                   Talk to sales
-                </Link>
+                </ContactSalesLink>
               </div>
             </div>
           </div>

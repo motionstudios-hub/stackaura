@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AuthFormFrame, AuthShell } from "../components/stackaura-auth";
+import { trackUserSignup } from "../lib/google-analytics";
 import { trackMetaEvent } from "../lib/meta-pixel";
 import {
   cn,
@@ -338,6 +339,10 @@ export default function SignupClient({
     try {
       await createMerchantAccount(nextFields);
       await autoLogin(nextFields);
+      trackUserSignup({
+        method: "merchant_account",
+        plan: selectedPlan ?? undefined,
+      });
       trackMetaEvent("CompleteRegistration");
       setFieldErrors({});
       setSubmitState("success");

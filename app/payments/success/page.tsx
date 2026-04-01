@@ -1,3 +1,4 @@
+import GoogleAnalyticsPaymentSuccess from "../../components/google-analytics-payment-success";
 import PaymentStatePage from "../../components/PaymentStatePage";
 import MetaPixelEvent from "../../components/meta-pixel-event";
 import { resolvePaymentSuccessContent } from "../../lib/payment-success";
@@ -33,17 +34,24 @@ export default async function PaymentsSuccessPage({
   return (
     <>
       {payment && reference ? (
-        <MetaPixelEvent
-          eventName="Purchase"
-          params={{
-            value: payment.amountCents / 100,
-            currency: payment.currency || "ZAR",
-            content_name: "Stackaura Payment",
-            content_ids: [reference],
-            content_type: "product",
-            num_items: 1,
-          }}
-        />
+        <>
+          <GoogleAnalyticsPaymentSuccess
+            reference={reference}
+            value={payment.amountCents / 100}
+            currency={payment.currency || "ZAR"}
+          />
+          <MetaPixelEvent
+            eventName="Purchase"
+            params={{
+              value: payment.amountCents / 100,
+              currency: payment.currency || "ZAR",
+              content_name: "Stackaura Payment",
+              content_ids: [reference],
+              content_type: "product",
+              num_items: 1,
+            }}
+          />
+        </>
       ) : null}
       <PaymentStatePage
         eyebrow={content.eyebrow}

@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
+import { GoogleAnalytics } from "@next/third-parties/google";
+import { Suspense } from "react";
 import "./globals.css";
+import GoogleAnalyticsRouteTracker from "./components/google-analytics-route-tracker";
 import MetaPixel from "./components/meta-pixel";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { GA_MEASUREMENT_ID } from "./lib/google-analytics-config";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://stackaura.co.za"),
@@ -56,6 +60,12 @@ export default function RootLayout({
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <MetaPixel />
+          {GA_MEASUREMENT_ID ? <GoogleAnalytics gaId={GA_MEASUREMENT_ID} /> : null}
+          {GA_MEASUREMENT_ID ? (
+            <Suspense fallback={null}>
+              <GoogleAnalyticsRouteTracker />
+            </Suspense>
+          ) : null}
           {children}
           <ThemeToggle />
         </ThemeProvider>

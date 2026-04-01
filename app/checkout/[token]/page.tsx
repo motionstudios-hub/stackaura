@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { use, useEffect, useMemo, useState } from "react";
+import { use, useEffect, useMemo, useRef, useState } from "react";
 import { normalizeRedirectPayload, submitRedirect } from "../../lib/payment-redirect";
+import { trackPaymentInitiated } from "../../lib/google-analytics";
 import { trackMetaEvent } from "../../lib/meta-pixel";
 import {
   BrandLockup,
@@ -98,6 +99,7 @@ export default function HostedCheckoutPage({ params }: PageProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [now, setNow] = useState(Date.now());
+  const hasTrackedBeginCheckout = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -153,6 +155,18 @@ export default function HostedCheckoutPage({ params }: PageProps) {
       value: (payment.chargeAmountCents ?? payment.amountCents) / 100,
       currency: payment.currency || "ZAR",
     });
+  }, [payment]);
+
+  useEffect(() => {
+    if (!payment || hasTrackedBeginCheckout.current) return;
+
+    trackPaymentInitiated({
+      value: (payment.chargeAmountCents ?? payment.amountCents) / 100,
+      currency: payment.currency || "ZAR",
+      transaction_id: payment.reference,
+      gateway: payment.currentGateway ?? payment.gateway ?? undefined,
+    });
+    hasTrackedBeginCheckout.current = true;
   }, [payment]);
 
   const amount = useMemo(() => {
