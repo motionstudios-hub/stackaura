@@ -63,6 +63,8 @@ type ConversationDetail = {
   messages: Array<{
     id: string;
     role: string;
+    // GPT-5.4 Responses integrations may optionally preserve assistant phase metadata.
+    phase?: "commentary" | "final_answer" | null;
     content: string;
     citations: SupportCitation[];
     contextSnapshot: unknown;
