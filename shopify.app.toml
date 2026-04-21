@@ -1,0 +1,31 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "af7d882e83dc17f9a6aa8536384ec4fb"
+extension_directories = [ "extensions/**" ]
+web_directories = [ "." ]
+name = "Stackaura"
+application_url = "https://mid-muscles-lighter-contamination.trycloudflare.com"
+embedded = true
+handle = "stackaura-storefront-support"
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "stackaura-dev.myshopify.com"
+
+[webhooks]
+api_version = "2026-04"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/uninstalled" ]
+  uri = "/api/shopify/webhooks"
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "read_orders,read_products"
+optional_scopes = [ ]
+use_legacy_install_flow = false
+
+[auth]
+redirect_urls = [
+  "https://mid-muscles-lighter-contamination.trycloudflare.com/api/shopify/auth/callback"
+]

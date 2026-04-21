@@ -3,11 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --webpack",
+    "dev": "node scripts/run-next-dev.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --test --experimental-strip-types app/lib/*.test.ts"
+    "test": "node --test --experimental-strip-types app/lib/*.test.ts",
+    "shopify:check": "node scripts/shopify-dev.mjs check",
+    "shopify:config:link": "shopify app config link",
+    "shopify:tunnel": "node scripts/shopify-dev.mjs tunnel",
+    "shopify:dev": "node scripts/shopify-dev.mjs check && shopify app dev",
+    "shopify:deploy": "shopify app deploy",
+    "shopify:release": "shopify app release"
   },
   "dependencies": {
     "@next/third-parties": "^16.2.2",

@@ -1,0 +1,27 @@
+<div
+  id="stackaura-support-agent-root"
+  data-stackaura-shop-domain="{{ shop.permanent_domain }}"
+  data-stackaura-app-url="{{ block.settings.stackaura_app_url | strip | escape }}"
+  data-stackaura-config-url="{{ block.settings.stackaura_app_url | strip | escape }}/shopify/support-agent/widget-config?shop={{ shop.permanent_domain | url_encode }}"
+  data-stackaura-activation-url="{{ block.settings.stackaura_app_url | strip | escape }}/shopify/support-agent/activation"
+  data-stackaura-chat-url="{{ block.settings.stackaura_app_url | strip | escape }}/shopify/support-agent/chat"
+  data-stackaura-widget-status="theme_extension_pending"
+  hidden
+></div>
+
+{% schema %}
+{
+  "name": "Stackaura Support Agent",
+  "target": "body",
+  "stylesheet": "stackaura-support-agent.css",
+  "javascript": "stackaura-support-agent.js",
+  "settings": [
+    {
+      "type": "text",
+      "id": "stackaura_app_url",
+      "label": "Stackaura app URL",
+      "info": "Paste your Stackaura app origin, for example https://app.stackaura.co.za or your development tunnel URL."
+    }
+  ]
+}
+{% endschema %}

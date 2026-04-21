@@ -1,0 +1,6 @@
+{
+  "name": "stackaura-support-agent-extension",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Shopify theme app extension for the Stackaura storefront support widget shell."
+}

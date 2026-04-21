@@ -1,0 +1,394 @@
+#stackaura-support-agent-root {
+  position: fixed;
+  z-index: 2147483000;
+  bottom: 24px;
+  right: 24px;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+#stackaura-support-agent-root[data-stackaura-position="bottom-left"] {
+  right: auto;
+  left: 24px;
+}
+
+#stackaura-support-agent-root[data-stackaura-theme="dark"] {
+  color-scheme: dark;
+}
+
+#stackaura-support-agent-root[hidden] {
+  display: none !important;
+}
+
+.stackaura-support-widget {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+#stackaura-support-agent-root[data-stackaura-position="bottom-left"] .stackaura-support-widget {
+  align-items: flex-start;
+}
+
+.stackaura-support-launcher {
+  appearance: none;
+  border: none;
+  border-radius: 999px;
+  background: #635bff;
+  color: #ffffff;
+  box-shadow: 0 10px 25px rgba(99, 91, 255, 0.28);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 14px 20px;
+}
+
+.stackaura-support-panel {
+  width: min(360px, calc(100vw - 32px));
+  border-radius: 24px;
+  border: 1px solid #d9e2ec;
+  background: #ffffff;
+  color: #102a43;
+  box-shadow: 0 24px 50px rgba(15, 23, 42, 0.16);
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(12px);
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+}
+
+.stackaura-support-widget[data-state="open"] .stackaura-support-panel {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.stackaura-support-widget[data-state="closed"] .stackaura-support-panel {
+  display: none;
+}
+
+.stackaura-support-header,
+.stackaura-support-body,
+.stackaura-support-footer {
+  padding-left: 18px;
+  padding-right: 18px;
+}
+
+.stackaura-support-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 18px;
+}
+
+.stackaura-support-eyebrow {
+  margin: 0;
+  color: #635bff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.stackaura-support-title {
+  margin: 6px 0 0;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.stackaura-support-close {
+  appearance: none;
+  border: 1px solid #d9e2ec;
+  background: #f8fbfd;
+  color: #486581;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 12px;
+}
+
+.stackaura-support-body {
+  padding-top: 14px;
+  padding-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.stackaura-support-greeting {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.stackaura-support-caption {
+  margin: 0;
+  color: #52606d;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.stackaura-support-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.stackaura-support-message {
+  display: flex;
+}
+
+.stackaura-support-message-user {
+  justify-content: flex-end;
+}
+
+.stackaura-support-message-assistant {
+  justify-content: flex-start;
+}
+
+.stackaura-support-bubble {
+  max-width: 86%;
+  border-radius: 18px;
+  padding: 12px 14px;
+  font-size: 13px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+.stackaura-support-message-assistant .stackaura-support-bubble {
+  background: #eef2f6;
+  color: #102a43;
+}
+
+.stackaura-support-message-user .stackaura-support-bubble {
+  background: #635bff;
+  color: #ffffff;
+}
+
+.stackaura-support-inline-error {
+  border-radius: 14px;
+  border: 1px solid #f0b7bf;
+  background: #fff5f6;
+  color: #8a2332;
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 10px 12px;
+}
+
+.stackaura-support-composer {
+  display: grid;
+  gap: 10px;
+}
+
+.stackaura-support-input {
+  width: 100%;
+  resize: vertical;
+  min-height: 82px;
+  border-radius: 18px;
+  border: 1px solid #d9e2ec;
+  background: #fbfcfd;
+  color: #102a43;
+  font: inherit;
+  line-height: 1.5;
+  padding: 12px 14px;
+  outline: none;
+}
+
+.stackaura-support-input:focus {
+  border-color: #635bff;
+}
+
+.stackaura-support-send {
+  appearance: none;
+  border: none;
+  border-radius: 999px;
+  background: #102a43;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  justify-self: flex-end;
+  line-height: 1;
+  padding: 12px 16px;
+}
+
+.stackaura-support-send:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.stackaura-support-contact {
+  border: 1px solid #e7edf3;
+  background: #fbfcfd;
+  border-radius: 18px;
+  padding: 14px;
+}
+
+.stackaura-support-contact-label {
+  margin: 0;
+  color: #7b8794;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.stackaura-support-email {
+  display: inline-block;
+  margin-top: 8px;
+  color: #102a43;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  word-break: break-word;
+}
+
+.stackaura-support-escalate {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 12px;
+  border-radius: 999px;
+  background: #102a43;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 14px;
+  text-decoration: none;
+}
+
+.stackaura-support-footer {
+  border-top: 1px solid #e7edf3;
+  padding-top: 12px;
+  padding-bottom: 16px;
+}
+
+.stackaura-support-footnote {
+  margin: 0;
+  color: #7b8794;
+  font-size: 12px;
+}
+
+.stackaura-support-error {
+  width: min(320px, calc(100vw - 32px));
+  border-radius: 20px;
+  border: 1px solid #f0b7bf;
+  background: #fff5f6;
+  color: #8a2332;
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.12);
+  padding: 16px;
+}
+
+.stackaura-support-error-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.stackaura-support-error-body {
+  margin: 10px 0 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+#stackaura-support-agent-root[data-stackaura-theme="dark"] .stackaura-support-panel {
+  background: #08111f;
+  border-color: #243b53;
+  color: #f0f4f8;
+}
+
+#stackaura-support-agent-root[data-stackaura-theme="dark"] .stackaura-support-eyebrow {
+  color: #9fb3ff;
+}
+
+#stackaura-support-agent-root[data-stackaura-theme="dark"] .stackaura-support-caption,
+#stackaura-support-agent-root[data-stackaura-theme="dark"] .stackaura-support-footnote,
+#stackaura-support-agent-root[data-stackaura-theme="dark"] .stackaura-support-contact-label {
+  color: #9fb3c8;
+}
+
+#stackaura-support-agent-root[data-stackaura-theme="dark"] .stackaura-support-message-assistant .stackaura-support-bubble {
+  background: #102033;
+  color: #f0f4f8;
+}
+
+#stackaura-support-agent-root[data-stackaura-theme="dark"] .stackaura-support-inline-error {
+  border-color: #8a2332;
+  background: rgba(138, 35, 50, 0.18);
+  color: #ffd7df;
+}
+
+#stackaura-support-agent-root[data-stackaura-theme="dark"] .stackaura-support-close {
+  background: #102a43;
+  border-color: #243b53;
+  color: #f0f4f8;
+}
+
+#stackaura-support-agent-root[data-stackaura-theme="dark"] .stackaura-support-input {
+  background: #08111f;
+  border-color: #243b53;
+  color: #f0f4f8;
+}
+
+#stackaura-support-agent-root[data-stackaura-theme="dark"] .stackaura-support-send {
+  background: #635bff;
+}
+
+#stackaura-support-agent-root[data-stackaura-theme="dark"] .stackaura-support-contact {
+  background: #102033;
+  border-color: #243b53;
+}
+
+#stackaura-support-agent-root[data-stackaura-theme="dark"] .stackaura-support-email {
+  color: #f0f4f8;
+}
+
+#stackaura-support-agent-root[data-stackaura-theme="dark"] .stackaura-support-footer {
+  border-top-color: #243b53;
+}
+
+@media (max-width: 640px) {
+  #stackaura-support-agent-root {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+  }
+
+  #stackaura-support-agent-root[data-stackaura-position="bottom-left"] {
+    left: 16px;
+  }
+
+  .stackaura-support-widget {
+    align-items: stretch;
+  }
+
+  .stackaura-support-panel,
+  .stackaura-support-error {
+    width: 100%;
+  }
+
+  .stackaura-support-launcher {
+    align-self: flex-end;
+  }
+
+  #stackaura-support-agent-root[data-stackaura-position="bottom-left"] .stackaura-support-launcher {
+    align-self: flex-start;
+  }
+}
