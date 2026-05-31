@@ -17,6 +17,29 @@ export const metadata: Metadata = {
   description:
     "Payment orchestration infrastructure for merchants, platforms, and developers.",
   applicationName: "Stackaura",
+  icons: {
+    icon: [
+      { url: "/favicon.ico?v=stackaura-20260531", sizes: "any" },
+      {
+        url: "/icon.png?v=stackaura-20260531",
+        type: "image/png",
+        sizes: "512x512",
+      },
+      {
+        url: "/favicon.png?v=stackaura-20260531",
+        type: "image/png",
+        sizes: "512x512",
+      },
+    ],
+    shortcut: [{ url: "/favicon.ico?v=stackaura-20260531" }],
+    apple: [
+      {
+        url: "/apple-icon.png?v=stackaura-20260531",
+        type: "image/png",
+        sizes: "180x180",
+      },
+    ],
+  },
   keywords: [
     "Stackaura",
     "payment orchestration",
