@@ -6,7 +6,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const FRONTEND_PORT = 3000;
-const FRONTEND_HOST = "127.0.0.1";
+const FRONTEND_HOST = process.env.FRONTEND_HOST || "127.0.0.1";
 const FRONTEND_ORIGIN = `http://${FRONTEND_HOST}:${FRONTEND_PORT}`;
 const LOCALHOST_ORIGIN = `http://localhost:${FRONTEND_PORT}`;
 const DEFAULT_BACKEND_ORIGIN = "http://127.0.0.1:3001";
